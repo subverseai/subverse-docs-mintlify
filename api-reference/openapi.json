@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://subverseai.com/api"
+      "url": "https://api.subverseai.com/api"
     }
   ],
   "security": [

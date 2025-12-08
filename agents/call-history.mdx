@@ -1,0 +1,543 @@
+---
+title: 'Call History'
+description: 'Track, analyze, and optimize your agent call performance'
+---
+
+## Overview
+
+The Call History section provides comprehensive monitoring and analytics for all calls handled by your AI agents. Use this tool to track performance, review conversations, identify issues, and continuously improve your agent's effectiveness.
+
+## Accessing Call History
+
+Navigate to **Call History** from the left sidebar in your dashboard to view all call records.
+
+## Call History Dashboard
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/dashboard/call-history.png"
+/>
+
+### Key Metrics
+
+The dashboard displays three critical metrics at the top:
+
+**Total Calls**
+- Total number of calls processed across all agents
+- Includes all call statuses (completed, failed, in-progress)
+- Updated in real-time as calls are made
+
+**Total Call Duration**
+- Cumulative time spent on all calls
+- Displayed in minutes (e.g., 676.4 mins)
+- Useful for capacity planning and cost analysis
+
+**Calls in Queue**
+- Number of calls currently waiting to be processed
+- Real-time indicator of system load
+- Helps identify peak periods and capacity needs
+
+### Call Records Table
+
+Each call record in the table displays comprehensive information:
+
+**Customer Number**
+- Phone number of the caller or recipient
+- Click to view complete customer interaction history
+- Masked for privacy compliance when needed
+
+**Time**
+- Date and timestamp of when the call was initiated
+- Format: DD-MM-YYYY HH:MM AM/PM
+- Sortable for chronological viewing
+- Timezone-aware display based on your settings
+
+**Agent**
+- Name of the AI agent that handled the call
+- Links to agent configuration page
+- Useful for comparing performance across different agents
+
+**Agent Number**
+- Phone number or SIP address used by the agent
+- Identifies which line or trunk was used
+- Important for multi-line or multi-region setups
+
+**Call Status**
+The outcome of the call:
+- **Completed**: Call finished successfully
+- **Could Not Connect**: Failed to establish connection
+- **In Progress**: Call currently active
+- **Failed**: Call encountered an error
+- **Abandoned**: Customer hung up early
+
+**Duration (in secs)**
+- Length of the call in seconds
+- Excludes connection/dialing time
+- Zero (0) for failed connections
+- Helps identify unusually short or long calls
+
+**Tags**
+- Custom labels for categorization
+- Can be added manually or automatically via post-call analysis
+- Useful for filtering and reporting
+- Examples: "resolved", "escalated", "follow-up-needed"
+
+**Action**
+- **View Details** (eye icon): Click to see complete call information
+
+### Filtering and Search
+
+Use the powerful filtering options to narrow down your call list:
+
+#### Time Filter
+Select from predefined ranges or custom dates:
+- All time
+- Today
+- Yesterday
+- Last 7 days
+- Last 30 days
+- Custom date range
+
+#### Voice Agent Filter
+Filter by specific agent:
+- **All**: Show calls from all agents
+- Select individual agent names to view their calls only
+- Compare performance across different agents
+
+#### Call Status Filter
+Filter by call outcome:
+- **All**: Show all call statuses
+- **Completed**: Only successful calls
+- **Could Not Connect**: Failed connection attempts
+- **In Progress**: Currently active calls
+- **Failed**: Error encounters
+
+#### Search Bar
+Quick search functionality:
+- Search by customer number
+- Search by agent number
+- Real-time search results
+- Supports partial matches
+
+### Bulk Actions
+
+**Retry Calls**
+- Retry failed or disconnected calls
+- Select multiple calls for bulk retry
+- Useful for recovering from system outages
+- Automatically uses the same agent configuration
+
+**Export**
+- Export call data to CSV or Excel format
+- Includes all visible columns and filtered data
+- Respects current filter settings
+- Useful for external analysis and reporting
+
+## Call Details View
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/dashboard/call-details.png"
+/>
+
+Click on any call's view icon to access detailed information:
+
+### Call Information Panel
+
+The top section displays comprehensive call metadata:
+
+**Call Time**
+- Exact timestamp: 12-11-2025 09:38 PM
+- Timezone-aware display
+
+**Call Number**
+- Customer's phone number: +91xxxxxxxxxx
+- Click to copy
+
+**Call Status**
+- Final outcome: Completed
+- Color-coded for quick identification
+
+**Agent Name**
+- AI agent that handled the call: Matrimony Usecase
+- Links to agent configuration
+
+**Agent Number**
+- Phone number used: +91xxxxxxxxxx
+- Identifies the outbound line
+
+**Call Duration (in seconds)**
+- Total conversation time: 85 seconds
+- Excludes ring time and connection delays
+
+**Call Direction**
+- **Outgoing**: Agent initiated the call
+- **Incoming**: Customer called in
+
+### Transcript Section
+
+The transcript provides a complete, searchable record of the conversation:
+
+**Audio Playback**
+- Built-in audio player with controls
+- Play/pause functionality
+- Seek to any point in the conversation
+- Volume control
+- Download option
+
+**Transcript Text**
+- Complete conversation transcript
+- Speaker labels (Assistant vs Customer)
+- Timestamps for each exchange
+- Searchable text
+- Copy functionality
+
+**Example Transcript:**
+```
+Assistant: Good evening! This is Ria calling from Bharat Matrimony. 
+I'm calling to help you create your भारत मैट्रिमोनी to find your 
+ideal life partner. We can get the basics set up in just a few 
+minutes. To begin, could you tell me a little bit about the person 
+for whom the भारत मैट्रिमोनी is being created? I can note down 
+their name, and the city they live in.
+```
+
+**Transcript Features:**
+- Multi-language support (shows mixed language conversations)
+- Clear speaker identification
+- Natural conversation flow
+- Accurate transcription with custom keywords
+
+### Analysis Section
+
+Post-call analytics and data extraction:
+
+**Automated Analysis**
+- Sentiment analysis
+- Intent detection
+- Key topics discussed
+- Action items identified
+- Custom data fields (configured in agent settings)
+
+**Data Extraction**
+Based on your Post Call Data Analysis configuration:
+- Summary of conversation
+- Customer sentiment (positive/negative/neutral)
+- Lead quality scores
+- Order IDs or reference numbers
+- Follow-up requirements
+- Any custom fields you've defined
+
+<Note>
+  Analysis data may take 1-2 minutes to process after the call ends. If you see "No Analysis Data Found", check back shortly or ensure Post Call Data Analysis is configured in your agent settings.
+</Note>
+
+## Using Call History Effectively
+
+### Daily Monitoring
+
+**Morning Review**
+- Check overnight call volumes
+- Review any failed calls
+- Identify patterns in call times
+- Monitor agent performance
+
+**Real-time Monitoring**
+- Track calls in progress
+- Monitor queue lengths
+- Identify connection issues quickly
+- Respond to anomalies immediately
+
+### Quality Assurance
+
+**Sample Call Reviews**
+- Listen to random call samples daily
+- Evaluate agent response quality
+- Check for accuracy and professionalism
+- Identify training opportunities
+
+**Failed Call Analysis**
+- Review all "Could Not Connect" calls
+- Identify technical issues
+- Check for patterns in failures
+- Verify phone number formats
+- Test telephony integration
+
+**Short Call Investigation**
+- Identify calls under 10 seconds
+- Determine if customers are hanging up immediately
+- Check greeting message effectiveness
+- Verify audio quality
+
+### Performance Analysis
+
+**Agent Comparison**
+- Compare call volumes across agents
+- Analyze average call durations
+- Identify best-performing configurations
+- Replicate successful patterns
+
+**Time-based Analysis**
+- Identify peak call hours
+- Analyze success rates by time of day
+- Optimize agent availability
+- Plan capacity accordingly
+
+**Conversation Quality**
+- Review transcript quality
+- Check for conversation loops
+- Identify knowledge gaps
+- Improve system prompts
+
+### Optimization Strategies
+
+**Reduce Failed Connections**
+- Verify phone number formats
+- Check telephony provider status
+- Test during different times
+- Validate SIP trunk configuration
+
+**Improve Call Duration**
+- Analyze unusually long calls
+- Identify conversation bottlenecks
+- Optimize agent prompts
+- Add missing knowledge base content
+
+**Increase Success Rate**
+- Review completed vs failed ratio
+- Identify common failure points
+- Adjust agent configurations
+- Improve greeting messages
+
+## Common Call Issues and Solutions
+
+### Could Not Connect
+
+**Possible Causes:**
+- Invalid or incorrect phone number format
+- Network connectivity issues
+- Telephony provider problems
+- Customer's phone is off or unreachable
+- Number is blocked or invalid
+
+**Solutions:**
+- Verify phone number format (include country code)
+- Check telephony integration status in Integrations section
+- Retry during different times of day
+- Contact telephony provider for trunk status
+- Validate number before calling
+
+### Short Duration Calls (< 10 seconds)
+
+**Possible Causes:**
+- Customer hung up immediately
+- Poor audio quality
+- Agent didn't respond quickly enough
+- Wrong number dialed
+- Greeting message unclear
+
+**Solutions:**
+- Improve greeting message clarity
+- Reduce initial response time (adjust Agent Responsiveness)
+- Verify target audience and phone list quality
+- Test audio quality with sample calls
+- Consider greeting type (Prompt vs Listen)
+
+### Long Duration Calls (> 10 minutes)
+
+**Possible Causes:**
+- Agent unable to resolve customer issue
+- Circular conversation loops
+- Missing information in knowledge base
+- Complex customer inquiry beyond agent capability
+- No clear exit strategy
+
+**Solutions:**
+- Add relevant content to knowledge base
+- Improve system prompt with clearer instructions
+- Enable human transfer option for complex cases
+- Add timeout mechanisms (Max Duration setting)
+- Define clear end-of-call criteria in prompt
+
+### Incomplete Conversations
+
+**Possible Causes:**
+- Customer lost interest
+- Agent responses not relevant
+- Technical issues during call
+- Customer got what they needed early
+
+**Solutions:**
+- Review transcripts to identify drop-off points
+- Improve conversation flow in system prompt
+- Add engagement techniques
+- Ensure agent addresses customer needs directly
+
+## Exporting and Reporting
+
+### Export Options
+
+**CSV Export**
+Includes:
+- All call metadata (time, numbers, duration, status)
+- Agent information
+- Tags and custom fields
+- Filterable before export
+
+**Use Cases:**
+- Import into Excel for analysis
+- Share with stakeholders
+- Create custom reports
+- Compliance and record-keeping
+
+**Transcript Export**
+- Individual call transcripts
+- Bulk transcript download
+- Text or JSON format
+- For training and compliance
+
+### Creating Reports
+
+**Weekly Performance Report**
+- Total calls handled
+- Success rate percentage
+- Average call duration
+- Top performing agents
+- Common issues identified
+
+**Monthly Analytics**
+- Call volume trends
+- Agent performance comparison
+- Cost analysis (based on duration)
+- Customer satisfaction metrics
+- Improvement recommendations
+
+## Data Privacy and Compliance
+
+<Warning>
+  Call recordings and transcripts may contain sensitive customer information. Ensure proper data handling and compliance with privacy regulations (GDPR, CCPA, etc.).
+</Warning>
+
+**Best Practices:**
+- Limit access to authorized personnel only
+- Implement data retention policies
+- Anonymize data when sharing externally
+- Secure exported files with encryption
+- Regular audit of access logs
+- Inform customers about call recording (if required by law)
+
+**Compliance Features:**
+- Role-based access control
+- Audit trails for data access
+- Secure data storage
+- Configurable retention periods
+- Data export for subject access requests
+
+## Integration with Other Tools
+
+### CRM Integration
+- Sync call data with your CRM automatically
+- Update customer records with call outcomes
+- Track complete interaction history
+- Trigger follow-up workflows based on call results
+
+### Analytics Platforms
+- Export to BI tools (Tableau, Power BI, Looker)
+- Create custom dashboards
+- Combine with other business data
+- Generate executive reports
+
+### Alerting Systems
+- Set up alerts for failed calls
+- Notify on high call volumes
+- Alert on low success rates
+- Monitor SLA compliance
+- Slack/Email notifications
+
+### Webhooks
+Configure webhooks to receive real-time notifications:
+- Call started
+- Call completed
+- Call failed
+- Custom triggers based on analysis
+
+See [Webhooks Integration](/integrations/webhooks) for setup.
+
+## Advanced Features
+
+### Call Tagging
+- Manually add tags to calls
+- Automatically tag based on analysis
+- Filter and search by tags
+- Create tag-based reports
+
+### Customer Journey Tracking
+- View all calls from a specific customer
+- Track conversation history
+- Identify repeat callers
+- Personalize future interactions
+
+### A/B Testing
+- Compare different agent configurations
+- Test greeting messages
+- Evaluate voice options
+- Measure impact of changes
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Optimize Your Agent"
+    icon="sliders"
+    href="/agents/agent-configurations"
+  >
+    Fine-tune settings based on call insights
+  </Card>
+  <Card
+    title="View Dashboard Analytics"
+    icon="chart-line"
+    href="/monitor/dashboard"
+  >
+    Access comprehensive performance metrics
+  </Card>
+  <Card
+    title="Set Up Webhooks"
+    icon="webhook"
+    href="/integrations/webhooks"
+  >
+    Get real-time call notifications
+  </Card>
+  <Card
+    title="Customer Interactions"
+    icon="users"
+    href="/monitor/customer-interactions"
+  >
+    Track engagement across all channels
+  </Card>
+</CardGroup>
+
+## Tips for Success
+
+**Regular Review**
+- Check call history daily
+- Listen to sample calls weekly
+- Analyze trends monthly
+- Adjust configurations based on data
+
+**Focus on Patterns**
+- Look for recurring issues
+- Identify successful conversation patterns
+- Note time-based trends
+- Track improvement over time
+
+**Act on Insights**
+- Don't just collect data—use it
+- Make incremental improvements
+- Test changes systematically
+- Measure impact of modifications
+
+**Continuous Improvement**
+- Set performance goals
+- Track progress toward goals
+- Celebrate improvements
+- Share learnings with team

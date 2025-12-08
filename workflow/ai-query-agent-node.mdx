@@ -1,0 +1,457 @@
+---
+title: 'AI Query Agent Node'
+description: 'Automate intelligent decision-making with AI-powered processing'
+---
+
+## Overview
+
+The AI Query Agent Node enables automated decision-making in your workflows. It uses AI to analyze data, make intelligent decisions, and perform multiple actions based on dynamic conditions, mimicking human-like intelligence.
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/workflow/nodes/ali-query-agent.png"
+/>
+
+## Use Cases
+
+- **Post-Call Processing**: Analyze call transcripts and determine next actions
+- **Smart Routing**: Decide which team or agent should handle a case
+- **Ticket Generation**: Create support tickets with AI-generated summaries
+- **Email Composition**: Generate personalized emails based on context
+- **Lead Qualification**: Score and categorize leads automatically
+- **Callback Scheduling**: Intelligently determine if and when to call back
+- **Data Extraction**: Pull specific information from unstructured text
+- **Sentiment Analysis**: Determine customer satisfaction and urgency
+- **Action Orchestration**: Coordinate multiple follow-up actions
+
+## How It Works
+
+1. **Input**: Provide a query/instruction and context (e.g., call transcript)
+2. **Processing**: AI analyzes the context using selected tools and knowledge base
+3. **Decision**: AI determines appropriate actions based on your query
+4. **Execution**: AI calls selected tools to perform actions
+5. **Output**: Results and tool outputs are passed to next workflow blocks
+
+## Inputs
+
+### **Query** (Required)
+User input or query that instructs the AI on what to do.
+
+**Purpose:**
+- Define the task for the AI
+- Specify conditions and logic
+- Describe desired outcomes
+
+**Example Queries:**
+
+**Post-Call Actions:**
+```md
+1. Generate a ticket with comments as per discussion and assign to relevant department
+2. Send an email to the customer with ticket details, CC to customercare@company.com
+3. If the customer asked to call later / callback, schedule a callback accordingly
+4. If the customer was willing to speak but the call got hung up abruptly, schedule a callback in 5 minutes
+```
+
+**Lead Qualification:**
+```md
+Analyze the conversation and:
+1. Rate the lead quality from 1-10
+2. If score is above 7, send lead details to sales team via webhook
+3. If score is below 4, send a follow-up email with more information
+4. Extract and return: customer name, company, budget, timeline
+```
+
+**Customer Support:**
+```md
+Based on the call transcript:
+1. Determine if the issue was resolved
+2. If not resolved, create a support ticket with summary
+3. If customer mentioned specific product, query knowledge base for details
+4. Send follow-up email with resolution or ticket number
+```
+
+**Smart Routing:**
+```md
+Analyze the customer inquiry and:
+1. Categorize as: Sales, Support, Billing, or Technical
+2. Determine urgency level: High, Medium, Low
+3. If High urgency, send immediate alert via webhook
+4. Route to appropriate department
+```
+
+### **Tools**
+Select the tools/functions the AI can use to perform actions.
+
+**Available Tools:**
+- **send_email**: Send emails to customers
+- **send_whatsapp**: Send WhatsApp messages
+- **schedule_callback**: Schedule follow-up calls
+- **create_ticket**: Generate support tickets
+- **query_knowledge_base**: Search knowledge base
+- **webhook**: Send data to external systems
+- **Custom tools**: Your configured LLM tools
+
+**Selection Tips:**
+- Only enable tools needed for the task
+- More tools = more processing time
+- Test with minimal tools first
+- Add tools as needed
+
+### **System_Context**
+Provide additional context to help the AI make informed decisions.
+
+**What to Include:**
+- Call transcripts
+- Customer details
+- Previous interactions
+- Order information
+- Account status
+- Any relevant data
+
+**Example Context:**
+
+**Call Transcript:**
+```md
+Call Transcript:
+Assistant: Hello! How can I help you today?
+Customer: Hi, I placed an order yesterday but haven't received confirmation.
+Assistant: I can help with that. Can you provide your order number?
+Customer: Yes, it's ORD-12345.
+Assistant: Let me check... I see your order. It's confirmed and will ship tomorrow.
+Customer: Great, thank you!
+
+Customer Details:
+Name: John Doe
+Email: john@example.com
+Phone: +91xxxxxxxxxx
+Order ID: ORD-12345
+```
+
+**CRM Data:**
+```md
+Customer: Jane Smith
+Account Type: Premium
+Last Purchase: 2025-11-15
+Total Spend: ₹50,000
+Support Tickets: 2 (both resolved)
+Sentiment: Positive
+```
+
+**System Prompt:**
+```md
+You are a backend agent for SubVerse AI to perform multiple tasks based on customer's discussion with virtual agent.
+
+Guidelines:
+- Be concise and professional
+- Extract key information accurately
+- Make decisions based on clear criteria
+- Use appropriate tools for each action
+- Provide clear summaries
+```
+
+### **Knowledge_Base**
+Select a knowledge base to pull relevant information.
+
+**Use Cases:**
+- Product information lookup
+- Policy clarification
+- Technical documentation
+- FAQ answers
+- Company procedures
+
+**Configuration:**
+- Select from your created knowledge bases
+- AI will automatically search when needed
+- Results are included in decision-making
+
+## Outputs
+
+### **LLM_Response**
+The AI's response based on your query and context.
+
+**Contains:**
+- Analysis summary
+- Decisions made
+- Actions taken
+- Extracted information
+- Recommendations
+
+**Example Output:**
+```md
+Analysis:
+- Customer inquiry about order status
+- Order ORD-12345 is confirmed and shipping tomorrow
+- Customer is satisfied with the response
+- No further action needed
+
+Extracted Information:
+- Customer Name: John Doe
+- Order ID: ORD-12345
+- Issue: Order confirmation inquiry
+- Resolution: Confirmed order status
+- Sentiment: Positive
+
+Actions Taken:
+- Sent confirmation email to john@example.com
+- Updated CRM with interaction details
+```
+
+### **Tool Outputs**
+Results from tools that were called by the AI.
+
+**Available Outputs (based on tools used):**
+- **email_sent**: Boolean (true/false)
+- **whatsapp_sent**: Boolean (true/false)
+- **callback_scheduled**: Boolean (true/false)
+- **ticket_id**: String (ticket number)
+- **webhook_response**: Object (API response)
+- **knowledge_base_results**: Array (search results)
+
+**Usage:**
+- Connect to subsequent workflow blocks
+- Use for conditional logic
+- Log for monitoring
+- Send to external systems
+
+## Configuration Examples
+
+### Example 1: Post-Call Email Follow-up
+
+**Query:**
+```md
+Analyze the call transcript and:
+1. Summarize the conversation in 2-3 sentences
+2. If customer requested information, query knowledge base
+3. Send a follow-up email with summary and any requested information
+```
+
+**Tools:** `send_email`, `query_knowledge_base`
+
+**System_Context:** `[Call Transcript]`
+
+### Example 2: Support Ticket Creation
+
+**Query:**
+```md
+Based on the call:
+1. Determine if issue was resolved
+2. If not resolved, create a support ticket with:
+   - Customer details
+   - Issue description
+   - Priority level
+   - Assigned department
+3. Send email to customer with ticket number
+```
+
+**Tools:** `create_ticket`, `send_email`
+
+**System_Context:** `[Call Transcript + Customer Details]`
+
+### Example 3: Lead Qualification
+
+**Query:**
+```md
+Analyze the conversation and score the lead:
+1. Rate interest level (1-10)
+2. Extract: budget, timeline, decision maker
+3. If score > 7, send to sales via webhook
+4. If score < 4, schedule follow-up call in 1 week
+5. Send summary email to lead
+```
+
+**Tools:** `webhook`, `schedule_callback`, `send_email`
+
+**System_Context:** `[Call Transcript + Lead Details]`
+
+### Example 4: Smart Callback Scheduling
+
+**Query:**
+```md
+Determine if callback is needed:
+1. If customer explicitly requested callback, schedule at requested time
+2. If call dropped abruptly, schedule callback in 5 minutes
+3. If issue unresolved, schedule callback in 24 hours
+4. Otherwise, no callback needed
+```
+
+**Tools:** `schedule_callback`
+
+**System_Context:** `[Call Transcript + Call Metadata]`
+
+## Best Practices
+
+### Query Design
+- **Be Specific**: Clearly define what you want the AI to do
+- **Use Numbers**: List actions in numbered steps
+- **Set Conditions**: Use if/then logic for decisions
+- **Define Criteria**: Specify thresholds and rules
+- **Keep Focused**: One clear objective per query
+
+### Context Provision
+- **Include Relevant Data**: Only what's needed for the decision
+- **Structure Clearly**: Use labels and formatting
+- **Update Regularly**: Ensure context is current
+- **Validate Data**: Check for completeness
+
+### Tool Selection
+- **Minimal Set**: Only enable necessary tools
+- **Test Individually**: Verify each tool works
+- **Monitor Usage**: Track which tools are called
+- **Optimize**: Remove unused tools
+
+### Knowledge Base
+- **Keep Updated**: Regularly refresh content
+- **Organize Well**: Structure for easy retrieval
+- **Test Queries**: Verify search accuracy
+- **Monitor Relevance**: Check result quality
+
+## Advanced Use Cases
+
+### Multi-Step Workflows
+
+**Scenario:** Complex post-call processing
+
+```md
+Query:
+1. Analyze call sentiment (positive/negative/neutral)
+2. Extract key information: issue, resolution, follow-up needed
+3. If negative sentiment:
+   - Create high-priority ticket
+   - Alert supervisor via webhook
+   - Schedule manager callback within 2 hours
+4. If positive sentiment:
+   - Send thank you email
+   - Request feedback via WhatsApp
+5. Update CRM with all details
+```
+
+### Conditional Routing
+
+**Scenario:** Department-based routing
+
+```md
+Query:
+Categorize the inquiry and route appropriately:
+1. If billing-related: send to finance via webhook
+2. If technical issue: create tech support ticket
+3. If sales inquiry: send to sales team and schedule callback
+4. If general question: query knowledge base and send email response
+```
+
+### Data Enrichment
+
+**Scenario:** Customer profile enhancement
+
+```md
+Query:
+Enrich customer profile based on conversation:
+1. Extract: interests, pain points, budget range, decision timeline
+2. Update CRM via webhook with extracted data
+3. Calculate lead score based on extracted information
+4. Assign to appropriate sales rep based on score and territory
+```
+
+## Monitoring and Optimization
+
+### Track Performance
+
+**Key Metrics:**
+- **Execution Time**: How long AI takes to process
+- **Tool Usage**: Which tools are called most
+- **Success Rate**: Percentage of successful actions
+- **Error Rate**: Failed tool calls or decisions
+
+### Analyze Outputs
+
+**Review:**
+- LLM response quality
+- Decision accuracy
+- Tool call appropriateness
+- Context utilization
+
+### Iterate and Improve
+
+**Optimization:**
+- Refine queries based on results
+- Adjust tool selection
+- Improve context structure
+- Update knowledge base
+
+## Troubleshooting
+
+### AI Not Calling Tools
+
+**Possible Causes:**
+- Tools not selected in configuration
+- Query doesn't clearly instruct tool usage
+- Insufficient context for decision
+
+**Solutions:**
+- Verify tools are enabled
+- Make query more explicit about tool usage
+- Provide more detailed context
+
+### Incorrect Decisions
+
+**Possible Causes:**
+- Ambiguous query
+- Insufficient context
+- Outdated knowledge base
+
+**Solutions:**
+- Clarify query with specific criteria
+- Include all relevant context
+- Update knowledge base content
+
+### Slow Processing
+
+**Possible Causes:**
+- Too many tools enabled
+- Large context size
+- Complex query
+
+**Solutions:**
+- Reduce number of tools
+- Optimize context length
+- Simplify query
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Send Email Node"
+    icon="envelope"
+    href="/workflow/send-email-node"
+  >
+    Configure email sending
+  </Card>
+  <Card
+    title="Schedule Callback Node"
+    icon="calendar"
+    href="/workflow/schedule-callback-node"
+  >
+    Set up callback scheduling
+  </Card>
+  <Card
+    title="Webhook Node"
+    icon="webhook"
+    href="/workflow/webhook-node"
+  >
+    Integrate with external systems
+  </Card>
+  <Card
+    title="LLM Tools"
+    icon="code"
+    href="/integrations/llm-tools"
+  >
+    Create custom tools
+  </Card>
+</CardGroup>
+
+<Tip>
+  Start with simple queries and gradually add complexity. Test each step to ensure the AI makes correct decisions.
+</Tip>
+
+<Note>
+  The AI Query Agent uses the LLM model configured in your account. Processing time depends on query complexity and context size.
+</Note>

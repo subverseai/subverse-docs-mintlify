@@ -11,24 +11,21 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Dashboard",
         "groups": [
           {
-            "group": "Voice Agents",
+            "group": "Platform Overview",
             "pages": [
-              "voice-agents/quickstart",
-              {
-                "group": "Agent Configuration Guide",
-                "pages": [
-                  "voice-agents/prompting",
-                  "voice-agents/speech-detection",
-                  "voice-agents/voice-settings",
-                  "voice-agents/call-settings",
-                  "voice-agents/knowledge-base",
-                  "voice-agents/llm-tools"
-                ]
-              },
-              "voice-agents/test-call"
+              "dashboard/overview",
+              "dashboard/getting-started"
+            ]
+          },
+          {
+            "group": "Agents",
+            "pages": [
+              "agents/create-first-agent",
+              "agents/agent-configurations",
+              "agents/call-history"
             ]
           },
           {
@@ -39,29 +36,76 @@
             ]
           },
           {
-            "group": "Workflow",
-            "pages": [
-              "workflow/quickstart",
-              "workflow/data-source-blocks",
-              "workflow/agent-blocks",
-              "workflow/function-blocks"
-            ]
-          },
-          {
-            "group": "Integrations",
-            "pages": [
-              "integrations/knowledge-base",
-              "integrations/llm-tools",
-              "integrations/telephony",
-              "integrations/api-keys"
-            ]
-          },
-          {
             "group": "Monitor",
             "pages": [
               "monitor/dashboard",
               "monitor/customer-interactions",
               "monitor/billing"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Workflow",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "workflow/getting-started"
+            ]
+          },
+          {
+            "group": "Trigger Nodes",
+            "pages": [
+              "workflow/call-api-node",
+              "workflow/upload-data-node",
+              "workflow/incoming-call-node"
+            ]
+          },
+          {
+            "group": "Agent Nodes",
+            "pages": [
+              "workflow/voice-agent-node",
+              "workflow/ai-query-agent-node"
+            ]
+          },
+          {
+            "group": "Function Nodes",
+            "pages": [
+              "workflow/schedule-callback-node",
+              "workflow/send-whatsapp-node",
+              "workflow/send-email-node",
+              "workflow/smart-filter-node",
+              "workflow/webhook-node"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Integration",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "integrations/introduction"
+            ]
+          },
+          {
+            "group": "Integration Types",
+            "pages": [
+              "integrations/llm-tools",
+              "integrations/knowledge-base",
+              {
+                "group": "Telephony",
+                "pages": [
+                  "integrations/telephony",
+                  "integrations/telephony-twilio",
+                  "integrations/telephony-telnyx",
+                  "integrations/telephony-plivo"
+                ]
+              },
+              "integrations/webhooks-integration",
+              "integrations/api-keys"
             ]
           }
         ]
@@ -87,13 +131,7 @@
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Blog",
-          "href": "https://subverseai.substack.com/",
-          "icon": "newspaper"
-        }
-      ]
+      "anchors": []
     }
   },
   "logo": {

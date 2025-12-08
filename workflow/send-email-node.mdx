@@ -1,0 +1,433 @@
+---
+title: 'Send Email Node'
+description: 'Send automated emails to customers via standard or custom email providers'
+---
+
+## Overview
+
+The Send Email Node allows you to send automated emails to customers using standard email providers (Gmail, Outlook, Zoho, GoDaddy) or custom SMTP servers.
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/workflow/nodes/send-email-node.png"
+/>
+
+## Supported Providers
+
+### Standard Email Providers
+
+Supported providers:
+- **Gmail**: Google Workspace or personal Gmail
+- **Outlook**: Microsoft 365 or Outlook.com
+- **Zoho**: Zoho Mail
+- **GoDaddy**: GoDaddy Email
+
+### Custom Email Provider
+
+Use any SMTP server with custom configuration.
+
+## Use Cases
+
+- **Order Confirmations**: Send order details and receipts
+- **Appointment Reminders**: Email appointment details
+- **Support Tickets**: Share ticket numbers and status
+- **Follow-up Emails**: Post-call summaries and next steps
+- **Payment Receipts**: Confirm payment transactions
+- **Welcome Emails**: Onboard new customers
+- **Feedback Requests**: Collect customer feedback
+- **Newsletter**: Send updates and announcements
+
+## Standard Provider Configuration
+
+### Inputs
+
+**To** (Required)
+- Customer's email address
+- Format: `email@example.com`
+- Example: `john@example.com`
+
+**CC**
+- Additional email addresses to keep in loop
+- Multiple entries separated by `;`
+- Example: `support@company.com;manager@company.com`
+
+**Subject** (Required)
+- Subject line of the email
+- Can be linked from AI Query Agent (dynamic generation)
+- Can be manually written
+- Data linkage overrides written text
+
+**Example:**
+```
+Order Confirmation - ORD-12345
+```
+
+**AI-Generated Example:**
+```
+Link from AI Query Agent output:
+"Follow-up: Your Support Ticket #TKT-789 Update"
+```
+
+**Email_Body** (Required)
+- Content of the email
+- Can be linked from AI Query Agent (dynamic generation)
+- Can be manually written
+- Data linkage overrides written text
+- Supports HTML formatting
+
+**Example:**
+```
+Dear John,
+
+Thank you for your order! Your order #ORD-12345 has been confirmed.
+
+Order Details:
+- Product: Premium Plan
+- Amount: ₹2,499
+- Delivery Date: Dec 15, 2025
+
+Track your order: https://track.example.com/ORD-12345
+
+Best regards,
+SubVerse Team
+```
+
+**Email Provider** (Required)
+- Select from: `Gmail`, `Outlook`, `Zoho`, `GoDaddy`
+
+**From Email** (Required)
+- Company email address to send from
+- Must be valid email for selected provider
+- Example: `support@company.com`
+
+**Password** (Required)
+- Email account password for authentication
+- For Gmail: Use App Password (not regular password)
+- Keep secure and don't share
+
+### Outputs
+
+**Email_success**
+- Confirms if email was successfully sent
+- Values: `True` or `False`
+- Use for conditional logic and error handling
+
+## Custom Provider Configuration
+
+### Additional Inputs
+
+**SMTP Host** (Required)
+- SMTP server hostname
+- Example: `smtp.gmail.com`, `smtp.office365.com`
+
+**SMTP Port** (Required)
+- SMTP server port number
+- Common ports: `465` (SSL), `587` (TLS), `25` (unencrypted)
+- Example: `587`
+
+**SMTP TLS Secure** (Required)
+- TLS security protocol setting
+- Options: `Enabled`, `Disabled`
+- Recommended: `Enabled` for security
+
+### Common SMTP Settings
+
+**Gmail:**
+```
+SMTP Host: smtp.gmail.com
+SMTP Port: 587
+TLS Secure: Enabled
+Note: Use App Password, not regular password
+```
+
+**Outlook/Office 365:**
+```
+SMTP Host: smtp.office365.com
+SMTP Port: 587
+TLS Secure: Enabled
+```
+
+**Zoho:**
+```
+SMTP Host: smtp.zoho.com
+SMTP Port: 587
+TLS Secure: Enabled
+```
+
+**GoDaddy:**
+```
+SMTP Host: smtpout.secureserver.net
+SMTP Port: 465
+TLS Secure: Enabled
+```
+
+## Configuration Examples
+
+### Example 1: Simple Order Confirmation
+
+```
+To: john@example.com
+CC: 
+Subject: Order Confirmation - ORD-12345
+Email_Body: Dear John, your order has been confirmed...
+Email Provider: Gmail
+From Email: orders@company.com
+Password: [app_password]
+```
+
+### Example 2: AI-Generated Follow-up
+
+```
+To: jane@example.com
+CC: support@company.com
+Subject: [Linked from AI Query Agent]
+Email_Body: [Linked from AI Query Agent]
+Email Provider: Outlook
+From Email: support@company.com
+Password: [password]
+```
+
+### Example 3: Custom SMTP
+
+```
+To: customer@example.com
+CC: 
+Subject: Support Ticket Update
+Email_Body: Your ticket has been updated...
+Email Provider: Custom
+From Email: support@company.com
+Password: [password]
+SMTP Host: smtp.customserver.com
+SMTP Port: 587
+TLS Secure: Enabled
+```
+
+## Email Content Best Practices
+
+### Subject Lines
+- **Clear and Specific**: State the purpose clearly
+- **Include Reference**: Add order/ticket numbers
+- **Personalize**: Use customer name when appropriate
+- **Action-Oriented**: Indicate what's inside
+
+**Good Examples:**
+- "Your Order #12345 Has Shipped"
+- "Appointment Reminder: Dec 10 at 3 PM"
+- "Action Required: Complete Your Payment"
+
+### Email Body
+- **Greeting**: Start with personalized greeting
+- **Purpose**: State reason for email upfront
+- **Details**: Provide relevant information
+- **Action**: Include clear call-to-action
+- **Signature**: End with professional signature
+
+### HTML Formatting
+
+Use HTML for better presentation:
+
+```html
+<html>
+<body>
+  <h2>Order Confirmation</h2>
+  <p>Dear {{customer_name}},</p>
+  
+  <p>Thank you for your order!</p>
+  
+  <table style="border: 1px solid #ddd; padding: 10px;">
+    <tr>
+      <td><strong>Order ID:</strong></td>
+      <td>{{order_id}}</td>
+    </tr>
+    <tr>
+      <td><strong>Amount:</strong></td>
+      <td>{{amount}}</td>
+    </tr>
+  </table>
+  
+  <p>
+    <a href="{{tracking_url}}" style="background: #16A34A; color: white; padding: 10px 20px; text-decoration: none;">
+      Track Order
+    </a>
+  </p>
+  
+  <p>Best regards,<br>SubVerse Team</p>
+</body>
+</html>
+```
+
+## Workflow Integration
+
+### Common Patterns
+
+**Pattern 1: Post-Call Summary**
+```
+Incoming Call Node
+  ↓
+AI Query Agent (generate summary)
+  ↓
+Send Email Node (send summary to customer)
+```
+
+**Pattern 2: Order Confirmation Flow**
+```
+Call API Node (order data)
+  ↓
+Voice Agent Node (confirmation call)
+  ↓
+Send Email Node (order details)
+  ↓
+Send WhatsApp Node (quick confirmation)
+```
+
+**Pattern 3: Support Ticket Creation**
+```
+Incoming Call Node
+  ↓
+AI Query Agent (create ticket)
+  ↓
+Send Email Node (ticket confirmation to customer)
+  ↓
+Send Email Node (ticket alert to support team)
+```
+
+**Pattern 4: Multi-Recipient Notification**
+```
+Voice Agent Node
+  ↓
+Smart Filter (check call outcome)
+  ↓
+Send Email Node (to customer)
+  ↓
+Send Email Node (to internal team with CC)
+```
+
+## Provider-Specific Setup
+
+### Gmail Setup
+
+1. **Enable 2-Factor Authentication**: Required for App Passwords
+2. **Generate App Password**:
+   - Go to Google Account → Security
+   - Select "App passwords"
+   - Generate password for "Mail"
+3. **Use App Password**: Use generated password, not regular password
+
+### Outlook/Office 365 Setup
+
+1. **Use Account Password**: Regular password works
+2. **Enable SMTP**: Ensure SMTP is enabled in account settings
+3. **Modern Authentication**: May require admin approval for organization accounts
+
+### Zoho Setup
+
+1. **Use Account Password**: Regular password works
+2. **Enable IMAP/SMTP**: In Settings → Mail Accounts
+3. **App-Specific Password**: Generate if 2FA is enabled
+
+## Best Practices
+
+### Authentication
+- **App Passwords**: Use app-specific passwords when available
+- **Secure Storage**: Never hardcode passwords in workflows
+- **Regular Rotation**: Change passwords periodically
+- **Least Privilege**: Use dedicated email accounts for automation
+
+### Content
+- **Personalization**: Use customer data for personalized content
+- **Clarity**: Keep messages clear and concise
+- **Branding**: Maintain consistent brand voice
+- **Mobile-Friendly**: Ensure emails look good on mobile devices
+
+### Deliverability
+- **Valid From Address**: Use legitimate business email
+- **SPF/DKIM**: Configure email authentication records
+- **Avoid Spam Triggers**: Don't use all caps, excessive exclamation marks
+- **Test**: Send test emails before launching campaigns
+
+### Compliance
+- **Opt-In**: Only email customers who opted in
+- **Unsubscribe**: Include unsubscribe link for marketing emails
+- **Privacy**: Respect customer data privacy
+- **CAN-SPAM**: Comply with email regulations
+
+## Monitoring
+
+### Track Email Performance
+
+**Metrics:**
+- **Delivery Rate**: Successfully sent emails
+- **Bounce Rate**: Failed deliveries
+- **Open Rate**: Emails opened by recipients (if tracking enabled)
+- **Click Rate**: Links clicked in emails
+
+### Troubleshooting
+
+**Email Not Sending**
+
+Possible Causes:
+- Invalid credentials
+- SMTP settings incorrect
+- Email provider blocking
+- Network issues
+
+Solutions:
+- Verify email and password
+- Check SMTP host and port
+- Review provider security settings
+- Test with different provider
+
+**Emails Going to Spam**
+
+Possible Causes:
+- Missing SPF/DKIM records
+- Spam-like content
+- High sending volume
+- Poor sender reputation
+
+Solutions:
+- Configure email authentication
+- Improve email content
+- Warm up email account
+- Use reputable email provider
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="AI Query Agent Node"
+    icon="brain"
+    href="/workflow/ai-query-agent-node"
+  >
+    Generate dynamic email content
+  </Card>
+  <Card
+    title="Send WhatsApp Node"
+    icon="message"
+    href="/workflow/send-whatsapp-node"
+  >
+    Send WhatsApp messages
+  </Card>
+  <Card
+    title="Voice Agent Node"
+    icon="phone"
+    href="/workflow/voice-agent-node"
+  >
+    Make voice calls
+  </Card>
+  <Card
+    title="Webhook Node"
+    icon="webhook"
+    href="/workflow/webhook-node"
+  >
+    Integrate with external systems
+  </Card>
+</CardGroup>
+
+<Tip>
+  Link Subject and Email_Body from AI Query Agent to generate personalized, context-aware emails based on call transcripts or customer data.
+</Tip>
+
+<Warning>
+  For Gmail, you must use an App Password, not your regular password. Enable 2-Factor Authentication first, then generate an App Password.
+</Warning>

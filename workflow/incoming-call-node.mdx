@@ -1,0 +1,343 @@
+---
+title: 'Incoming Call Node'
+description: 'Trigger workflows when customers call your voice agents'
+---
+
+## Overview
+
+The Incoming Call Node triggers a workflow automatically when a customer calls your voice agent. This enables you to process call data, perform post-call actions, and integrate with other systems based on inbound customer interactions.
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/workflow/nodes/incoming-call-node.png"
+/>
+
+## Use Cases
+
+- **Post-Call Processing**: Automatically send follow-up emails or SMS after calls
+- **CRM Integration**: Update customer records with call details
+- **Ticket Creation**: Generate support tickets based on call content
+- **Analytics**: Track and analyze inbound call patterns
+- **Lead Qualification**: Score and route leads based on call outcomes
+- **Callback Scheduling**: Schedule follow-up calls for unresolved issues
+- **Notification Systems**: Alert teams about important customer calls
+
+## How It Works
+
+1. Customer calls your voice agent's phone number
+2. Voice agent handles the conversation
+3. When call ends, Incoming Call Node is triggered
+4. Call details and transcript are passed to subsequent workflow blocks
+5. Automated actions are executed based on your workflow configuration
+
+## Outputs
+
+The Incoming Call Node provides comprehensive call information that can be used by subsequent blocks:
+
+### **Bot_Number**
+- Phone number on which the customer called the voice agent
+- The inbound line or SIP address
+- Format: +[country code][number]
+
+**Example:** `+91xxxxxxxxxx`
+
+### **Use_Case**
+- The voice agent that handled the call
+- References the agent configured in your account
+- Useful for routing different call types
+
+**Example:** `customer_support`, `sales_inquiry`
+
+### **Call_Time**
+- Timestamp of when the call occurred
+- Format: ISO 8601 date format `YYYY-MM-DDTHH:MM:SSZ`
+- Includes timezone information
+
+**Example:** `2025-12-10T14:30:00Z`
+
+### **Call_Status**
+- Final status of the call
+- Possible values:
+  - `connected`: Call was successfully connected and completed
+  - `couldn't connect`: Call failed to connect
+
+**Example:** `connected`
+
+### **Call_Duration**
+- Duration of the call in seconds
+- Excludes ring time and connection delays
+- 0 for failed connections
+
+**Example:** `185` (3 minutes 5 seconds)
+
+### **Call_Direction**
+- Direction of the call
+- Always `inbound` for this node
+- Distinguishes from outbound calls
+
+**Example:** `inbound`
+
+### **Customer_Number**
+- Customer's phone number who made the call
+- Format: +[country code][number]
+- Can be used for callback or identification
+
+**Example:** `+91xxxxxxxxxx`
+
+### **Customer_Details**
+- Customer information in JSON format
+- May include: name, email, account ID, etc.
+- Populated from your CRM or previous interactions
+
+**Example:**
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "account_id": "ACC-12345",
+  "customer_type": "premium"
+}
+```
+
+### **Transcript**
+- Complete transcript of the call conversation
+- Includes speaker tags (Assistant vs Customer)
+- Formatted text with timestamps
+
+**Example:**
+```
+Assistant: Hello! Thank you for calling. How can I help you today?
+Customer: Hi, I need help with my recent order.
+Assistant: I'd be happy to help. Can you provide your order number?
+Customer: Yes, it's ORD-12345.
+...
+```
+
+## Workflow Examples
+
+### Example 1: Post-Call Email Follow-up
+
+**Workflow:**
+1. Incoming Call Node (trigger)
+2. AI Query Agent Node (analyze call and generate email)
+3. Send Email Node (send follow-up to customer)
+
+**Use Case:** Automatically send a summary email after support calls
+
+### Example 2: CRM Update
+
+**Workflow:**
+1. Incoming Call Node (trigger)
+2. Smart Filter Node (check if call was successful)
+3. Webhook Node (update CRM with call details)
+
+**Use Case:** Keep customer records updated with call history
+
+### Example 3: Callback Scheduling
+
+**Workflow:**
+1. Incoming Call Node (trigger)
+2. AI Query Agent Node (determine if callback needed)
+3. Schedule Callback Node (schedule follow-up call)
+
+**Use Case:** Automatically schedule callbacks for unresolved issues
+
+### Example 4: Support Ticket Creation
+
+**Workflow:**
+1. Incoming Call Node (trigger)
+2. AI Query Agent Node (extract issue details)
+3. Webhook Node (create ticket in support system)
+4. Send Email Node (notify customer of ticket number)
+
+**Use Case:** Convert support calls into trackable tickets
+
+### Example 5: Lead Scoring
+
+**Workflow:**
+1. Incoming Call Node (trigger)
+2. AI Query Agent Node (analyze conversation for buying signals)
+3. Smart Filter Node (filter high-quality leads)
+4. Webhook Node (send qualified leads to sales team)
+
+**Use Case:** Identify and route hot leads from inbound calls
+
+## Configuration
+
+### Setting Up Inbound Telephony
+
+Before using the Incoming Call Node, ensure you have:
+
+1. **Configured Inbound Trunk**: Set up SIP trunk in [Telephony Integration](/integrations/telephony)
+2. **Mapped Voice Agent**: Associate your agent with the inbound number
+3. **Tested Connection**: Make a test call to verify setup
+
+See [Telephony Integration](/integrations/telephony#inbound-trunk) for detailed setup instructions.
+
+### Adding to Workflow
+
+1. Create or edit a workflow
+2. Add the Incoming Call Node as the first block
+3. Connect subsequent blocks to process call data
+4. Save and activate the workflow
+
+The workflow will automatically trigger for all incoming calls to the mapped agent.
+
+## Processing Call Data
+
+### Using Transcript Data
+
+The transcript can be used for:
+- **Sentiment Analysis**: Determine customer satisfaction
+- **Intent Detection**: Identify customer needs
+- **Information Extraction**: Pull out order IDs, dates, etc.
+- **Quality Assurance**: Review agent performance
+- **Training Data**: Improve agent responses
+
+**Example with AI Query Agent:**
+```
+Query: Analyze the call transcript and extract:
+1. Customer's main issue
+2. Whether issue was resolved
+3. Customer sentiment (positive/negative/neutral)
+4. Any follow-up actions needed
+```
+
+### Using Call Metadata
+
+Call metadata (duration, status, time) can be used for:
+- **Performance Metrics**: Track average call duration
+- **Availability Analysis**: Identify peak call times
+- **Success Rate**: Monitor connection success
+- **Reporting**: Generate call volume reports
+
+## Best Practices
+
+### Workflow Design
+- **Keep It Simple**: Start with basic workflows and add complexity gradually
+- **Error Handling**: Include fallback actions for failed steps
+- **Testing**: Test workflows with sample calls before going live
+- **Monitoring**: Regularly review workflow execution logs
+
+### Data Processing
+- **Validate Data**: Check that required fields are present
+- **Handle Failures**: Account for calls that couldn't connect
+- **Privacy**: Respect customer data privacy regulations
+- **Retention**: Set appropriate data retention policies
+
+### Performance
+- **Async Processing**: Use webhooks for long-running tasks
+- **Batch Operations**: Group similar actions when possible
+- **Timeout Handling**: Set appropriate timeouts for external calls
+- **Rate Limiting**: Respect API rate limits for integrations
+
+### Integration
+- **Idempotency**: Ensure actions can be safely retried
+- **Authentication**: Secure all external API calls
+- **Error Logging**: Log errors for troubleshooting
+- **Monitoring**: Set up alerts for workflow failures
+
+## Monitoring and Analytics
+
+### Track Workflow Performance
+
+Monitor your incoming call workflows:
+- **Execution Count**: How many times workflow triggered
+- **Success Rate**: Percentage of successful executions
+- **Average Duration**: Time to complete workflow
+- **Error Rate**: Failed workflow executions
+
+### Call Analytics
+
+Analyze incoming call patterns:
+- **Call Volume**: Calls per hour/day/week
+- **Peak Times**: When most calls occur
+- **Average Duration**: Typical call length
+- **Connection Rate**: Successful vs failed calls
+
+### Business Insights
+
+Extract valuable insights:
+- **Common Issues**: Frequently discussed topics
+- **Customer Sentiment**: Overall satisfaction trends
+- **Agent Performance**: Call handling effectiveness
+- **Conversion Rates**: Leads to customers ratio
+
+## Troubleshooting
+
+### Workflow Not Triggering
+
+**Possible Causes:**
+- Inbound trunk not configured correctly
+- Agent not mapped to phone number
+- Workflow not activated
+
+**Solutions:**
+- Verify telephony integration setup
+- Check agent mapping in Integrations section
+- Ensure workflow is saved and activated
+
+### Missing Call Data
+
+**Possible Causes:**
+- Call disconnected before completion
+- Transcript processing delay
+- Network issues
+
+**Solutions:**
+- Check call status in Call History
+- Wait a few minutes for transcript processing
+- Review system status page
+
+### Workflow Execution Errors
+
+**Possible Causes:**
+- Invalid configuration in subsequent blocks
+- External API failures
+- Timeout issues
+
+**Solutions:**
+- Review workflow execution logs
+- Test each block individually
+- Check external service status
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="AI Query Agent Node"
+    icon="brain"
+    href="/workflow/ai-query-agent-node"
+  >
+    Process call data with AI
+  </Card>
+  <Card
+    title="Send Email Node"
+    icon="envelope"
+    href="/workflow/send-email-node"
+  >
+    Send follow-up emails
+  </Card>
+  <Card
+    title="Schedule Callback Node"
+    icon="calendar"
+    href="/workflow/schedule-callback-node"
+  >
+    Schedule follow-up calls
+  </Card>
+  <Card
+    title="Webhook Node"
+    icon="webhook"
+    href="/workflow/webhook-node"
+  >
+    Integrate with external systems
+  </Card>
+</CardGroup>
+
+<Tip>
+  Use the AI Query Agent Node to intelligently process call transcripts and make decisions about follow-up actions.
+</Tip>
+
+<Note>
+  Transcripts may take 1-2 minutes to process after the call ends. Design your workflows to account for this delay if needed.
+</Note>

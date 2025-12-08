@@ -1,0 +1,205 @@
+---
+title: 'Create Your First Agent'
+description: 'Step-by-step guide to building your first AI agent in SubVerse'
+---
+
+## Overview
+
+Creating your first AI agent in SubVerse is a straightforward process. This guide will walk you through every step, from choosing the agent type to configuring settings and deploying your agent.
+
+## Step 1: Access the Agents Section
+
+1. Log in to your [SubVerse Dashboard](https://dashboard.subverseai.com)
+2. Navigate to **Agents** from the left sidebar
+3. Click the **+ Add Voice Agent** button in the top-right corner
+
+## Step 2: Choose Your Agent Type
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/dashboard/create-agent.png"
+/>
+
+SubVerse offers two types of agents to suit different use cases:
+
+### Standard Voice Agent
+**Best for:**
+- Simple, predictable conversations
+- FAQ handling
+- Structured information delivery
+- Quick deployment needs
+
+**Characteristics:**
+- Predefined responses and conversation paths
+- Faster setup and configuration
+- Lower complexity
+- Ideal for straightforward customer interactions
+
+### Conversational Flow
+**Best for:**
+- Complex customer service scenarios
+- Dynamic, context-aware interactions
+- Sales conversations
+- Technical support
+
+**Characteristics:**
+- Advanced AI with natural language understanding
+- Handles multi-turn conversations
+- Adapts to customer intent in real-time
+- Requires more detailed configuration
+
+<Tip>
+  If you're new to AI agents, start with a **Standard Voice Agent**. You can always create a more advanced Conversational Flow agent once you're comfortable with the platform.
+</Tip>
+
+## Step 3: Select a Template (Optional)
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/dashboard/create-agent-templates.png"
+/>
+
+SubVerse provides pre-built templates to accelerate your setup.
+
+<Note>
+  Templates come with pre-configured prompts, suggested voices, and recommended settings. You can customize every aspect after selection.
+</Note>
+
+## Step 4: Configure Basic Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/agent-settings.png"
+/>
+
+### Greeting Message
+The first message your agent speaks when the call connects.
+
+**Best Practices:**
+- Keep it concise (under 15 seconds)
+- Include your company name
+- State the purpose clearly
+- Be welcoming and professional
+
+### Greeting Type
+Choose how the conversation starts:
+- **Prompt**: Agent modifies the greeting message to match the agent's identity
+- **Say**: Agent says the greeting message exactly as it is
+
+### Who Speaks First
+- **SubVerseAI Agent**: Agent initiates the conversation
+- **Customer**: Customer speaks first
+
+<Tip>
+  For outbound calls, always have the agent speak first. For inbound calls, consider your use case—customer service typically has the agent greet first.
+</Tip>
+
+### System Prompt
+This is the most critical configuration—it defines your agent's behavior, personality, and capabilities.
+
+**Components of a Good System Prompt:**
+
+1. **Identity**: Who is the agent?
+2. **Role**: What is their purpose?
+3. **Personality**: How should they communicate?
+4. **Capabilities**: What can they do?
+5. **Limitations**: What should they avoid?
+6. **Instructions**: Specific behavioral guidelines
+
+
+**Use the "Refine using AI" button** to get AI assistance in creating or improving your system prompt.
+
+## Step 5: Save Your Agent
+
+1. Review all your settings
+2. Click the **Save** button in the top-right corner
+3. Your agent is now created and ready for configuration
+
+## Next Steps
+
+After creating your agent, you'll want to:
+
+<CardGroup cols={2}>
+  <Card
+    title="Configure Advanced Settings"
+    icon="sliders"
+    href="/agents/agent-configurations"
+  >
+    Fine-tune LLM, voice, speech detection, and call settings
+  </Card>
+  <Card
+    title="Test Your Agent"
+    icon="phone"
+    href="/agents/call-history"
+  >
+    Make test calls and monitor results in call history
+  </Card>
+  <Card
+    title="Set Up Integrations"
+    icon="plug"
+    href="/integrations/introduction"
+  >
+    Connect knowledge bases and functions
+  </Card>
+  <Card
+    title="Monitor Performance"
+    icon="chart-line"
+    href="/agents/call-history"
+  >
+    Track calls and analyze agent performance
+  </Card>
+</CardGroup>
+
+## Quick Tips for Success
+
+### Start Simple
+Begin with basic functionality and add complexity gradually. A simple, working agent is better than a complex, problematic one.
+
+### Test Frequently
+Make test calls after each configuration change to ensure everything works as expected.
+
+### Iterate Based on Feedback
+Listen to call recordings, review transcripts, and continuously improve your agent based on real interactions.
+
+### Use Templates Wisely
+Templates are great starting points, but customize them to match your specific business needs and brand voice.
+
+### Monitor Performance
+Regularly check your agent's performance metrics and make adjustments to improve success rates.
+
+<Warning>
+  Before deploying your agent to production, conduct thorough testing with various scenarios and edge cases. Poor agent performance can negatively impact customer experience.
+</Warning>
+
+## Common Mistakes to Avoid
+
+**Overly Long Greetings**
+- Keep greetings under 15 seconds
+- Get to the point quickly
+- Save detailed information for later in the conversation
+
+**Vague System Prompts**
+- Be specific about what the agent should do
+- Include clear examples of desired behavior
+- Define boundaries and limitations
+
+**Skipping Testing**
+- Always test before going live
+- Try different conversation paths
+- Test with various accents and speaking styles
+
+**Ignoring Voice Selection**
+- Choose a voice that matches your brand
+- Consider your target audience
+- Test different voices with sample customers
+
+## Getting Help
+
+If you need assistance:
+- Review our detailed [Agent Configurations](/agents/agent-configurations) guide
+- Check the [Integration](/integrations/introduction) documentation
+- Contact support at [support@subverseai.com](mailto:support@subverseai.com)
+
+<Tip>
+  Join our community to share experiences, get tips, and learn from other SubVerse users who have successfully deployed AI agents.
+</Tip>

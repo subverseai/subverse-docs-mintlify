@@ -1,0 +1,63 @@
+---
+title: 'Agent Settings'
+description: 'Configure the core behavior and personality of your AI agent'
+---
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/agent-settings.png"
+/>
+
+The Agent Settings section defines the core behavior and personality of your AI agent.
+
+### Greeting Message
+The opening message your agent speaks when connecting with a customer.
+
+**Configuration:**
+- Plain text input
+- Keep under 15 seconds when spoken
+- Should be clear and welcoming
+
+**Example:**
+```
+Hello, I am Ria from Bharat Matrimony
+```
+
+### Greeting Type
+Choose how the conversation starts:
+- **Prompt**: Agent modifies the greeting message to match the agent's identity
+- **Say**: Agent says the greeting message exactly as it is
+
+### Who Speaks First
+Determines conversation initiation:
+- **SubVerseAI Agent**: Agent starts the conversation
+- **Customer**: Customer speaks first
+
+### System Prompt
+The most critical configuration that defines your agent's entire behavior.
+
+**Key Components:**
+
+**Identity Section**
+```markdown
+## Identity
+You are **Ria** (Female) from **Bharat matrimony**.
+```
+
+**Role Definition**
+```markdown
+You are making an outbound call to a new user to help them 
+create their profile. You are a friendly, empathetic, and 
+professional assistant.
+```
+
+**Style Guardrails**
+```markdown
+## Style Guardrails
+- **Be Empathetic and Friendly**: Use a warm, encouraging tone
+- **Be Clear and Simple**: Use straightforward language
+- **Embrace Variety**: Avoid repetitive phrasing
+- **Be Discreet and Professional**: Handle personal information with care
+```
+
+**Use the "Refine using AI" button** to get intelligent suggestions for improving your prompt.

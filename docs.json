@@ -21,18 +21,24 @@
             ]
           },
           {
-            "group": "Agents",
+            "group": "Build Agents",
             "pages": [
               "agents/create-first-agent",
-              "agents/agent-configurations",
-              "agents/call-history"
-            ]
-          },
-          {
-            "group": "Shopify",
-            "pages": [
-              "shopify/shopify-setup",
-              "shopify/subverse-setup"
+              {
+                "group": "Agent Configurations",
+                "pages": [
+                  "agents/agent-configurations",
+                  "agent-configurations/agent-settings",
+                  "agent-configurations/llm-preferences",
+                  "agent-configurations/speech-detection",
+                  "agent-configurations/voice-settings",
+                  "agent-configurations/call-settings",
+                  "agent-configurations/knowledgebase-settings",
+                  "agent-configurations/function-settings",
+                  "agent-configurations/agent-transfers",
+                  "agent-configurations/post-call-analysis"
+                ]
+              }
             ]
           },
           {
@@ -40,7 +46,19 @@
             "pages": [
               "monitor/dashboard",
               "monitor/customer-interactions",
-              "monitor/billing"
+              "monitor/billing",
+              {
+                "group": "Call History",
+                "pages": [
+                  "agents/call-history",
+                  "call-history/dashboard",
+                  "call-history/call-details",
+                  "call-history/monitoring-guide",
+                  "call-history/troubleshooting",
+                  "call-history/export-reporting",
+                  "call-history/integrations"
+                ]
+              }
             ]
           }
         ]
@@ -105,7 +123,8 @@
                 ]
               },
               "integrations/webhooks-integration",
-              "integrations/api-keys"
+              "integrations/api-keys",
+              "integrations/shopify-setup"
             ]
           }
         ]

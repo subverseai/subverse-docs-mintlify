@@ -1,0 +1,66 @@
+---
+title: 'Troubleshooting Call Issues'
+description: 'Common call issues and their solutions'
+---
+
+## Could Not Connect
+
+**Possible Causes:**
+- Invalid or incorrect phone number format
+- Network connectivity issues
+- Telephony provider problems
+- Customer's phone is off or unreachable
+- Number is blocked or invalid
+
+**Solutions:**
+- Verify phone number format (include country code)
+- Check telephony integration status in Integrations section
+- Retry during different times of day
+- Contact telephony provider for trunk status
+- Validate number before calling
+
+## Short Duration Calls (< 10 seconds)
+
+**Possible Causes:**
+- Customer hung up immediately
+- Poor audio quality
+- Agent didn't respond quickly enough
+- Wrong number dialed
+- Greeting message unclear
+
+**Solutions:**
+- Improve greeting message clarity
+- Reduce initial response time (adjust Agent Responsiveness)
+- Verify target audience and phone list quality
+- Test audio quality with sample calls
+- Consider greeting type (Prompt vs Listen)
+
+## Long Duration Calls (> 10 minutes)
+
+**Possible Causes:**
+- Agent unable to resolve customer issue
+- Circular conversation loops
+- Missing information in knowledge base
+- Complex customer inquiry beyond agent capability
+- No clear exit strategy
+
+**Solutions:**
+- Add relevant content to knowledge base
+- Improve system prompt with clearer instructions
+- Enable human transfer option for complex cases
+- Add timeout mechanisms (Max Duration setting)
+- Define clear end-of-call criteria in prompt
+
+## Incomplete Conversations
+
+**Possible Causes:**
+- Customer lost interest
+- Agent responses not relevant
+- Technical issues during call
+- Customer got what they needed early
+
+**Solutions:**
+- Review transcripts to identify drop-off points
+- Improve conversation flow in system prompt
+- Add engagement techniques
+- Ensure agent addresses customer needs directly

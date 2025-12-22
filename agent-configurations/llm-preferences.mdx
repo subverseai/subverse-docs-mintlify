@@ -1,0 +1,38 @@
+---
+title: 'Large Language Model Preferences'
+description: 'Configure the AI model that powers your agent intelligence'
+---
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/llm-preferences.png"
+/>
+
+Configure the AI model that powers your agent's intelligence.
+
+### LLM Model
+Select the language model for your agent:
+- **Google [Gemini 2.5 Flash]**: Fast, cost-effective, good for most use cases
+- **OpenAI [GPT-4o]**: Advanced reasoning, best for complex conversations
+- **OpenAI [GPT-4o Mini]**: Balanced performance and cost
+- **Anthropic [Claude]**: Excellent for nuanced conversations
+
+**Selection Criteria:**
+- **Speed**: Gemini Flash for fastest responses
+- **Quality**: GPT-4o for highest quality
+- **Cost**: Mini models for budget-conscious deployments
+- **Language Support**: Check model language capabilities
+
+### Temperature
+Controls response creativity and randomness (0.0 to 1.0).
+
+**Settings:**
+- **0.0 - 0.3**: Deterministic, consistent responses (recommended for customer service)
+- **0.4 - 0.7**: Balanced creativity and consistency (recommended for sales)
+- **0.8 - 1.0**: Creative, varied responses (use with caution)
+
+**Recommended:** 0.5 for most use cases
+
+<Tip>
+  Lower temperature (0.3-0.5) is recommended for customer-facing agents to ensure consistent, reliable responses.
+</Tip>

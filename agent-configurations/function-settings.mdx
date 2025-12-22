@@ -1,0 +1,39 @@
+---
+title: 'Function Settings'
+description: 'Enable tools and actions your agent can perform'
+---
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/function-settings.png"
+/>
+
+Enable tools and actions your agent can perform.
+
+### Pre Call Tools
+Functions executed before the call starts:
+- Data retrieval
+- Customer lookup
+- Context preparation
+
+### During Call Tools
+Functions agent can call during conversation:
+- **end_call**: Hang up the call
+- **transfer_call**: Transfer to human agent
+- **query_knowledge_base**: Search knowledge base
+- **Custom functions**: Your business-specific actions
+
+**Default Tools:**
+- `end_call`: Always available
+- `transfer_call`: Available if transfer number configured
+- `query_knowledge_base`: Available if knowledge base connected
+
+### Post Call Tools
+Functions executed after call ends:
+- Data logging
+- CRM updates
+- Follow-up triggers
+
+<Tip>
+  Create custom functions in the [Integrations](/integrations/llm-tools) section, then enable them here.
+</Tip>

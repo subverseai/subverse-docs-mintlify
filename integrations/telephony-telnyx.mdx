@@ -1,0 +1,289 @@
+---
+title: 'Configure with Telnyx'
+description: 'Step-by-step guide to configure Telnyx SIP trunk with SubVerse'
+---
+
+## Overview
+
+This guide walks you through configuring a Telnyx SIP trunk to work with SubVerse AI for both inbound and outbound calls.
+
+## Prerequisites
+
+- Active Telnyx account
+- [Purchase a Telnyx phone number](https://portal.telnyx.com/#/app/numbers/my-numbers)
+- Access to Telnyx Mission Control Portal
+
+## Step 1: Get Your SubVerse SIP URI
+
+Before configuring Telnyx, you need to obtain your SIP URI from SubVerse:
+
+1. Log in to your SubVerse dashboard
+2. Navigate to **Integrations** → **Telephony**
+3. Copy your **SIP URI** (it will look like: `sip:xxxxx.sip.livekit.cloud`)
+
+<Note>
+  Keep this SIP URI handy - you'll need it in the next steps.
+</Note>
+
+## Step 2: Create a SIP Connection
+
+1. Log in to [Telnyx Mission Control Portal](https://portal.telnyx.com)
+2. Navigate to **Voice** → **SIP Connections**
+3. Click **Create SIP Connection**
+4. Select **Credentials** as the authentication method
+5. Enter a **Connection Name** (e.g., "SubVerse AI Connection")
+6. Click **Create**
+
+## Step 3: Configure Authentication
+
+### Set Up Credentials
+
+1. In your SIP Connection settings, go to **Authentication**
+2. Click **Add Credential**
+3. Enter:
+   - **Username**: Your chosen username
+   - **Password**: Your chosen strong password
+4. Click **Save**
+
+<Warning>
+  Save these credentials securely - you'll need to enter them in SubVerse dashboard.
+</Warning>
+
+### Configure IP Authentication (Optional)
+
+If you prefer IP-based authentication:
+
+1. In **Authentication** settings, enable **IP Authentication**
+2. Add IP ranges:
+   - `0.0.0.0/1`
+   - `128.0.0.0/1`
+3. Click **Save**
+
+<Note>
+  Credential authentication is recommended for better security.
+</Note>
+
+## Step 4: Configure for Inbound Calls
+
+Configure the connection to route incoming calls to SubVerse.
+
+### Set Inbound Settings
+
+1. In your SIP Connection, go to **Inbound**
+2. Under **Inbound Settings**, configure:
+   - **Codecs**: Select `PCMU` and `PCMA`
+   - **DTMF Type**: `RFC 2833` or `Inband`
+   - **Inbound SIP URI**: Your SubVerse SIP URI (from Step 1)
+3. Enable **Send SIP OPTIONS**
+4. Click **Save**
+
+### Configure Origination URI
+
+1. In the **Inbound** section, find **Origination URI**
+2. Enter your SubVerse SIP URI
+3. Set **Priority**: 1
+4. Enable the URI
+5. Click **Save**
+
+<Tip>
+  For region-specific routing, use region-based SIP endpoints provided in your SubVerse Telephony dashboard.
+</Tip>
+
+## Step 5: Configure for Outbound Calls
+
+Configure settings for outbound calls from SubVerse through Telnyx.
+
+### Set Outbound Settings
+
+1. In your SIP Connection, go to **Outbound**
+2. Under **Outbound Settings**, configure:
+   - **Outbound Voice Profile**: Select or create a profile
+   - **Codecs**: Select `PCMU` and `PCMA`
+   - **Localization**: Select your preferred region
+3. Enable **Generate Ring Tone**
+4. Click **Save**
+
+### Configure Termination URI
+
+1. In the **Outbound** section, note your **Termination SIP URI**
+2. It will look like: `sip:yourconnection.sip.telnyx.com`
+3. Copy this URI - you'll need it for SubVerse configuration
+
+## Step 6: Associate Phone Number
+
+### Assign Number to SIP Connection
+
+1. Navigate to **Numbers** → **My Numbers**
+2. Find your phone number
+3. Click on the number to edit
+4. Under **Connection**, select your SIP Connection
+5. Configure:
+   - **Connection Type**: SIP Connection
+   - **Connection**: Select your SubVerse connection
+6. Click **Save**
+
+## Step 7: Configure in SubVerse Dashboard
+
+Now that Telnyx is configured, add the trunk to SubVerse:
+
+### For Outbound Calls
+
+1. Go to SubVerse **Integrations** → **Telephony**
+2. Click **Add Outbound Trunk**
+3. Enter:
+   - **Name**: Descriptive name (e.g., "Telnyx Outbound")
+   - **Phone Number**: Your Telnyx number with country code (e.g., +1xxxxxxxxxx)
+   - **SIP Address**: Your Telnyx termination URI (e.g., `yourconnection.sip.telnyx.com`)
+   - **Auth Username**: Username from Step 3
+   - **Auth Password**: Password from Step 3
+4. Click **Save**
+
+### For Inbound Calls
+
+1. Go to SubVerse **Integrations** → **Telephony**
+2. Click **Add Inbound Trunk**
+3. Enter:
+   - **Name**: Descriptive name (e.g., "Telnyx Inbound")
+   - **Phone Number**: Your Telnyx number with country code (e.g., +1xxxxxxxxxx)
+   - **Auth Username**: Username from Step 3
+   - **Auth Password**: Password from Step 3
+4. Click **Map Voicebot Usecase** and select your voice agent
+5. Click **Save**
+
+## Testing Your Configuration
+
+### Test Inbound Calls
+
+1. Call your Telnyx phone number
+2. The call should be routed to your SubVerse voice agent
+3. Check the call appears in SubVerse **Call History**
+
+### Test Outbound Calls
+
+1. Create a workflow or use the voice agent interface
+2. Make a test call using your configured Telnyx number
+3. Verify the call connects successfully
+4. Check the call appears in SubVerse **Call History**
+
+## Troubleshooting
+
+### Inbound Calls Not Working
+
+**Check:**
+- Origination URI is correctly configured in Telnyx
+- SIP URI matches exactly what's shown in SubVerse dashboard
+- Phone number is associated with the SIP connection
+- Voice agent is mapped to the inbound trunk in SubVerse
+
+**Solution:**
+- Verify SIP URI in Telnyx matches SubVerse
+- Check Telnyx call logs for errors
+- Ensure phone number is active
+- Verify SIP connection status is "Active"
+
+### Outbound Calls Not Working
+
+**Check:**
+- Credentials are correctly configured
+- Username and password match in both Telnyx and SubVerse
+- Termination URI is correctly configured
+- SIP address in SubVerse matches Telnyx connection
+
+**Solution:**
+- Verify credentials are correct
+- Check Telnyx connection status
+- Review call logs for authentication errors
+- Ensure sufficient Telnyx account balance
+
+### Call Quality Issues
+
+**Check:**
+- Codec configuration (PCMU/PCMA recommended)
+- Network connectivity
+- Telnyx service status
+- Region-specific routing
+
+**Solution:**
+- Verify codec settings match on both sides
+- Use region-based SIP endpoints for better latency
+- Check Telnyx status page
+- Contact SubVerse support for assistance
+
+### Authentication Failures
+
+**Check:**
+- Credentials are entered correctly
+- IP authentication ranges (if using IP auth)
+- SIP connection is enabled
+
+**Solution:**
+- Re-enter credentials carefully
+- Verify IP ranges include required addresses
+- Check SIP connection status in Telnyx portal
+
+## Advanced Configuration
+
+### Codec Optimization
+
+For best call quality:
+- Enable `PCMU` (G.711 μ-law) - Primary
+- Enable `PCMA` (G.711 A-law) - Secondary
+- Disable other codecs unless specifically needed
+
+### DTMF Configuration
+
+Configure DTMF for interactive voice response:
+- **Recommended**: RFC 2833
+- **Alternative**: Inband
+- Ensure both Telnyx and SubVerse use the same method
+
+### Failover Configuration
+
+Set up multiple origination URIs for redundancy:
+1. Add primary SubVerse SIP URI with Priority 1
+2. Add backup SIP URI with Priority 2
+3. Enable both URIs
+
+## Additional Resources
+
+- [Telnyx SIP Trunking Documentation](https://developers.telnyx.com/docs/v2/sip-trunking)
+- [Telnyx SIP Configuration Guide](https://support.telnyx.com/en/articles/8096455-how-to-configure-a-sip-trunk)
+- [Telnyx Mission Control Portal](https://portal.telnyx.com)
+- [Telnyx Support](https://support.telnyx.com)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Configure with Twilio"
+    icon="phone"
+    href="/integrations/telephony-twilio"
+  >
+    Set up Twilio SIP trunk
+  </Card>
+  <Card
+    title="Configure with Plivo"
+    icon="phone"
+    href="/integrations/telephony-plivo"
+  >
+    Set up Plivo SIP trunk
+  </Card>
+  <Card
+    title="Create Voice Agent"
+    icon="robot"
+    href="/agents/create-first-agent"
+  >
+    Build your first AI voice agent
+  </Card>
+  <Card
+    title="Call History"
+    icon="history"
+    href="/agents/call-history"
+  >
+    Monitor your calls
+  </Card>
+</CardGroup>
+
+<Tip>
+  Remember to update the voice agent mapping in SubVerse whenever you modify your agent's configuration to ensure calls use the latest settings.
+</Tip>

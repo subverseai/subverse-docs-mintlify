@@ -1,0 +1,121 @@
+---
+title: 'Agent Configurations'
+description: 'Complete guide to configuring all agent settings for optimal performance'
+---
+
+## Overview
+
+SubVerse provides comprehensive configuration options to fine-tune your AI agent's behavior, voice, and capabilities. This guide covers all available settings with detailed explanations and best practices.
+
+Explore each configuration section in detail:
+
+<CardGroup cols={2}>
+  <Card title="Agent Settings" icon="user-gear" href="/agent-configurations/agent-settings">
+    Core behavior and personality settings
+  </Card>
+  <Card title="LLM Preferences" icon="brain" href="/agent-configurations/llm-preferences">
+    AI model and temperature configuration
+  </Card>
+  <Card title="Speech Detection" icon="microphone" href="/agent-configurations/speech-detection">
+    Transcription and interruption settings
+  </Card>
+  <Card title="Voice Settings" icon="volume-high" href="/agent-configurations/voice-settings">
+    TTS model, voice, and audio settings
+  </Card>
+  <Card title="Call Settings" icon="phone" href="/agent-configurations/call-settings">
+    Call behavior and transfer configuration
+  </Card>
+  <Card title="Knowledgebase Settings" icon="database" href="/agent-configurations/knowledgebase-settings">
+    Connect knowledge bases for retrieval
+  </Card>
+  <Card title="Function Settings" icon="code" href="/agent-configurations/function-settings">
+    Pre, during, and post call tools
+  </Card>
+  <Card title="Agent Transfers" icon="arrows-rotate" href="/agent-configurations/agent-transfers">
+    Agent-to-agent transfer configuration
+  </Card>
+  <Card title="Post Call Analysis" icon="chart-bar" href="/agent-configurations/post-call-analysis">
+    Custom data extraction from transcripts
+  </Card>
+</CardGroup>
+
+---
+
+## Configuration Best Practices
+
+### Start with Defaults
+Begin with recommended settings and adjust based on testing.
+
+### Test After Each Change
+Make incremental changes and test to understand impact.
+
+### Monitor Performance
+Track metrics like call duration, success rate, and customer satisfaction.
+
+### Iterate Based on Data
+Use call recordings and analytics to identify improvement areas.
+
+### Document Your Settings
+Keep notes on why you chose specific configurations.
+
+### Use Templates
+Save successful configurations as templates for future agents.
+
+## Common Configuration Patterns
+
+### Customer Service Agent
+- Temperature: 0.3-0.5 (consistent responses)
+- Interruptions: Enabled (natural conversation)
+- Speed: 2 (normal pace)
+- Stability: 0.5 (professional yet engaging)
+
+### Sales Agent
+- Temperature: 0.5-0.7 (more creative)
+- Interruptions: Enabled (responsive)
+- Speed: 2-3 (energetic pace)
+- Stability: 0.6 (expressive)
+
+### Technical Support
+- Temperature: 0.3 (precise information)
+- Interruptions: Enabled (collaborative)
+- Speed: 1-2 (clear, deliberate)
+- Stability: 0.4 (calm, professional)
+
+### Survey/Feedback Collection
+- Temperature: 0.4 (consistent questions)
+- Interruptions: Disabled initially (complete questions)
+- Speed: 2 (normal pace)
+- Stability: 0.5 (friendly)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Test Your Agent"
+    icon="phone"
+    href="/agents/call-history"
+  >
+    Make test calls and monitor results in call history
+  </Card>
+  <Card
+    title="Monitor Calls"
+    icon="chart-line"
+    href="/agents/call-history"
+  >
+    Track performance and analyze results
+  </Card>
+  <Card
+    title="Add Functions"
+    icon="code"
+    href="/integrations/llm-tools"
+  >
+    Create custom actions for your agent
+  </Card>
+  <Card
+    title="Connect Knowledge Base"
+    icon="book"
+    href="/integrations/knowledge-base"
+  >
+    Add information sources for your agent
+  </Card>
+</CardGroup>

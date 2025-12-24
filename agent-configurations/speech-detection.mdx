@@ -1,0 +1,78 @@
+---
+title: 'Speech Detection Settings'
+description: 'Configure how your agent processes and understands speech'
+---
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/speech-detection-settings.png"
+/>
+
+Configure how your agent processes and understands speech.
+
+### Transcript Model
+Select the speech-to-text engine:
+- **Deepgram [Nova 3 General]**: Best accuracy for general conversations
+- **Deepgram [Nova 2]**: Good balance of speed and accuracy
+- **Whisper**: Open-source option
+
+**Recommended:** Deepgram Nova 3 for production use
+
+### Transcript Language
+Select the primary language for transcription:
+- English (India)
+- English (US)
+- Hindi
+- Multiple other languages supported
+
+**Important:** Match this to your target audience's language and accent.
+
+### Custom Keywords
+Add domain-specific terms for better recognition:
+```
+e.g., Acme, Project Zeta, phonefix, CRM
+```
+
+**Use Cases:**
+- Company names
+- Product names
+- Technical terms
+- Industry jargon
+
+### Smart Format
+Automatically formats numbers, dates, and currency in transcripts.
+- **Enabled**: "two thousand twenty five" → "2025"
+- **Disabled**: Raw transcription
+
+**Recommended:** Enable for better readability
+
+### Numerals
+Converts spoken numbers to digits in transcripts.
+- **Enabled**: "three hundred" → "300"
+- **Disabled**: "three hundred"
+
+### Allow Interruptions Overall
+Enables customers to interrupt the agent while speaking.
+- **Enabled**: Natural, human-like conversations
+- **Disabled**: Agent completes sentences before listening
+
+**Recommended:** Enable for better user experience
+
+### Allow Interruptions Initially
+Controls interruptions during the greeting message.
+- **Enabled**: Customer can interrupt greeting
+- **Disabled**: Greeting plays completely
+
+**Recommended:** Disable to ensure greeting is heard
+
+### Interruption Sensitivity
+Controls how easily customers can interrupt (0-4 scale).
+
+**Settings:**
+- **0**: Very difficult to interrupt (agent rarely stops)
+- **1**: Difficult to interrupt
+- **2**: Moderate (recommended for most cases)
+- **3**: Easy to interrupt
+- **4**: Very easy to interrupt (agent stops frequently)
+
+**Recommended:** 2 for balanced conversations

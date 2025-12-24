@@ -1,0 +1,311 @@
+---
+title: 'Configure with Plivo'
+description: 'Step-by-step guide to configure Plivo SIP trunk with SubVerse'
+---
+
+## Overview
+
+This guide walks you through configuring a Plivo SIP trunk to work with SubVerse AI for both inbound and outbound calls.
+
+## Prerequisites
+
+- Active Plivo account
+- [Purchase a Plivo phone number](https://console.plivo.com/phone-numbers/search/)
+- Access to Plivo Console
+
+## Step 1: Get Your SubVerse SIP URI
+
+Before configuring Plivo, you need to obtain your SIP URI from SubVerse:
+
+1. Log in to your SubVerse dashboard
+2. Navigate to **Integrations** → **Telephony**
+3. Copy your **SIP URI** (it will look like: `sip:xxxxx.sip.livekit.cloud`)
+
+<Note>
+  Keep this SIP URI handy - you'll need it in the next steps.
+</Note>
+
+## Step 2: Create SIP Endpoint (For Outbound)
+
+### Create Endpoint
+
+1. Log in to [Plivo Console](https://console.plivo.com)
+2. Navigate to **Voice** → **SIP Endpoints**
+3. Click **Create New Endpoint**
+4. Enter:
+   - **Username**: Your chosen username
+   - **Password**: Your chosen strong password
+   - **Alias**: Descriptive name (e.g., "SubVerse Endpoint")
+5. Click **Create Endpoint**
+
+<Warning>
+  Save these credentials securely - you'll need to enter them in SubVerse dashboard.
+</Warning>
+
+## Step 3: Configure Outbound Trunk (Termination)
+
+Plivo uses the concept of "Trunks" for routing calls.
+
+### Create Outbound Trunk
+
+1. In Plivo Console, navigate to **Voice** → **Trunks**
+2. Click **Add New Trunk**
+3. Select **Termination** (for outbound calls from SubVerse)
+4. Configure:
+   - **Name**: Descriptive name (e.g., "SubVerse Outbound")
+   - **Termination Type**: IP Address or SIP Endpoint
+   - **IP Address/SIP URI**: Your Plivo SIP endpoint URI
+5. Click **Create**
+
+### Get Termination URI
+
+After creating the trunk:
+1. Note your **Termination URI**
+2. It will look like: `sip.plivo.com` or your custom domain
+3. Copy this URI - you'll need it for SubVerse configuration
+
+## Step 4: Configure Inbound Trunk (Origination)
+
+Configure the trunk to route incoming calls to SubVerse.
+
+### Create Origination Trunk
+
+1. In Plivo Console, navigate to **Voice** → **Trunks**
+2. Click **Add New Trunk**
+3. Select **Origination** (for inbound calls to SubVerse)
+4. Configure:
+   - **Name**: Descriptive name (e.g., "SubVerse Inbound")
+   - **Origination Type**: SIP URI
+   - **SIP URI**: Your SubVerse SIP URI (from Step 1)
+   - **Priority**: 1
+5. Enable **Send SIP OPTIONS** for health checks
+6. Click **Create**
+
+<Tip>
+  For region-specific routing, use region-based SIP endpoints provided in your SubVerse Telephony dashboard.
+</Tip>
+
+### Configure Authentication
+
+1. In your Origination trunk settings, go to **Authentication**
+2. Select authentication method:
+   - **IP Authentication**: Add IP ranges `0.0.0.0/1` and `128.0.0.0/1`
+   - **Credential Authentication**: Use username/password (recommended)
+3. If using credentials:
+   - **Username**: Same as SIP endpoint username
+   - **Password**: Same as SIP endpoint password
+4. Click **Save**
+
+## Step 5: Associate Phone Number
+
+### Assign Number to Application
+
+1. Navigate to **Phone Numbers** → **Your Numbers**
+2. Click on your phone number
+3. Under **Application Type**, select **XML Application** or **PHLO**
+4. For XML Application:
+   - Create an application that forwards to your trunk
+   - Or use direct SIP forwarding
+5. For inbound calls, ensure the number routes through your Origination trunk
+6. Click **Update Number**
+
+### Alternative: Direct SIP Configuration
+
+1. In your phone number settings
+2. Set **Answer URL** to forward to your SubVerse SIP URI
+3. Or configure to use your Origination trunk
+4. Click **Save**
+
+## Step 6: Configure in SubVerse Dashboard
+
+Now that Plivo is configured, add the trunk to SubVerse:
+
+### For Outbound Calls
+
+1. Go to SubVerse **Integrations** → **Telephony**
+2. Click **Add Outbound Trunk**
+3. Enter:
+   - **Name**: Descriptive name (e.g., "Plivo Outbound")
+   - **Phone Number**: Your Plivo number with country code (e.g., +1xxxxxxxxxx)
+   - **SIP Address**: Your Plivo termination URI (e.g., `sip.plivo.com`)
+   - **Auth Username**: Username from Step 2
+   - **Auth Password**: Password from Step 2
+4. Click **Save**
+
+### For Inbound Calls
+
+1. Go to SubVerse **Integrations** → **Telephony**
+2. Click **Add Inbound Trunk**
+3. Enter:
+   - **Name**: Descriptive name (e.g., "Plivo Inbound")
+   - **Phone Number**: Your Plivo number with country code (e.g., +1xxxxxxxxxx)
+   - **Auth Username**: Username from Step 2
+   - **Auth Password**: Password from Step 2
+4. Click **Map Voicebot Usecase** and select your voice agent
+5. Click **Save**
+
+## Testing Your Configuration
+
+### Test Inbound Calls
+
+1. Call your Plivo phone number
+2. The call should be routed to your SubVerse voice agent
+3. Check the call appears in SubVerse **Call History**
+
+### Test Outbound Calls
+
+1. Create a workflow or use the voice agent interface
+2. Make a test call using your configured Plivo number
+3. Verify the call connects successfully
+4. Check the call appears in SubVerse **Call History**
+
+## Troubleshooting
+
+### Inbound Calls Not Working
+
+**Check:**
+- Origination trunk is correctly configured in Plivo
+- SIP URI matches exactly what's shown in SubVerse dashboard
+- Phone number is associated with the correct application/trunk
+- Voice agent is mapped to the inbound trunk in SubVerse
+
+**Solution:**
+- Verify SIP URI in Plivo matches SubVerse
+- Check Plivo call logs for errors
+- Ensure phone number routing is correct
+- Verify trunk status is "Active"
+
+### Outbound Calls Not Working
+
+**Check:**
+- SIP endpoint credentials are correct
+- Username and password match in both Plivo and SubVerse
+- Termination URI is correctly configured
+- SIP address in SubVerse matches Plivo endpoint
+
+**Solution:**
+- Verify credentials are correct
+- Check Plivo endpoint status
+- Review call logs for authentication errors
+- Ensure sufficient Plivo account balance
+
+### Call Quality Issues
+
+**Check:**
+- Codec configuration
+- Network connectivity
+- Plivo service status
+- Region-specific routing
+
+**Solution:**
+- Verify codec settings (G.711 recommended)
+- Use region-based SIP endpoints for better latency
+- Check Plivo status page
+- Contact SubVerse support for assistance
+
+### Authentication Failures
+
+**Check:**
+- Credentials are entered correctly
+- IP authentication ranges (if using IP auth)
+- SIP endpoint is enabled
+
+**Solution:**
+- Re-enter credentials carefully
+- Verify IP ranges include required addresses
+- Check endpoint status in Plivo console
+
+## Advanced Configuration
+
+### Codec Settings
+
+For best call quality:
+- Enable `PCMU` (G.711 μ-law)
+- Enable `PCMA` (G.711 A-law)
+- Configure in both trunk and endpoint settings
+
+### DTMF Configuration
+
+Configure DTMF for interactive voice response:
+- **Recommended**: RFC 2833
+- **Alternative**: SIP INFO
+- Ensure consistent configuration across Plivo and SubVerse
+
+### Call Recording
+
+Enable call recording in Plivo:
+1. In your application settings
+2. Enable **Record** option
+3. Configure recording format and storage
+4. Recordings will be available in Plivo dashboard
+
+### Failover Configuration
+
+Set up multiple origination URIs for redundancy:
+1. Create multiple origination trunks
+2. Set different priorities
+3. Enable health checks with SIP OPTIONS
+4. Plivo will automatically failover if primary fails
+
+## Monitoring and Analytics
+
+### Call Logs
+
+Access detailed call logs:
+1. Navigate to **Voice** → **Call Logs**
+2. Filter by date, number, or status
+3. View detailed call information
+4. Download logs for analysis
+
+### Real-time Monitoring
+
+Monitor active calls:
+1. Go to **Voice** → **Live Calls**
+2. View currently active calls
+3. Check call duration and status
+4. Identify any issues in real-time
+
+## Additional Resources
+
+- [Plivo SIP Trunking Documentation](https://www.plivo.com/docs/sip-trunking)
+- [Plivo Inbound Trunks Guide](https://www.plivo.com/docs/sip-trunking#inbound-trunks-origination)
+- [Plivo Outbound Trunks Guide](https://www.plivo.com/docs/sip-trunking#outbound-trunks-termination)
+- [Plivo Console](https://console.plivo.com)
+- [Plivo Support](https://support.plivo.com)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Configure with Twilio"
+    icon="phone"
+    href="/integrations/telephony-twilio"
+  >
+    Set up Twilio SIP trunk
+  </Card>
+  <Card
+    title="Configure with Telnyx"
+    icon="phone"
+    href="/integrations/telephony-telnyx"
+  >
+    Set up Telnyx SIP trunk
+  </Card>
+  <Card
+    title="Create Voice Agent"
+    icon="robot"
+    href="/agents/create-first-agent"
+  >
+    Build your first AI voice agent
+  </Card>
+  <Card
+    title="Call History"
+    icon="history"
+    href="/agents/call-history"
+  >
+    Monitor your calls
+  </Card>
+</CardGroup>
+
+<Tip>
+  Remember to update the voice agent mapping in SubVerse whenever you modify your agent's configuration to ensure calls use the latest settings.
+</Tip>

@@ -1,0 +1,46 @@
+---
+title: 'Post Call Data Analysis'
+description: 'Define custom data extraction from call transcripts'
+---
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/post-call-analysis.png"
+/>
+
+Define custom data extraction from call transcripts.
+
+### LLM Model
+Select model for analysis:
+- **OpenAI [GPT 4o Mini]**: Fast, cost-effective
+- **OpenAI [GPT 4o]**: More accurate analysis
+
+### Data Fields
+
+**Type**
+Data type to extract:
+- Text
+- Number
+- Boolean
+- Selector
+- Array
+
+**Name**
+Field identifier (e.g., "summary", "customer_sentiment", "order_id")
+
+**Instructions**
+Tell the AI what to extract:
+```
+Summary of discussion between agent and customer. 
+If no conversation found write N.A
+```
+
+**Examples:**
+- **Lead Quality**: "Rate the lead quality from 1-10 based on interest level"
+- **Next Action**: "What follow-up action is needed?"
+- **Customer Sentiment**: "Was the customer satisfied, neutral, or dissatisfied?"
+- **Order Details**: "Extract order ID if mentioned"
+
+<Tip>
+  Use post-call analysis to automatically populate your CRM, trigger workflows, or generate reports without manual review.
+</Tip>

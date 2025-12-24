@@ -1,0 +1,277 @@
+---
+title: 'Configure with Twilio'
+description: 'Step-by-step guide to configure Twilio SIP trunk with SubVerse'
+---
+
+## Overview
+
+This guide walks you through configuring a Twilio SIP trunk to work with SubVerse AI for both inbound and outbound calls.
+
+## Prerequisites
+
+- Active Twilio account
+- [Purchase a Twilio phone number](https://help.twilio.com/articles/223135247-How-to-Search-for-and-Buy-a-Twilio-Phone-Number-from-Console)
+- [Install the Twilio CLI](https://www.twilio.com/docs/twilio-cli/getting-started/install) (optional, for CLI method)
+- [Create a Twilio profile](https://www.twilio.com/docs/twilio-cli/general-usage/profiles) (optional, for CLI method)
+
+## Step 1: Get Your SubVerse SIP URI
+
+Before configuring Twilio, you need to obtain your SIP URI from SubVerse:
+
+1. Log in to your SubVerse dashboard
+2. Navigate to **Integrations** → **Telephony**
+3. Copy your **SIP URI** (it will look like: `sip:xxxxx.sip.livekit.cloud`)
+
+<Note>
+  Keep this SIP URI handy - you'll need it in the next steps.
+</Note>
+
+## Step 2: Create a SIP Trunk
+
+### Using Twilio Console (Recommended)
+
+1. Sign in to the [Twilio Console](https://console.twilio.com)
+2. Navigate to **Elastic SIP Trunking** → **Trunks**
+3. Click **Create new SIP Trunk**
+4. Enter a **Friendly Name** (e.g., "SubVerse AI Trunk")
+5. Click **Create**
+
+### Using Twilio CLI
+
+The domain name for your SIP trunk must end in `pstn.twilio.com`:
+
+```bash
+twilio api:trunking:v1:trunks:create \
+  --friendly-name "SubVerse AI Trunk" \
+  --domain-name "subverse-trunk.pstn.twilio.com"
+```
+
+Copy the trunk SID from the output for use in the following steps.
+
+## Step 3: Configure for Inbound Calls
+
+Configure the trunk to route incoming calls to SubVerse.
+
+### Using Twilio Console
+
+1. In your SIP trunk settings, go to **Origination**
+2. Click **Add new Origination URI**
+3. Enter the following details:
+   - **Origination SIP URI**: Your SubVerse SIP URI (from Step 1)
+   - **Priority**: 1
+   - **Weight**: 1
+   - **Enabled**: Check this box
+   - **Friendly Name**: "SubVerse SIP URI"
+4. Click **Add**
+5. Click **Save**
+
+### Using Twilio CLI
+
+Replace `<your_sip_uri>` with your SubVerse SIP URI and `<twilio_trunk_sid>` with your trunk SID:
+
+```bash
+twilio api:trunking:v1:trunks:origination-urls:create \
+  --trunk-sid <twilio_trunk_sid> \
+  --friendly-name "SubVerse SIP URI" \
+  --sip-url "<your_sip_uri>" \
+  --weight 1 \
+  --priority 1 \
+  --enabled
+```
+
+<Tip>
+  For region-specific routing, use region-based SIP endpoints provided in your SubVerse Telephony dashboard.
+</Tip>
+
+## Step 4: Configure for Outbound Calls
+
+Configure authentication for outbound calls from SubVerse through Twilio.
+
+### Create Credential List
+
+1. In Twilio Console, navigate to **Voice** → **Manage** → **Credential Lists**
+2. Click **Create new Credential List**
+3. Enter a name (e.g., "SubVerse Credentials")
+4. Click **Create**
+5. Click **Add Credential**
+6. Enter:
+   - **Username**: Your chosen username
+   - **Password**: Your chosen password
+7. Click **Save**
+
+<Warning>
+  Save these credentials securely - you'll need to enter them in SubVerse dashboard.
+</Warning>
+
+### Associate Credential List with Trunk
+
+1. Go back to your SIP trunk settings
+2. Navigate to **Termination** → **Authentication**
+3. Under **Credential Lists**, select the credential list you just created
+4. Click **Save**
+
+### Configure Termination URI
+
+1. In your SIP trunk, go to **Termination**
+2. Click **Add new Termination URI**
+3. Enter:
+   - **Termination SIP URI**: This will be provided by Twilio (usually your trunk domain)
+   - **Priority**: 1
+   - **Weight**: 1
+   - **Enabled**: Check this box
+4. Click **Save**
+
+## Step 5: Associate Phone Number with Trunk
+
+### Using Twilio Console
+
+1. In your SIP trunk settings, go to **Numbers**
+2. Click **Add an Existing Number** or **Buy a Number**
+3. Select your phone number
+4. Click **Add**
+
+### Using Twilio CLI
+
+```bash
+twilio api:trunking:v1:trunks:phone-numbers:create \
+  --trunk-sid <twilio_trunk_sid> \
+  --phone-number-sid <twilio_phone_number_sid>
+```
+
+To list your phone numbers and trunks:
+
+```bash
+# List phone numbers
+twilio phone-numbers:list
+
+# List trunks
+twilio api:trunking:v1:trunks:list
+```
+
+## Step 6: Configure in SubVerse Dashboard
+
+Now that Twilio is configured, add the trunk to SubVerse:
+
+### For Outbound Calls
+
+1. Go to SubVerse **Integrations** → **Telephony**
+2. Click **Add Outbound Trunk**
+3. Enter:
+   - **Name**: Descriptive name (e.g., "Twilio Outbound")
+   - **Phone Number**: Your Twilio number with country code (e.g., +1xxxxxxxxxx)
+   - **SIP Address**: Your Twilio termination URI (e.g., `subverse-trunk.pstn.twilio.com`)
+   - **Auth Username**: Username from Step 4
+   - **Auth Password**: Password from Step 4
+4. Click **Save**
+
+### For Inbound Calls
+
+1. Go to SubVerse **Integrations** → **Telephony**
+2. Click **Add Inbound Trunk**
+3. Enter:
+   - **Name**: Descriptive name (e.g., "Twilio Inbound")
+   - **Phone Number**: Your Twilio number with country code (e.g., +1xxxxxxxxxx)
+   - **Auth Username**: Username from Step 4 (if configured)
+   - **Auth Password**: Password from Step 4 (if configured)
+4. Click **Map Voicebot Usecase** and select your voice agent
+5. Click **Save**
+
+## Testing Your Configuration
+
+### Test Inbound Calls
+
+1. Call your Twilio phone number
+2. The call should be routed to your SubVerse voice agent
+3. Check the call appears in SubVerse **Call History**
+
+### Test Outbound Calls
+
+1. Create a workflow or use the voice agent interface
+2. Make a test call using your configured Twilio number
+3. Verify the call connects successfully
+4. Check the call appears in SubVerse **Call History**
+
+## Troubleshooting
+
+### Inbound Calls Not Working
+
+**Check:**
+- Origination URI is correctly configured in Twilio
+- SIP URI matches exactly what's shown in SubVerse dashboard
+- Phone number is associated with the trunk
+- Voice agent is mapped to the inbound trunk in SubVerse
+
+**Solution:**
+- Verify SIP URI in Twilio matches SubVerse
+- Check Twilio debugger logs for errors
+- Ensure phone number is active and not in use elsewhere
+
+### Outbound Calls Not Working
+
+**Check:**
+- Credential list is associated with the trunk
+- Username and password match in both Twilio and SubVerse
+- Termination URI is correctly configured
+- SIP address in SubVerse matches Twilio trunk domain
+
+**Solution:**
+- Verify credentials are correct
+- Check Twilio trunk status is active
+- Review Twilio debugger for authentication errors
+- Ensure sufficient Twilio account balance
+
+### Call Quality Issues
+
+**Check:**
+- Network connectivity
+- Twilio service status
+- Region-specific routing configuration
+
+**Solution:**
+- Use region-based SIP endpoints for better latency
+- Check Twilio status page
+- Contact SubVerse support for assistance
+
+## Additional Resources
+
+- [Twilio SIP Trunking Documentation](https://www.twilio.com/docs/sip-trunking)
+- [Twilio Elastic SIP Trunking Setup](https://www.twilio.com/en-us/blog/elastic-sip-trunking-step-by-step-setup)
+- [Twilio Console](https://console.twilio.com)
+- [Twilio Support](https://support.twilio.com)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Configure with Telnyx"
+    icon="phone"
+    href="/integrations/telephony-telnyx"
+  >
+    Set up Telnyx SIP trunk
+  </Card>
+  <Card
+    title="Configure with Plivo"
+    icon="phone"
+    href="/integrations/telephony-plivo"
+  >
+    Set up Plivo SIP trunk
+  </Card>
+  <Card
+    title="Create Voice Agent"
+    icon="robot"
+    href="/agents/create-first-agent"
+  >
+    Build your first AI voice agent
+  </Card>
+  <Card
+    title="Call History"
+    icon="history"
+    href="/agents/call-history"
+  >
+    Monitor your calls
+  </Card>
+</CardGroup>
+
+<Tip>
+  Remember to update the voice agent mapping in SubVerse whenever you modify your agent's configuration to ensure calls use the latest settings.
+</Tip>

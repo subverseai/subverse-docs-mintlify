@@ -1,0 +1,555 @@
+---
+title: 'Webhook Node'
+description: 'Send data to external systems and applications via HTTP webhooks'
+---
+
+## Overview
+
+The Webhook Node sends events and data to client-side applications via HTTP POST requests. This enables your workflows to integrate with external systems, CRMs, databases, and custom applications.
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/workflow/nodes/webhook-node.png"
+/>
+
+## Use Cases
+
+- **CRM Integration**: Update customer records in Salesforce, HubSpot, etc.
+- **Database Updates**: Send data to your database
+- **Ticket Systems**: Create tickets in Jira, Zendesk, Freshdesk
+- **Analytics**: Send events to analytics platforms
+- **Notifications**: Trigger alerts in Slack, Microsoft Teams
+- **Custom Applications**: Integrate with your proprietary systems
+- **Data Pipelines**: Feed data into ETL processes
+- **Third-Party APIs**: Call any external API
+
+## Inputs
+
+### **URL** (Required)
+Webhook URL to send the events to.
+
+**Format:** `https://your-domain.com/webhook-endpoint`
+
+**Requirements:**
+- Must be HTTPS (HTTP not recommended for production)
+- Must be publicly accessible
+- Should accept POST requests
+- Should return appropriate HTTP status codes
+
+**Examples:**
+- `https://api.yourcompany.com/subverse/webhook`
+- `https://hooks.zapier.com/hooks/catch/123456/abcdef`
+- `https://your-crm.com/api/v1/leads`
+
+### **Secret**
+Optional secret key for webhook authentication.
+
+**Purpose:**
+- Generate HMAC SHA256 hash for request validation
+- Secure webhook endpoint from unauthorized requests
+- Recommended for production environments
+
+**Usage:**
+- Enter a strong secret string
+- Use same secret on your server to validate requests
+- Hash will be included in webhook payload
+
+### **Data** (Required)
+Data or events to send through webhook.
+
+**Configuration:**
+- Can be manually entered JSON
+- Can link outputs from previous blocks
+- Supports multiple data sources
+- Automatically formatted as JSON
+
+**Example Manual Data:**
+```json
+{
+  "event_type": "call_completed",
+  "customer_name": "John Doe",
+  "call_duration": 125
+}
+```
+
+**Example Linked Data:**
+Link outputs from previous blocks:
+- `Call_Status` from Voice Agent Node
+- `Transcript` from Incoming Call Node
+- `LLM_Response` from AI Query Agent
+- `Email_success` from Send Email Node
+
+### **Additional Configuration**
+
+**Headers**
+Custom HTTP headers to include in the request.
+
+**Configuration:**
+- Add key-value pairs for headers
+- Common uses: Authentication, Content-Type overrides
+- Example: `Authorization: Bearer token123`
+
+**JSON Body**
+Structure the request body with custom JSON format.
+
+**Configuration:**
+- Define custom JSON structure
+- Map workflow data to specific JSON keys
+- Useful for APIs with specific payload requirements
+
+## Outputs
+
+### **Status_Code**
+HTTP status code returned by the webhook endpoint.
+
+**Values:**
+- `200-299`: Success responses
+- `400-499`: Client error responses
+- `500-599`: Server error responses
+
+**Usage:**
+- Check specific response codes
+- Implement conditional logic based on status
+- Debug webhook issues
+
+### **Response**
+Response body returned by the webhook endpoint.
+
+**Type:** Object
+
+**Contains:**
+- Data returned by your endpoint
+- Error messages (if any)
+- Confirmation details
+
+**Usage:**
+- Extract data from response
+- Log response for debugging
+- Use response data in subsequent blocks
+
+## Webhook Payload Structure
+
+SubVerse sends the following payload to your webhook URL:
+
+```json
+POST /your-webhook-endpoint
+Content-Type: application/json
+
+{
+  "data": {
+    // Your custom data - all connected block outputs
+    "call_status": "connected",
+    "customer_number": "+91xxxxxxxxxx",
+    "transcript": "...",
+    "call_duration": 125
+  },
+  "timestamp": 1713784015226,  // Unix timestamp in milliseconds
+  "hash": "generated_hash"      // SHA256 or HMAC SHA256 hash
+}
+```
+
+### Payload Fields
+
+**data**
+- Contains all the data you configured in the node
+- Includes linked outputs from previous blocks
+- Formatted as JSON object
+
+**timestamp**
+- Current Unix timestamp in milliseconds
+- When the webhook was sent
+- Use for chronological ordering and replay protection
+
+**hash**
+- Authentication hash for request validation
+- SHA256 or HMAC SHA256 (if secret provided)
+- Verify to ensure request authenticity
+
+## Client-Side Setup
+
+### Webhook Endpoint Requirements
+
+Your webhook endpoint must:
+
+1. **Accept POST Requests**: Only POST method is used
+2. **Parse JSON**: Accept `application/json` content type
+3. **Respond with JSON**: Use `Content-Type: application/json`
+4. **Return Status Codes**: Use proper HTTP status codes
+   - `200-299`: Success
+   - `400-499`: Client error
+   - `500-599`: Server error
+
+### Example Endpoint (Node.js/Express)
+
+```javascript
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.post('/subverse/webhook', (req, res) => {
+  const { data, timestamp, hash } = req.body;
+  
+  // Validate timestamp (within 10 minutes)
+  if (!isTimestampValid(timestamp)) {
+    return res.status(400).json({ error: 'Invalid timestamp' });
+  }
+  
+  // Validate hash (if using secret)
+  if (!validateHash(timestamp, hash, YOUR_SECRET)) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+  
+  // Process the data
+  console.log('Received webhook data:', data);
+  
+  // Your business logic here
+  processCallData(data);
+  
+  // Respond with success
+  res.status(200).json({ 
+    success: true,
+    message: 'Webhook received successfully'
+  });
+});
+
+function isTimestampValid(timestamp) {
+  const now = Date.now();
+  const tenMinutes = 10 * 60 * 1000;
+  return Math.abs(now - timestamp) <= tenMinutes;
+}
+
+app.listen(3000, () => {
+  console.log('Webhook server running on port 3000');
+});
+```
+
+## Security and Validation
+
+### Timestamp Validation
+
+Protect against replay attacks by validating the timestamp:
+
+```javascript
+function isTimestampValid(timestamp) {
+  const now = Date.now();
+  const tenMinutes = 10 * 60 * 1000; // 600,000 ms
+  return Math.abs(now - timestamp) <= tenMinutes;
+}
+```
+
+**Best Practice:** Reject requests older than 10 minutes
+
+### Hash Validation (Without Secret)
+
+When no secret is provided, a SHA256 hash is generated:
+
+```javascript
+const crypto = require('crypto');
+
+function validateHash(timestamp, receivedHash) {
+  const expectedHash = crypto
+    .createHash('sha256')
+    .update(String(timestamp))
+    .digest('hex');
+  
+  return expectedHash === receivedHash;
+}
+```
+
+### Hash Validation (With Secret)
+
+When a secret is provided, an HMAC SHA256 hash is generated:
+
+```javascript
+const crypto = require('crypto');
+
+function validateWithSecret(timestamp, receivedHash, secret) {
+  const expectedHash = crypto
+    .createHmac('sha256', secret)
+    .update(String(timestamp))
+    .digest('hex');
+  
+  return expectedHash === receivedHash;
+}
+```
+
+**Recommended:** Always use a secret for production environments
+
+## Configuration Examples
+
+### Example 1: CRM Update
+
+```
+URL: https://api.yourcrm.com/leads
+Data: {
+  "customer_name": [Link from Customer_Details.name],
+  "phone": [Link from Customer_Number],
+  "call_status": [Link from Call_Status],
+  "transcript": [Link from Transcript],
+  "lead_score": [Link from AI Query Agent output]
+}
+```
+
+### Example 2: Slack Notification
+
+```
+URL: https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+Data: {
+  "text": "New high-priority call completed",
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Customer:* [Link from Customer_Details.name]\n*Status:* [Link from Call_Status]\n*Duration:* [Link from Call_Duration]s"
+      }
+    }
+  ]
+}
+```
+
+### Example 3: Database Insert
+
+```
+URL: https://api.yourapp.com/calls/insert
+Data: {
+  "call_id": [Link from Call_ID],
+  "customer_id": [Link from Customer_Details.id],
+  "agent_id": [Link from Use_Case],
+  "timestamp": [Link from Call_Time],
+  "duration": [Link from Call_Duration],
+  "status": [Link from Call_Status],
+  "transcript": [Link from Transcript]
+}
+```
+
+### Example 4: Zapier Integration
+
+```
+URL: https://hooks.zapier.com/hooks/catch/123456/abcdef
+Data: {
+  "trigger_type": "call_completed",
+  "customer_email": [Link from Customer_Details.email],
+  "call_summary": [Link from AI Query Agent summary]
+}
+```
+
+## Workflow Integration
+
+### Common Patterns
+
+**Pattern 1: Post-Call CRM Update**
+```
+Incoming Call Node
+  ↓
+AI Query Agent (analyze call)
+  ↓
+Webhook Node (update CRM)
+```
+
+**Pattern 2: Multi-System Integration**
+```
+Voice Agent Node
+  ↓
+Webhook Node 1 (update CRM)
+  ↓
+Webhook Node 2 (log to database)
+  ↓
+Webhook Node 3 (notify team via Slack)
+```
+
+**Pattern 3: Conditional Webhook**
+```
+Voice Agent Node
+  ↓
+Smart Filter (check call success)
+  ↓ (if successful)
+Webhook Node (success webhook)
+  ↓ (if failed)
+Webhook Node (failure webhook)
+```
+
+**Pattern 4: Data Enrichment Pipeline**
+```
+Upload Data Node
+  ↓
+Voice Agent Node
+  ↓
+AI Query Agent (extract insights)
+  ↓
+Webhook Node (send enriched data to data warehouse)
+```
+
+## Best Practices
+
+### Endpoint Design
+- **Idempotency**: Handle duplicate requests gracefully
+- **Fast Response**: Return 200 quickly, process asynchronously
+- **Error Handling**: Return appropriate error codes
+- **Logging**: Log all webhook requests for debugging
+
+### Security
+- **Use HTTPS**: Always use secure connections
+- **Validate Signature**: Verify hash to ensure authenticity
+- **Check Timestamp**: Prevent replay attacks
+- **Rate Limiting**: Protect against abuse
+- **IP Whitelisting**: Restrict to SubVerse IPs (if possible)
+
+### Data Handling
+- **Validate Data**: Check data format and completeness
+- **Error Recovery**: Implement retry logic for failures
+- **Data Privacy**: Handle sensitive data appropriately
+- **Compliance**: Follow data protection regulations
+
+### Monitoring
+- **Track Success Rate**: Monitor webhook delivery success
+- **Alert on Failures**: Set up alerts for failed webhooks
+- **Log Payloads**: Keep logs for troubleshooting
+- **Performance**: Monitor response times
+
+## Retry Logic
+
+SubVerse automatically retries failed webhook requests:
+
+**Retry Policy:**
+- **Attempts**: Up to 3 retries
+- **Backoff**: Exponential backoff between retries
+- **Timing**: 1s, 5s, 25s delays
+- **Status Codes**: Retries on 5xx errors and timeouts
+
+**Your Endpoint Should:**
+- Return 2xx for successful processing
+- Return 4xx for client errors (no retry)
+- Return 5xx for server errors (will retry)
+- Respond within 30 seconds (timeout)
+
+## Troubleshooting
+
+### Webhook Not Receiving Data
+
+**Possible Causes:**
+- URL not publicly accessible
+- Firewall blocking requests
+- Endpoint not accepting POST
+- SSL certificate issues
+
+**Solutions:**
+- Verify URL is accessible from internet
+- Check firewall rules
+- Ensure POST method is supported
+- Use valid SSL certificate
+
+### Authentication Failures
+
+**Possible Causes:**
+- Incorrect hash validation
+- Secret mismatch
+- Timestamp validation too strict
+
+**Solutions:**
+- Verify hash calculation logic
+- Check secret is correct
+- Allow reasonable timestamp window (10 min)
+
+### Timeout Errors
+
+**Possible Causes:**
+- Endpoint processing too slow
+- Network latency
+- Database queries taking too long
+
+**Solutions:**
+- Return 200 immediately
+- Process data asynchronously
+- Optimize database queries
+- Use message queue for heavy processing
+
+## Integration Examples
+
+### Salesforce
+
+```javascript
+// Salesforce REST API integration
+const data = {
+  "FirstName": customer_name.split(' ')[0],
+  "LastName": customer_name.split(' ')[1],
+  "Phone": customer_phone,
+  "LeadSource": "SubVerse AI Call",
+  "Description": call_transcript
+};
+
+// Send to Salesforce via webhook
+```
+
+### HubSpot
+
+```javascript
+// HubSpot Contacts API
+const data = {
+  "properties": {
+    "firstname": customer_name,
+    "phone": customer_phone,
+    "last_call_date": call_timestamp,
+    "call_duration": call_duration,
+    "call_notes": call_summary
+  }
+};
+```
+
+### Google Sheets
+
+```javascript
+// Google Sheets API via webhook
+const data = {
+  "range": "Sheet1!A:E",
+  "values": [[
+    call_timestamp,
+    customer_name,
+    customer_phone,
+    call_duration,
+    call_status
+  ]]
+};
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="AI Query Agent Node"
+    icon="brain"
+    href="/workflow/ai-query-agent-node"
+  >
+    Process data before sending
+  </Card>
+  <Card
+    title="Smart Filter Node"
+    icon="filter"
+    href="/workflow/smart-filter-node"
+  >
+    Filter data before webhook
+  </Card>
+  <Card
+    title="Webhooks Integration"
+    icon="webhook"
+    href="/integrations/webhooks"
+  >
+    Learn more about webhooks
+  </Card>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/api-reference/workflow/trigger"
+  >
+    Workflow API documentation
+  </Card>
+</CardGroup>
+
+<Tip>
+  Always validate the webhook signature and timestamp to ensure requests are authentic and prevent replay attacks.
+</Tip>
+
+<Warning>
+  Your webhook endpoint must be publicly accessible via HTTPS. Local development URLs will not work in production.
+</Warning>

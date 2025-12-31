@@ -19,7 +19,7 @@
     }
   ],
   "paths": {
-    "/campaign/trigger-call": {
+    "/call/trigger": {
       "post": {
         "description": "Directly trigger a call without workflow",
         "requestBody": {
@@ -80,7 +80,9 @@
                     "value": {
                       "responseCode": 200,
                       "message": "Call triggered successfully",
-                      "data": null
+                      "data": {
+                        "callId": "1234"
+                      }
                     }
                   },
                   "400 error": {
@@ -112,6 +114,71 @@
                     "value": {
                       "responseCode": 500,
                       "message": "Internal server error",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/call/cancel/{callId}": {
+      "put": {
+        "summary": "Cancel a queued outbound call",
+        "description": "Cancels an outbound call that is still queued. Only calls whose call status is `call_in_queue` can be canceled. Removes the pending queued calls and updates call status to canceled.",
+        "parameters": [
+          {
+            "name": "callId",
+            "in": "path",
+            "description": "unique call identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Call canceled successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "200 success": {
+                    "summary": "200 - Call canceled successfully",
+                    "value": {
+                      "responseCode": 200,
+                      "message": "Call canceled successfully!",
+                      "data": {
+                        "removedJobs": 1
+                      }
+                    }
+                  },
+                  "400 missing-call-id": {
+                    "summary": "400 - Call ID missing",
+                    "value": {
+                      "responseCode": 400,
+                      "message": "Call id missing",
+                      "data": null
+                    }
+                  },
+                  "400 call-not-found": {
+                    "summary": "400 - Call does not exist for this company",
+                    "value": {
+                      "responseCode": 400,
+                      "message": "User call not found.",
+                      "data": null
+                    }
+                  },
+                  "400 not-in-queue": {
+                    "summary": "400 - Call cannot be canceled anymore",
+                    "value": {
+                      "responseCode": 400,
+                      "message": "This call cannot be canceled as it is no longer in queue.",
                       "data": null
                     }
                   }

@@ -32,14 +32,14 @@
                 "ValidRequest": {
                   "summary": "Example of trigger workflow call",
                   "value": {
-                    "phone_number": "+912298765432",
+                    "phoneNumber": "+912298765432",
                     "metadata": {
                       "email": "johndoe@subverseai.com",
                       "name": "John Doe",
                       "id": "JD75816540"
                     },
-                    "botNumber": "+912298765432",
-                    "useCase": "test_case",
+                    "agentNumber": "+912298765432",
+                    "agentName": "test_case",
                     "options": {
                       "transcriptLanguage": "hi",
                       "allowedOverallInterruptions": "True",
@@ -53,14 +53,14 @@
                       "initialMessage": "Hi, ${name} how can I assist you today?",
                       "additionalContext": "The caller is asking about a refund request submitted yesterday."
                     },
-                    "no_of_retries": 1,
-                    "retry_after_in_hrs": 1,
-                    "start_working_hour": "09:00",
-                    "end_working_hour": "20:00",
+                    "noOfRetries": 1,
+                    "retryAfterHours": 1,
+                    "startWorkingHour": "09:00",
+                    "endWorkingHour": "20:00",
                     "timezone": "Asia/Kolkata",
                     "callPriority": 3,
                     "callOnDate": "2025-08-08",
-                    "schedule_time": "2025-08-08T08:14:57Z"
+                    "scheduleTime": "2025-08-08T08:14:57Z"
                   }
                 }
               }
@@ -516,44 +516,44 @@
       "DirectTriggerCall": {
         "type": "object",
         "required": [
-          "phone_number",
-          "useCase"
+          "phoneNumber",
+          "agentName"
         ],
         "properties": {
-          "phone_number": {
+          "phoneNumber": {
             "type": "string",
             "description": "User's phone number. Must be a valid phone number with country code, with or without '+' prefix."
           },
-          "useCase": {
+          "agentName": {
             "type": "string",
-            "description": "Use case to be used for the call, find it in Voice Agents sections in dashboard."
+            "description": "Agent to be used for the call, find it in Agents sections in dashboard."
           },
           "metadata": {
             "type": "object",
-            "description": "Customer's details to be used in the call, use them in voice agent initial and system prompt as ${variable_name} format. These will be replaced by actual value of the variables."
+            "description": "Customer's details to be used in the call, use them in agent initial and system prompt as ${variable_name} format. These will be replaced by actual value of the variables."
           },
-          "botNumber": {
+          "agentNumber": {
             "type": "string",
-            "description": "Voice agent phone number used to place call. Default value: bot number mentioned in Voice Agents sections in dashboard. Must be a valid phone number with country code, with or without '+' prefix."
+            "description": "Agent phone number used to place call. Default value will be any number set in telephony section (outbound number). Must be a valid phone number with country code, with or without '+' prefix."
           },
           "options": {
             "type": "object",
-            "description": "Default values as defined in the Voice Agents section in dashboard. Use this if you want to override those options. E.g. if you want to change the language, voice, initial prompt, etc.",
+            "description": "Default values as defined in the Agents section in dashboard. Use this if you want to override those options. E.g. if you want to change the language, voice, initial prompt, etc.",
             "$ref": "#/components/schemas/VoiceAgentOptions"
           },
-          "no_of_retries": {
+          "noOfRetries": {
             "type": "number",
             "description": "Number of retries if call failed if provided"
           },
-          "retry_after_in_hrs": {
+          "retryAfterHours": {
             "type": "number",
             "description": "Retry at interval (in hrs) if provided"
           },
-          "start_working_hour": {
+          "startWorkingHour": {
             "type": "string",
             "description": "24 hour format (HH:MM). If provided call made before start hours will rescheduled at start hour of the day."
           },
-          "end_working_hour": {
+          "endWorkingHour": {
             "type": "string",
             "description": "24 hour format (HH:MM). If provided call made after end hours will rescheduled at start hour of next day."
           },
@@ -569,7 +569,7 @@
             "type": "string",
             "description": "The date by which the call must be placed. If the call is not made on same day, it is marked as expired and will not trigger. Any valid date format is Any valid date format is “YYYY-MM-DD”."
           },
-          "schedule_time": {
+          "scheduleTime": {
             "type": "string",
             "description": "Schedule customer's call at a specific future time. Follow ISO date format (YYYY-MM-DDTHH:MM:SSZ)."
           }
@@ -587,11 +587,11 @@
           },
           "customer_details": {
             "type": "object",
-            "description": "User's details to be used in the call, use them in voice agent initial and system prompt as ${variable_name} format. These will be replaced by actual value of the variables."
+            "description": "User's details to be used in the call, use them in agent initial and system prompt as ${variable_name} format. These will be replaced by actual value of the variables."
           },
           "use_case": {
             "type": "string",
-            "description": "Use case to be used for the call, find it in Voice Agents sections in dashboard. Default value: use case selected in the workflow."
+            "description": "Agent to be used for the call, find it in Agents sections in dashboard. Default value: agent selected in the workflow."
           },
           "bot_number": {
             "type": "string",
@@ -603,7 +603,7 @@
           },
           "options": {
             "type": "object",
-            "description": "Default values as defined in the Voice Agents section in dashboard. Use this if you want to override those options. E.g. if you want to change the language, voice, initial prompt, etc.",
+            "description": "Default values as defined in the Agents section in dashboard. Use this if you want to override those options. E.g. if you want to change the language, voice, initial prompt, etc.",
             "$ref": "#/components/schemas/VoiceAgentOptions"
           },
           "no_of_retries": {

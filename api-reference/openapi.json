@@ -54,7 +54,7 @@
                       "additionalContext": "The caller is asking about a refund request submitted yesterday."
                     },
                     "noOfRetries": 1,
-                    "retryAfter": 1,
+                    "retryAfterHours": 1,
                     "startWorkingHour": "09:00",
                     "endWorkingHour": "20:00",
                     "timezone": "Asia/Kolkata",
@@ -545,7 +545,7 @@
             "type": "number",
             "description": "Number of retries if call failed if provided"
           },
-          "retryAfter": {
+          "retryAfterHours": {
             "type": "number",
             "description": "Retry at interval (in hrs) if provided"
           },

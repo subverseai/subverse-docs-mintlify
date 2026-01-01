@@ -59,7 +59,8 @@
                     "end_working_hour": "20:00",
                     "timezone": "Asia/Kolkata",
                     "callPriority": 3,
-                    "callOnDate": "2025-08-08"
+                    "callOnDate": "2025-08-08",
+                    "schedule_time": "2025-08-08T08:14:57Z"
                   }
                 }
               }
@@ -239,7 +240,9 @@
                     "retry_after_in_hrs": 1,
                     "start_working_hour": "09:00",
                     "end_working_hour": "20:00",
-                    "timezone": "Asia/Kolkata"
+                    "timezone": "Asia/Kolkata",
+                    "call_priority": 3,
+                    "call_on_date": "2025-01-22"
                   }
                 }
               }
@@ -564,7 +567,11 @@
           },
           "callOnDate": {
             "type": "string",
-            "description": "The date by which the call must be placed. If the call is not made on same day, it is marked as expired and will not trigger. Any valid date format is allowed."
+            "description": "The date by which the call must be placed. If the call is not made on same day, it is marked as expired and will not trigger. Any valid date format is Any valid date format is “YYYY-MM-DD”."
+          },
+          "schedule_time": {
+            "type": "string",
+            "description": "Schedule customer's call at a specific future time. Follow ISO date format (YYYY-MM-DDTHH:MM:SSZ)."
           }
         }
       },
@@ -618,6 +625,14 @@
           "timezone": {
             "type": "string",
             "description": "Call between start working hour and end working hour in timezone if provided [Default: Asia/Kolkata]"
+          },
+          "call_priority": {
+            "type": "number",
+            "description": "Defines the urgency of the call on a scale of 1 to 100, where 1 is the highest priority and 100 is the lowest. Default is 10."
+          },
+          "call_on_date": {
+            "type": "string",
+            "description": "The date by which the call must be placed. If the call is not made on same day, it is marked as expired and will not trigger. Any valid date format is “YYYY-MM-DD”"
           }
         }
       },

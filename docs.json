@@ -136,7 +136,8 @@
             "group": "Direct Call",
             "pages": [
               "api-reference/direct-call/trigger",
-              "api-reference/direct-call/cancel"
+              "api-reference/direct-call/cancel",
+              "api-reference/direct-call/signed-url"
             ]
           },
           {

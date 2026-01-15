@@ -190,6 +190,99 @@
         }
       }
     },
+    "/call/signed-recording-url": {
+      "get": {
+        "summary": "Generate a secure, time-limited signed URL for a call recording.",
+        "description": "Generates a secure, time-limited pre-signed URL to access a call recording. The generated link is temporary to ensure data security and prevent unauthorized access. You must provide either 'callId' or 'callRecordingUrl' in the query parameters.",
+        "operationId": "getSignedRecordingUrl",
+        "parameters": [
+          {
+            "name": "callId",
+            "in": "query",
+            "description": "Unique identifier for the call.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "12345"
+            }
+          },
+          {
+            "name": "callRecordingUrl",
+            "in": "query",
+            "description": "A direct S3/Storage URL to a call recording.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "https://s3.amazonaws.com/bucket/recording.mp3"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns error or success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "200 - Success response",
+                    "value": {
+                      "responseCode": 200,
+                      "message": "Signed url generated successfully!",
+                      "data": {
+                        "url": "https://example.com/recording.mp3?token=..."
+                      }
+                    }
+                  },
+                  "apiMissing": {
+                    "summary": "401 - Unauthorized (API key is missing).",
+                    "value": {
+                      "responseCode": 401,
+                      "message": "API key missing!",
+                      "data": null
+                    }
+                  },
+                  "callIdRequiredError": {
+                    "summary": "400 - Validation error (Missing required parameters).",
+                    "value": {
+                      "responseCode": 400,
+                      "message": "Validation error: Either callId or callRecordingUrl is required",
+                      "data": null
+                    }
+                  },
+                  "callNotFound": {
+                    "summary": "404 - Call record not found.",
+                    "value": {
+                      "responseCode": 404,
+                      "message": "No call record found, Please contact administrator.",
+                      "data": null
+                    }
+                  },
+                  "internalServerError": {
+                    "summary": "500 - Internal server error",
+                    "value": {
+                      "responseCode": 500,
+                      "message": "Internal server error!",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": [
+          "Call"
+        ]
+      }
+    },
     "/workflow/call/{workflowId}": {
       "post": {
         "description": "Trigger a call in the workflow",

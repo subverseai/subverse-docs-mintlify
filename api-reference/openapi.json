@@ -40,6 +40,7 @@
                     },
                     "agentNumber": "+912298765432",
                     "agentName": "test_case",
+                    "agentVersion": "default",
                     "options": {
                       "transcriptLanguage": "hi",
                       "allowedOverallInterruptions": "True",
@@ -315,6 +316,7 @@
                     },
                     "bot_number": "+912298765432",
                     "use_case": "test_case",
+                    "agent_version": 2,
                     "schedule_time": "2025-01-22T08:14:57Z",
                     "options": {
                       "transcriptLanguage": "hi",
@@ -428,6 +430,7 @@
                     },
                     "bot_number": "+912298765432",
                     "use_case": "test_case",
+                    "agent_version": 2,
                     "schedule_time": "2025-01-22T08:14:57Z",
                     "options": {
                       "transcriptLanguage": "hi",
@@ -621,6 +624,9 @@
             "type": "string",
             "description": "Agent to be used for the call, find it in Agents sections in dashboard."
           },
+          "agentVersion": {
+            "$ref": "#/components/schemas/AgentVersion"
+          },
           "metadata": {
             "type": "object",
             "description": "Customer's details to be used in the call, use them in agent initial and system prompt as ${variable_name} format. These will be replaced by actual value of the variables."
@@ -685,6 +691,9 @@
           "use_case": {
             "type": "string",
             "description": "Agent to be used for the call, find it in Agents sections in dashboard. Default value: agent selected in the workflow."
+          },
+          "agent_version": {
+            "$ref": "#/components/schemas/AgentVersion"
           },
           "bot_number": {
             "type": "string",
@@ -854,6 +863,24 @@
             "type": "string"
           }
         }
+      },
+      "AgentVersion": {
+        "oneOf": [
+          {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Specific version number of the agent (e.g., 1, 2)."
+          },
+          {
+            "type": "string",
+            "enum": [
+              "default",
+              "draft"
+            ],
+            "description": "Version tag: 'default' uses the currently published version, 'draft' uses the latest saved draft."
+          }
+        ],
+        "description": "Determines which version of the agent to use for the call. Defaults to \"default\"."
       }
     },
     "securitySchemes": {

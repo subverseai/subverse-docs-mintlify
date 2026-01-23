@@ -147,6 +147,12 @@
               "api-reference/workflow/edit",
               "api-reference/workflow/delete"
             ]
+          },
+          {
+            "group": "Agent",
+            "pages": [
+              "api-reference/agent/blueprints"
+            ]
           }
         ]
       }

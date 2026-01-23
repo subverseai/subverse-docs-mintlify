@@ -605,6 +605,216 @@
           }
         }
       }
+    },
+    "/agent/blueprints": {
+      "get": {
+        "summary": "Retrieve agent blueprints",
+        "description": "Retrieves all available agent blueprints and their default version configurations along with workflow mappings. This endpoint provides comprehensive information about voice agents including their full configuration, version details, and which workflows they are associated with.",
+        "operationId": "getAgentBlueprints",
+        "tags": [
+          "Agents"
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent blueprints retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentBlueprintsResponse"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "200 - Agent blueprints retrieved successfully",
+                    "value": {
+                      "responseCode": 200,
+                      "message": "Agent blueprints retrieved successfully!",
+                      "data": {
+                        "agents": [
+                          {
+                            "agentId": "customer_support_agent",
+                            "config": {
+                              "llmService": {
+                                "provider": "openai",
+                                "model": "gpt-4o-mini",
+                                "temperature": 0.5
+                              },
+                              "sttService": {
+                                "provider": "deepgram",
+                                "model": "nova-2-general",
+                                "language": "en-US",
+                                "smartFormat": false,
+                                "numerals": false,
+                                "keywords": null
+                              },
+                              "ttsService": {
+                                "provider": "elevenlabs",
+                                "model": "eleven_flash_v2_5",
+                                "language": "en-US",
+                                "gender": "female",
+                                "voiceName": "monika",
+                                "customVoiceId": "",
+                                "speed": 1.0,
+                                "stability": 0.5,
+                                "similarityBoost": 0.8,
+                                "pitch": 1.0,
+                                "volume": 1.0
+                              },
+                              "agentInstructions": {
+                                "initialMessage": {
+                                  "messageContent": "Hello! I'm your virtual assistant. How can I help you today?",
+                                  "messageType": "say",
+                                  "firstSpeaker": "assistant"
+                                },
+                                "systemContext": [
+                                  {
+                                    "system": "You are a helpful customer service agent for a telecommunications company."
+                                  }
+                                ],
+                                "conversationalFlow": {
+                                  "nodes": [
+                                    {
+                                      "id": "welcome",
+                                      "type": "message",
+                                      "data": {
+                                        "message": "Welcome!"
+                                      },
+                                      "position": {
+                                        "x": 0,
+                                        "y": 0
+                                      }
+                                    }
+                                  ],
+                                  "edges": []
+                                }
+                              },
+                              "callSettings": {
+                                "dtmfEnabled": false,
+                                "transferTo": "",
+                                "transferDtmf": "",
+                                "warmTransfer": false,
+                                "sipRefer": false,
+                                "backgroundAmbient": false,
+                                "backgroundThinking": false,
+                                "whisper": false,
+                                "falseInterruptionTimer": 3,
+                                "preemptiveGeneration": true
+                              },
+                              "pipelineSettings": {
+                                "commMethod": "two_way",
+                                "silenceTime": 8,
+                                "silenceTurns": 2,
+                                "knowledgeBaseId": "",
+                                "maxDuration": 600
+                              },
+                              "turnManagement": {
+                                "interruptionOverall": true,
+                                "interruptionInitial": false,
+                                "interruptionSensitivity": 2,
+                                "agentResponsiveness": 4,
+                                "agentBackchannel": {
+                                  "enabled": true,
+                                  "threshold": 0,
+                                  "fillerWords": [],
+                                  "probability": 1,
+                                  "interruptions": true,
+                                  "addToContext": false
+                                }
+                              },
+                              "analyticsConfig": {
+                                "enabled": true,
+                                "provider": "openai",
+                                "model": "gpt-4o-mini",
+                                "instructions": null,
+                                "queries": [
+                                  {
+                                    "name": "summary",
+                                    "description": "Summary of discussion",
+                                    "type": "text",
+                                    "options": []
+                                  }
+                                ]
+                              },
+                              "functionSettings": {
+                                "preCall": [],
+                                "duringCall": ["end_call", "transfer_call"],
+                                "postCall": []
+                              },
+                              "agentsList": [
+                                {
+                                  "transferTo": "billing_agent",
+                                  "useBaseSettings": true,
+                                  "agentVersion": "DEFAULT"
+                                }
+                              ],
+                              "dynamicVariablesConfig": [
+                                {
+                                  "name": "customer_name",
+                                  "description": "Customer's full name"
+                                }
+                              ]
+                            },
+                            "version": {
+                              "name": "v0",
+                              "description": "First version",
+                              "number": 0
+                            }
+                          }
+                        ],
+                        "workflowList": [
+                          {
+                            "workflowId": "customer_support",
+                            "agentId": "customer_support_agent"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - API key is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "summary": "401 - API key missing",
+                    "value": {
+                      "responseCode": 401,
+                      "message": "API key is missing",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "server_error": {
+                    "summary": "500 - Internal server error",
+                    "value": {
+                      "responseCode": 500,
+                      "message": "Internal server error",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -881,6 +1091,627 @@
           }
         ],
         "description": "Determines which version of the agent to use for the call. Defaults to \"default\"."
+      },
+      "AgentBlueprintsResponse": {
+        "type": "object",
+        "required": [
+          "responseCode",
+          "message",
+          "data"
+        ],
+        "properties": {
+          "responseCode": {
+            "type": "integer",
+            "description": "HTTP status code indicating the result of the request.",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable message describing the result of the request.",
+            "example": "Agent blueprints retrieved successfully!"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AgentBlueprintsData"
+          }
+        }
+      },
+      "AgentBlueprintsData": {
+        "type": "object",
+        "required": [
+          "agents",
+          "workflowList"
+        ],
+        "properties": {
+          "agents": {
+            "type": "array",
+            "description": "Array of agent configurations and metadata.",
+            "items": {
+              "$ref": "#/components/schemas/AgentBlueprint"
+            }
+          },
+          "workflowList": {
+            "type": "array",
+            "description": "Array of workflow-to-agent mappings showing which workflows use which agents.",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowMapping"
+            }
+          }
+        }
+      },
+      "AgentBlueprint": {
+        "type": "object",
+        "required": [
+          "agentId",
+          "config",
+          "version"
+        ],
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "description": "The human-readable unique identifier for the agent.",
+            "example": "abandoned_checkout"
+          },
+          "config": {
+            "type": "object",
+            "description": "Complete configuration object for the agent including LLM, STT, TTS services, instructions, and operational settings.",
+            "properties": {
+              "llmService": {
+                "type": "object",
+                "description": "Language model service configuration for the agent.",
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "description": "The LLM provider (e.g., 'openai', 'google', 'anthropic').",
+                    "example": "openai"
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "The specific model to use.",
+                    "example": "gpt-4o-mini"
+                  },
+                  "temperature": {
+                    "type": "number",
+                    "description": "Controls randomness in responses (0.0-1.0).",
+                    "example": 0.5
+                  }
+                }
+              },
+              "sttService": {
+                "type": "object",
+                "description": "Speech-to-text service configuration for understanding user speech.",
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "description": "The STT provider (e.g., 'deepgram', 'openai').",
+                    "example": "deepgram"
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "The specific STT model to use.",
+                    "example": "nova-2-general"
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "Language code for speech recognition.",
+                    "example": "hi-IN"
+                  },
+                  "smartFormat": {
+                    "type": "boolean",
+                    "description": "Whether to enable smart formatting of numbers, dates, etc.",
+                    "example": false
+                  },
+                  "numerals": {
+                    "type": "boolean",
+                    "description": "Whether to convert numerals to words.",
+                    "example": false
+                  },
+                  "keywords": {
+                    "type": "array",
+                    "description": "Array of keywords to boost in speech recognition.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "example": null
+                  }
+                }
+              },
+              "ttsService": {
+                "type": "object",
+                "description": "Text-to-speech service configuration for the agent's voice.",
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "description": "The TTS provider (e.g., 'elevenlabs', 'openai').",
+                    "example": "elevenlabs"
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "The specific TTS model to use.",
+                    "example": "eleven_flash_v2_5"
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "Language code for the voice.",
+                    "example": "en-IN"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Voice gender preference.",
+                    "example": "female"
+                  },
+                  "voiceName": {
+                    "type": "string",
+                    "description": "Name of the voice to use.",
+                    "example": "monika"
+                  },
+                  "customVoiceId": {
+                    "type": "string",
+                    "description": "Custom voice ID if using a trained voice.",
+                    "example": ""
+                  },
+                  "speed": {
+                    "type": "number",
+                    "description": "Speech speed multiplier.",
+                    "example": 2
+                  },
+                  "stability": {
+                    "type": "number",
+                    "description": "Voice stability setting (0.0-1.0).",
+                    "example": 0.5
+                  },
+                  "similarityBoost": {
+                    "type": "number",
+                    "description": "Voice similarity boost setting.",
+                    "example": 0.8
+                  },
+                  "pitch": {
+                    "type": "number",
+                    "description": "Voice pitch setting.",
+                    "example": 2
+                  },
+                  "volume": {
+                    "type": "number",
+                    "description": "Voice volume setting.",
+                    "example": 2
+                  }
+                }
+              },
+              "agentInstructions": {
+                "type": "object",
+                "description": "Instructions and prompts that define the agent's behavior and personality.",
+                "properties": {
+                  "initialMessage": {
+                    "type": "object",
+                    "description": "The initial message the agent will say.",
+                    "properties": {
+                      "messageContent": {
+                        "type": "string",
+                        "description": "The content of the initial message.",
+                        "example": "Hello, I am calling from Testing. How can I help you today?"
+                      },
+                      "messageType": {
+                        "type": "string",
+                        "description": "Type of message ('say' or 'prompt').",
+                        "example": "say"
+                      },
+                      "firstSpeaker": {
+                        "type": "string",
+                        "description": "Who speaks first.",
+                        "example": "assistant"
+                      }
+                    }
+                  },
+                  "systemContext": {
+                    "type": "array",
+                    "description": "Array of system context messages defining agent behavior.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "system": {
+                          "type": "string",
+                          "description": "System instruction or prompt.",
+                          "example": "You are a helpful customer support agent."
+                        }
+                      }
+                    }
+                  },
+                  "conversationalFlow": {
+                    "type": "object",
+                    "description": "Visual flow configuration for the agent's conversation logic.",
+                    "properties": {
+                      "nodes": {
+                        "type": "array",
+                        "description": "Array of conversation flow nodes.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Unique identifier for the node.",
+                              "example": "begin"
+                            },
+                            "type": {
+                              "type": "string",
+                              "description": "Type of node (e.g., 'beginCallNode', 'conversationNode', 'endCallNode').",
+                              "example": "beginCallNode"
+                            },
+                            "data": {
+                              "type": "object",
+                              "description": "Node-specific data and configuration.",
+                              "example": {}
+                            }
+                          }
+                        }
+                      },
+                      "edges": {
+                        "type": "array",
+                        "description": "Array of connections between nodes.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Unique identifier for the edge.",
+                              "example": "edge123"
+                            },
+                            "source": {
+                              "type": "string",
+                              "description": "Source node ID.",
+                              "example": "begin"
+                            },
+                            "target": {
+                              "type": "string",
+                              "description": "Target node ID.",
+                              "example": "conversation"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "callSettings": {
+                "type": "object",
+                "description": "Call-related settings and configurations.",
+                "properties": {
+                  "dtmfEnabled": {
+                    "type": "boolean",
+                    "description": "Whether DTMF (touch-tone) input is enabled.",
+                    "example": false
+                  },
+                  "transferTo": {
+                    "type": "string",
+                    "description": "Phone number to transfer calls to.",
+                    "example": ""
+                  },
+                  "transferDtmf": {
+                    "type": "string",
+                    "description": "DTMF sequence for transfer.",
+                    "example": ""
+                  },
+                  "warmTransfer": {
+                    "type": "boolean",
+                    "description": "Whether warm transfer is enabled.",
+                    "example": false
+                  },
+                  "sipRefer": {
+                    "type": "boolean",
+                    "description": "Whether SIP refer is enabled.",
+                    "example": false
+                  },
+                  "backgroundAmbient": {
+                    "type": "boolean",
+                    "description": "Whether background ambient sound is enabled.",
+                    "example": false
+                  },
+                  "backgroundThinking": {
+                    "type": "boolean",
+                    "description": "Whether background thinking sound is enabled.",
+                    "example": false
+                  },
+                  "whisper": {
+                    "type": "boolean",
+                    "description": "Whether whisper mode is enabled.",
+                    "example": false
+                  },
+                  "falseInterruptionTimer": {
+                    "type": "number",
+                    "description": "Timer for false interruption detection in seconds.",
+                    "example": 3
+                  },
+                  "preemptiveGeneration": {
+                    "type": "boolean",
+                    "description": "Whether preemptive response generation is enabled.",
+                    "example": true
+                  }
+                }
+              },
+              "pipelineSettings": {
+                "type": "object",
+                "description": "Pipeline and processing settings.",
+                "properties": {
+                  "commMethod": {
+                    "type": "string",
+                    "description": "Communication method ('one_way' or 'two_way').",
+                    "example": "two_way"
+                  },
+                  "silenceTime": {
+                    "type": "number",
+                    "description": "Silence detection threshold in seconds.",
+                    "example": 8
+                  },
+                  "silenceTurns": {
+                    "type": "number",
+                    "description": "Number of silent turns before action.",
+                    "example": 2
+                  },
+                  "knowledgeBaseId": {
+                    "type": "string",
+                    "description": "ID of the knowledge base to use.",
+                    "example": ""
+                  },
+                  "maxDuration": {
+                    "type": "number",
+                    "description": "Maximum call duration in seconds.",
+                    "example": 600
+                  }
+                }
+              },
+              "turnManagement": {
+                "type": "object",
+                "description": "Turn-taking and interruption management settings.",
+                "properties": {
+                  "interruptionOverall": {
+                    "type": "boolean",
+                    "description": "Whether interruption is enabled overall.",
+                    "example": true
+                  },
+                  "interruptionInitial": {
+                    "type": "boolean",
+                    "description": "Whether interruption is enabled for initial message.",
+                    "example": false
+                  },
+                  "interruptionSensitivity": {
+                    "type": "number",
+                    "description": "Interruption sensitivity level.",
+                    "example": 2
+                  },
+                  "agentResponsiveness": {
+                    "type": "number",
+                    "description": "Agent responsiveness level.",
+                    "example": 4
+                  },
+                  "agentBackchannel": {
+                    "type": "object",
+                    "description": "Backchannel response settings.",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether backchannel is enabled.",
+                        "example": true
+                      },
+                      "threshold": {
+                        "type": "number",
+                        "description": "Backchannel activation threshold.",
+                        "example": 0
+                      },
+                      "fillerWords": {
+                        "type": "array",
+                        "description": "Array of filler words for backchannel.",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": []
+                      },
+                      "probability": {
+                        "type": "number",
+                        "description": "Backchannel response probability.",
+                        "example": 1
+                      },
+                      "interruptions": {
+                        "type": "boolean",
+                        "description": "Whether backchannel can interrupt.",
+                        "example": true
+                      },
+                      "addToContext": {
+                        "type": "boolean",
+                        "description": "Whether backchannel is added to context.",
+                        "example": false
+                      }
+                    }
+                  }
+                }
+              },
+              "analyticsConfig": {
+                "type": "object",
+                "description": "Analytics and monitoring configuration.",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether analytics is enabled.",
+                    "example": true
+                  },
+                  "provider": {
+                    "type": "string",
+                    "description": "Analytics provider.",
+                    "example": "openai"
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "Analytics model to use.",
+                    "example": "gpt-4o-mini"
+                  },
+                  "instructions": {
+                    "type": "string",
+                    "description": "Additional analytics instructions.",
+                    "nullable": true,
+                    "example": null
+                  },
+                  "queries": {
+                    "type": "array",
+                    "description": "Analytics queries to run.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Query name.",
+                          "example": "summary"
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "Query description.",
+                          "example": "Summary of discussion between agent and customer."
+                        },
+                        "type": {
+                          "type": "string",
+                          "description": "Query type.",
+                          "example": "text"
+                        },
+                        "options": {
+                          "type": "array",
+                          "description": "Query options.",
+                          "items": {},
+                          "example": []
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "functionSettings": {
+                "type": "object",
+                "description": "Function and tool settings.",
+                "properties": {
+                  "preCall": {
+                    "type": "array",
+                    "description": "Functions available before call starts.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  },
+                  "duringCall": {
+                    "type": "array",
+                    "description": "Functions available during call.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["end_call", "transfer_call"]
+                  },
+                  "postCall": {
+                    "type": "array",
+                    "description": "Functions available after call ends.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  }
+                }
+              },
+              "agentsList": {
+                "type": "array",
+                "description": "List of agent transfer configurations for this agent.",
+                "items": {
+                  "type": "object",
+                  "description": "Agent transfer configuration.",
+                  "properties": {
+                    "transferTo": {
+                      "type": "string",
+                      "description": "Agent ID to transfer to.",
+                      "example": "conv_test"
+                    },
+                    "useBaseSettings": {
+                      "type": "boolean",
+                      "description": "Whether to use base settings for transfer.",
+                      "example": true
+                    },
+                    "agentVersion": {
+                      "type": "string",
+                      "description": "Version of the agent to transfer to.",
+                      "example": "default"
+                    }
+                  }
+                },
+                "example": []
+              },
+              "dynamicVariablesConfig": {
+                "type": "array",
+                "description": "Configuration for dynamic variables that can be used in agent prompts.",
+                "items": {
+                  "type": "object",
+                  "description": "Dynamic variable configuration.",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Variable name.",
+                      "example": "customer_name"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Variable type.",
+                      "example": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Variable description.",
+                      "example": "Customer's name for personalization"
+                    }
+                  }
+                },
+                "example": []
+              }
+            }
+          },
+          "version": {
+            "$ref": "#/components/schemas/AgentVersionInfo"
+          }
+        }
+      },
+      "AgentVersionInfo": {
+        "type": "object",
+        "required": [
+          "name",
+          "number"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this version of the agent.",
+            "example": "v0"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of this version's purpose or changes.",
+            "example": "First version"
+          },
+          "number": {
+            "type": "integer",
+            "description": "Version number for this agent configuration.",
+            "example": 0
+          }
+        }
+      },
+      "WorkflowMapping": {
+        "type": "object",
+        "required": [
+          "workflowId",
+          "agentId"
+        ],
+        "properties": {
+          "workflowId": {
+            "type": "string",
+            "description": "Unique identifier for the workflow.",
+            "example": "inbound_support"
+          },
+          "agentId": {
+            "type": "string",
+            "description": "ID of the agent assigned to this workflow.",
+            "example": "SupportBot"
+          }
+        }
       }
     },
     "securitySchemes": {

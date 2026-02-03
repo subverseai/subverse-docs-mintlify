@@ -63,47 +63,22 @@
             "pages": [
               "credentials/overview",
               {
-                "group": "AI & Machine Learning",
+                "group": "Types",
                 "pages": [
                   "credentials/types/openai-api",
-                  "credentials/types/google-ai-api"
-                ]
-              },
-              {
-                "group": "E-commerce",
-                "pages": [
+                  "credentials/types/google-ai-api",
                   "credentials/types/shopify-api",
                   "credentials/types/shopify-oauth2-api",
-                  "credentials/types/shopify-access-token-api"
-                ]
-              },
-              {
-                "group": "Database & Storage",
-                "pages": [
+                  "credentials/types/shopify-access-token-api",
                   "credentials/types/airtable-api",
                   "credentials/types/airtable-oauth2-api",
                   "credentials/types/airtable-token-api",
-                  "credentials/types/s3-storage"
-                ]
-              },
-              {
-                "group": "Communication",
-                "pages": [
+                  "credentials/types/s3-storage",
                   "credentials/types/whatsapp-api",
                   "credentials/types/whatsapp-trigger-api",
-                  "credentials/types/sip-credentials"
-                ]
-              },
-              {
-                "group": "Authentication Standards",
-                "pages": [
+                  "credentials/types/sip-credentials",
                   "credentials/types/oauth2-api",
-                  "credentials/types/jwt-auth"
-                ]
-              },
-              {
-                "group": "HTTP Authentication",
-                "pages": [
+                  "credentials/types/jwt-auth",
                   "credentials/types/http-basic-auth",
                   "credentials/types/http-bearer-auth",
                   "credentials/types/http-header-auth"

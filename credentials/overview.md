@@ -1,0 +1,69 @@
+---
+title: Credentials
+description: Complete guide to managing credentials in SubverseAI
+---
+
+# Credentials
+
+Credentials allow your SubverseAI agents to securely connect to external services and APIs. This section covers all supported credential types and how to configure them.
+
+## Getting Started
+
+### How to Create Credentials
+
+1. Navigate to the **Credentials** section in your SubverseAI dashboard
+2. Click **Create New Credential**
+3. Select the credential type from the list below
+4. Follow the specific setup instructions for that credential type
+5. Test the connection to verify it works
+6. Save the credential to use it in your workflows
+
+### Credential Security
+
+- All credentials are encrypted at rest
+- Sensitive data is masked in the UI
+- Credentials can be updated or revoked at any time
+- Audit logs track credential usage and changes
+
+### Supported Credential Types
+
+## AI & Machine Learning
+
+- [OpenAI API](./types/openai-api) - OpenAI API credentials for GPT models
+- [Google AI API](./types/google-ai-api) - Google AI (Gemini) API credentials
+
+## E-commerce
+
+- [Shopify API](./types/shopify-api) - Shopify API credentials
+- [Shopify OAuth2 API](./types/shopify-oauth2-api) - Shopify OAuth2 API credentials
+- [Shopify Access Token API](./types/shopify-access-token-api) - Shopify Access Token API credentials
+
+## Database & Storage
+
+- [Airtable API](./types/airtable-api) - Airtable API credentials
+- [Airtable OAuth2 API](./types/airtable-oauth2-api) - Airtable OAuth2 API credentials
+- [Airtable Token API](./types/airtable-token-api) - Airtable Token API credentials
+- [S3 Storage](./types/s3-storage) - AWS S3 storage credentials
+
+## Communication
+
+- [WhatsApp API](./types/whatsapp-api) - WhatsApp API credentials
+- [WhatsApp Trigger API](./types/whatsapp-trigger-api) - WhatsApp Trigger API credentials
+- [SIP Credentials](./types/sip-credentials) - SIP credentials for voice communication
+
+## Authentication Standards
+
+- [OAuth2 API](./types/oauth2-api) - Generic OAuth2 API credentials
+- [JWT Auth](./types/jwt-auth) - JWT authentication credentials
+
+## HTTP Authentication
+
+- [HTTP Basic Auth](./types/http-basic-auth) - HTTP Basic authentication
+- [HTTP Bearer Auth](./types/http-bearer-auth) - HTTP Bearer authentication
+- [HTTP Header Auth](./types/http-header-auth) - HTTP Header authentication
+
+## Need Help?
+
+- Check individual credential type documentation for troubleshooting tips
+- Use environment-specific credentials for development and production
+- Contact support for credential-specific questions

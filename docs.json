@@ -15,10 +15,7 @@
         "groups": [
           {
             "group": "Platform Overview",
-            "pages": [
-              "dashboard/overview",
-              "dashboard/getting-started"
-            ]
+            "pages": ["dashboard/overview", "dashboard/getting-started"]
           },
           {
             "group": "Build Agents",
@@ -60,6 +57,34 @@
                 ]
               }
             ]
+          },
+          {
+            "group": "Credentials",
+            "pages": [
+              "credentials/overview",
+              {
+                "group": "Types",
+                "pages": [
+                  "credentials/types/openai-api",
+                  "credentials/types/google-ai-api",
+                  "credentials/types/shopify-api",
+                  "credentials/types/shopify-oauth2-api",
+                  "credentials/types/shopify-access-token-api",
+                  "credentials/types/airtable-api",
+                  "credentials/types/airtable-oauth2-api",
+                  "credentials/types/airtable-token-api",
+                  "credentials/types/s3-storage",
+                  "credentials/types/whatsapp-api",
+                  "credentials/types/whatsapp-trigger-api",
+                  "credentials/types/sip-credentials",
+                  "credentials/types/oauth2-api",
+                  "credentials/types/jwt-auth",
+                  "credentials/types/http-basic-auth",
+                  "credentials/types/http-bearer-auth",
+                  "credentials/types/http-header-auth"
+                ]
+              }
+            ]
           }
         ]
       },
@@ -68,9 +93,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": [
-              "workflow/getting-started"
-            ]
+            "pages": ["workflow/getting-started"]
           },
           {
             "group": "Trigger Nodes",
@@ -104,9 +127,7 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": [
-              "integrations/introduction"
-            ]
+            "pages": ["integrations/introduction"]
           },
           {
             "group": "Integration Types",
@@ -150,9 +171,7 @@
           },
           {
             "group": "Agent",
-            "pages": [
-              "api-reference/agent/blueprints"
-            ]
+            "pages": ["api-reference/agent/blueprints"]
           }
         ]
       }

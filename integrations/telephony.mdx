@@ -57,9 +57,10 @@ Setup your voice agent to make outgoing calls from your number.
 
 1. Provide a **Name** for the connection.
 2. Input the **Phone Number** with country code.
-3. Enter the **SIP Address** or **Termination URI** provided by your telephony provider.
-4. Provide **Auth Username** and **Auth Password** for authentication, leave blank if not configured.
-5. You can start using this number for making calls through voice agents interface, workflows, or call APIs.
+3. Select your **SIP Credentials** from the dropdown menu. These credentials contain the SIP address and authentication details needed for the trunk. 
+   - [Learn how to create SIP credentials](/credentials/types/sip-credentials)
+   - All credential fields are **encrypted** for security
+4. You can start using this number for making calls through voice agents interface, workflows, or call APIs.
 
 ## Inbound trunk
 Setup your voice agent to accept incoming calls on your number.
@@ -83,14 +84,38 @@ Setup your voice agent to accept incoming calls on your number.
 
 1. Provide a **Name** for the connection.
 2. Input the **Phone Number** with country code.
-3. Provide **Auth Username** and **Auth Password** for authentication, leave blank if not configured.
-4. Click on **Map Voicebot Usecase** and select the voice agent you want to use while accepting the calls.
+3. Select your **SIP Credentials** from the dropdown menu. These credentials contain the authentication details needed for the trunk.
+   - [Learn how to create SIP credentials](/credentials/types/sip-credentials)
+   - All credential fields are **encrypted** for security
+4. Configure voice agent mapping (optional):
+   - **Agent**: Select the voice agent you want to use while accepting calls
+   - **Agent Version**: Choose version number or use "default"/"draft" (defaults to "default")
 
 <Tip>
-  Every time you update the voice agent use case, make sure to map it again to the number to ensure it has the updated context and settings.
+  Every time you remove and again map the voice agent use case, make sure to map it again to the number to ensure it has the updated context and settings.
 </Tip>
 
-<img
-  style={{ borderRadius: '0.5rem' }}
-  src="/images/integrations/telephony/map-trunk-usecase.png"
-/>
+## Troubleshooting
+
+### Credential Selection Issues
+
+**No SIP credentials appear in dropdown**
+- Ensure you have [created SIP credentials](/credentials/types/sip-credentials) first
+- Check that your credentials have been saved successfully
+- Verify you have the necessary permissions to access credentials
+
+**Selected credentials not working**
+- Test your SIP credentials in the [Credentials section](/credentials/overview)
+- Verify the SIP address and authentication details are correct
+- Check if your SIP provider account is active and properly configured
+
+**Connection failed after selecting credentials**
+- Verify network connectivity to your SIP provider
+- Check firewall settings allow SIP traffic (ports 5060/5061)
+- Ensure your SIP provider supports the authentication method used
+- Contact your SIP provider if the issue persists
+
+**Call quality issues**
+- Check your network bandwidth and latency
+- Verify codec compatibility with your SIP provider
+- Test with different audio quality settings in your voice agent configuration

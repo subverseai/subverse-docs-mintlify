@@ -15,10 +15,7 @@
         "groups": [
           {
             "group": "Platform Overview",
-            "pages": [
-              "dashboard/overview",
-              "dashboard/getting-started"
-            ]
+            "pages": ["dashboard/overview", "dashboard/getting-started"]
           },
           {
             "group": "Build Agents",
@@ -60,6 +57,59 @@
                 ]
               }
             ]
+          },
+          {
+            "group": "Credentials",
+            "pages": [
+              "credentials/overview",
+              {
+                "group": "AI & Machine Learning",
+                "pages": [
+                  "credentials/types/openai-api",
+                  "credentials/types/google-ai-api"
+                ]
+              },
+              {
+                "group": "E-commerce",
+                "pages": [
+                  "credentials/types/shopify-api",
+                  "credentials/types/shopify-oauth2-api",
+                  "credentials/types/shopify-access-token-api"
+                ]
+              },
+              {
+                "group": "Database & Storage",
+                "pages": [
+                  "credentials/types/airtable-api",
+                  "credentials/types/airtable-oauth2-api",
+                  "credentials/types/airtable-token-api",
+                  "credentials/types/s3-storage"
+                ]
+              },
+              {
+                "group": "Communication",
+                "pages": [
+                  "credentials/types/whatsapp-api",
+                  "credentials/types/whatsapp-trigger-api",
+                  "credentials/types/sip-credentials"
+                ]
+              },
+              {
+                "group": "Authentication Standards",
+                "pages": [
+                  "credentials/types/oauth2-api",
+                  "credentials/types/jwt-auth"
+                ]
+              },
+              {
+                "group": "HTTP Authentication",
+                "pages": [
+                  "credentials/types/http-basic-auth",
+                  "credentials/types/http-bearer-auth",
+                  "credentials/types/http-header-auth"
+                ]
+              }
+            ]
           }
         ]
       },
@@ -68,9 +118,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": [
-              "workflow/getting-started"
-            ]
+            "pages": ["workflow/getting-started"]
           },
           {
             "group": "Trigger Nodes",
@@ -104,9 +152,7 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": [
-              "integrations/introduction"
-            ]
+            "pages": ["integrations/introduction"]
           },
           {
             "group": "Integration Types",
@@ -150,9 +196,7 @@
           },
           {
             "group": "Agent",
-            "pages": [
-              "api-reference/agent/blueprints"
-            ]
+            "pages": ["api-reference/agent/blueprints"]
           }
         ]
       }

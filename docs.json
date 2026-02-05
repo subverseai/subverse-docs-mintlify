@@ -57,34 +57,6 @@
                 ]
               }
             ]
-          },
-          {
-            "group": "Credentials",
-            "pages": [
-              "credentials/overview",
-              {
-                "group": "Types",
-                "pages": [
-                  "credentials/types/openai-api",
-                  "credentials/types/google-ai-api",
-                  "credentials/types/shopify-api",
-                  "credentials/types/shopify-oauth2-api",
-                  "credentials/types/shopify-access-token-api",
-                  "credentials/types/airtable-api",
-                  "credentials/types/airtable-oauth2-api",
-                  "credentials/types/airtable-token-api",
-                  "credentials/types/s3-storage",
-                  "credentials/types/whatsapp-api",
-                  "credentials/types/whatsapp-trigger-api",
-                  "credentials/types/sip-credentials",
-                  "credentials/types/oauth2-api",
-                  "credentials/types/jwt-auth",
-                  "credentials/types/http-basic-auth",
-                  "credentials/types/http-bearer-auth",
-                  "credentials/types/http-header-auth"
-                ]
-              }
-            ]
           }
         ]
       },
@@ -118,6 +90,39 @@
               "workflow/send-email-node",
               "workflow/smart-filter-node",
               "workflow/webhook-node"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Credentials",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+             "credentials/overview"
+            ]
+          },
+          {
+            "group": "Types",
+            "pages": [
+              "credentials/types/openai-api",
+              "credentials/types/google-ai-api",
+              "credentials/types/shopify-api",
+              "credentials/types/shopify-oauth2-api",
+              "credentials/types/shopify-access-token-api",
+              "credentials/types/airtable-api",
+              "credentials/types/airtable-oauth2-api",
+              "credentials/types/airtable-token-api",
+              "credentials/types/s3-storage",
+              "credentials/types/whatsapp-api",
+              "credentials/types/whatsapp-trigger-api",
+              "credentials/types/sip-credentials",
+              "credentials/types/oauth2-api",
+              "credentials/types/jwt-auth",
+              "credentials/types/http-basic-auth",
+              "credentials/types/http-bearer-auth",
+              "credentials/types/http-header-auth"
             ]
           }
         ]

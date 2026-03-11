@@ -61,35 +61,63 @@
         ]
       },
       {
-        "tab": "Workflow",
+        "tab": "AgentVerse",
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["workflow/getting-started"]
+            "pages": [
+              "agentverse/introduction",
+              "agentverse/quickstart",
+              "agentverse/node-types",
+              "agentverse/dynamic-inputs"
+            ]
           },
           {
             "group": "Trigger Nodes",
             "pages": [
-              "workflow/call-api-node",
-              "workflow/upload-data-node",
-              "workflow/incoming-call-node"
+              "agentverse/nodes/webhook",
+              "agentverse/nodes/schedule-trigger",
+              "agentverse/nodes/manual-trigger",
+              "agentverse/nodes/airtable-trigger",
+              "agentverse/nodes/slack-trigger",
+              "agentverse/nodes/whatsapp-trigger",
+              "agentverse/nodes/shopify-trigger",
+              "agentverse/nodes/subverse-ai-trigger"
             ]
           },
           {
-            "group": "Agent Nodes",
+            "group": "Action Nodes",
             "pages": [
-              "workflow/voice-agent-node",
-              "workflow/ai-query-agent-node"
+              "agentverse/nodes/slack",
+              "agentverse/nodes/airtable",
+              "agentverse/nodes/shopify",
+              "agentverse/nodes/whatsapp",
+              "agentverse/nodes/http-request",
+              "agentverse/nodes/file-upload",
+              "agentverse/nodes/respond-to-webhook"
             ]
           },
           {
-            "group": "Function Nodes",
+            "group": "Logic Nodes",
             "pages": [
-              "workflow/schedule-callback-node",
-              "workflow/send-whatsapp-node",
-              "workflow/send-email-node",
-              "workflow/smart-filter-node",
-              "workflow/webhook-node"
+              "agentverse/nodes/conditions",
+              "agentverse/nodes/for-loop",
+              "agentverse/nodes/wait",
+              "agentverse/nodes/human-in-the-loop"
+            ]
+          },
+          {
+            "group": "AI Nodes",
+            "pages": [
+              "agentverse/nodes/ai-agent",
+              "agentverse/nodes/subverse-agents"
+            ]
+          },
+          {
+            "group": "Operations",
+            "pages": [
+              "agentverse/monitoring",
+              "agentverse/troubleshooting"
             ]
           }
         ]

@@ -22,18 +22,31 @@
             "pages": [
               "agents/create-first-agent",
               {
-                "group": "Agent Configurations",
+                "group": "Voice Agent",
                 "pages": [
-                  "agents/agent-configurations",
-                  "agent-configurations/agent-settings",
-                  "agent-configurations/llm-preferences",
-                  "agent-configurations/speech-detection",
-                  "agent-configurations/voice-settings",
-                  "agent-configurations/call-settings",
-                  "agent-configurations/knowledgebase-settings",
-                  "agent-configurations/function-settings",
-                  "agent-configurations/agent-transfers",
-                  "agent-configurations/post-call-analysis"
+                  "agents/voice-agent",
+                  "agents/voice-agent-configuration"
+                ]
+              },
+              {
+                "group": "Chat Agent",
+                "pages": [
+                  "agents/chat-agent",
+                  "agents/chat-agent-configuration"
+                ]
+              },
+              {
+                "group": "Email Agent",
+                "pages": [
+                  "agents/email-agent",
+                  "agents/email-agent-configuration"
+                ]
+              },
+              {
+                "group": "Background Agent",
+                "pages": [
+                  "agents/background-agent",
+                  "agents/background-agent-configuration"
                 ]
               }
             ]
@@ -123,6 +136,24 @@
         ]
       },
       {
+        "tab": "Communication Channels",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["communication-channels/overview"]
+          },
+          {
+            "group": "Channel Types",
+            "pages": [
+              "communication-channels/voice",
+              "communication-channels/whatsapp",
+              "communication-channels/email",
+              "communication-channels/webchat"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Credentials",
         "groups": [
           {
@@ -156,7 +187,7 @@
         ]
       },
       {
-        "tab": "Integration",
+        "tab": "Integrations",
         "groups": [
           {
             "group": "Overview",

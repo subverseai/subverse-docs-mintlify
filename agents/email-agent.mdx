@@ -1,0 +1,81 @@
+---
+title: 'Email Agent'
+description: 'Build an AI agent that reads and replies to incoming emails automatically'
+---
+
+## Overview
+
+An Email Agent reads incoming emails and replies to them automatically. When a new email arrives at a configured address, the agent processes the message and sends a response — just like a human would.
+
+Email agents are powered by an **Email Channel**, which connects a real inbox (via SMTP credentials) to your agent. The agent handles what to reply; the channel handles sending and receiving the actual emails.
+
+**When to use an Email Agent:**
+- You want to automatically handle incoming support requests or inquiries by email
+- You need a first-line response bot that can triage, answer FAQs, or escalate to a human
+- You want to send structured or personalized email replies using AI
+
+---
+
+## How to Create
+
+### Step 1: Create the Email Agent
+
+1. Navigate to **Agents** in the left sidebar.
+2. Click **Add Agent** and select **Email** as the agent type.
+3. Fill in the **Identity** fields — name and description.
+4. Write the agent's system prompt under **Instructions** — describe how it should respond to emails, what tone to use, and what topics it handles.
+5. Configure the **LLM Service** (provider and model).
+6. Optionally configure **Memory**, **Functions**, **Pipeline Settings**, and **Analytics**.
+7. Click **Save**.
+
+### Step 2: Create an Email Channel
+
+An Email Channel connects the agent to a real email address. You'll need an email credential (SMTP details) set up in **[Credentials](/credentials/overview)** before creating the channel.
+
+1. Navigate to **Channels** in the left sidebar.
+2. Click **Add Channel** and select **Email**.
+3. Enter the channel name, email address, and select an email credential.
+4. Under **Agent Configuration**, select the Email Agent you just created.
+5. Click **Save**.
+
+Once the channel is active, any email sent to the configured address will be processed by the linked agent.
+
+<Card title="Email Channel Setup" icon="envelope" href="/communication-channels/email">
+  Full setup guide and configuration reference for Email Channels
+</Card>
+
+
+---
+
+## How to Test
+
+1. Create and save your Email Agent.
+2. Create an Email Channel linked to the agent.
+3. Send a test email to the address configured in the channel.
+4. Wait a few seconds for the agent to process the email.
+5. Check your inbox for the agent's reply.
+6. Navigate to **Sessions** in the dashboard to see the full conversation log and analytics output.
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/test-chat-email-agent.gif"
+/>
+
+<Note>
+  Make sure the SMTP credential is valid and the email address is configured to receive inbound mail. If no reply arrives, check the session logs for errors.
+</Note>
+
+---
+
+## Tips & Notes
+
+- **First Speaker should be User:** Email conversations are always initiated by an incoming email. Set Who Speaks First to **User** so the agent waits rather than sending an unsolicited message first.
+- **Allow List pattern:** To restrict the agent to only your team's emails, use a pattern like `.*@yourcompany\.com`. Leave Allow List empty to allow all senders.
+- **Knowledge Base:** If emails often ask FAQs, attach a Knowledge Base with your documentation. The agent will search it before responding.
+- **Memory across threads:** By default, each email is a fresh context. Enable both memory fields to give the agent awareness of prior conversations with the same sender.
+
+---
+
+<Card title="Email Agent Configuration" icon="sliders" href="/agents/email-agent-configuration">
+  See the full configuration reference — every field, type, and default value
+</Card>

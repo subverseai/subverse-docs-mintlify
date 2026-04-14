@@ -1,0 +1,128 @@
+---
+title: 'Chat Agent Configuration'
+description: 'Full configuration reference for Chat Agents'
+---
+
+## Identity
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Name | Text | — (required) | Unique identifier. Lowercase letters, numbers, and underscores only (e.g. `support_bot`). Must start with a letter. |
+| Description | Text | `""` | Internal description of what this agent does. |
+| Architecture | Dropdown | `Prompt Based` | **Prompt Based** uses a system prompt. **Conversational Flow** uses a visual node-based builder. |
+| Debug Mode | Toggle | Off | Outputs extra internal reasoning logs. Use during development; disable in production. |
+
+---
+
+## Agent Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/agent-settings-new.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Greeting Message | Text | `""` | The first message the agent sends when a conversation starts. Leave blank if you want the user to write first. |
+| Greeting Type | Dropdown | `Prompt` | **Prompt** — agent generates the opening message dynamically. **Say** — agent sends exactly what you typed. |
+| Who Speaks First | Dropdown | `SubVerseAI Agent` | **SubVerseAI Agent** — agent opens the conversation. **User** — agent waits for the user to write first. |
+| System Prompt | Text area | Empty | The main system prompt. Write the agent's role, tone, rules, and behavior here. Use the **Refine using AI** button to get AI assistance. |
+
+---
+
+## Large Language Model Preferences
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/llm-settings-chat-email-new.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| LLM Model | Dropdown | — (required) | The AI model powering this agent. Each model shows its speed and reasoning ratings. |
+| Thinking Level | Dropdown | `Default` | Extended reasoning depth. Options: **Default**, **Low**, **Medium**, **High**, **Very High**. Higher = better reasoning but slower. |
+| Max Tokens | Number | None | Maximum tokens the LLM can generate per response. Leave blank to use the model's default. |
+| Temperature | Slider | `0.5` | Response creativity. `0.0` = consistent and precise. `1.0+` = more varied and creative. |
+
+---
+
+## Session Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/session-settings-chat-email.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Communication Method | Dropdown | `Two Way` | **Two Way** — agent sends and receives messages. **One Way** — agent only sends (e.g. broadcast mode). |
+| Session Timeout (mins) | Number | None | Minutes of inactivity after which the session ends automatically. Leave blank for no timeout. |
+| Remember Customer Interactions | Toggle | Off | Save a summary of each conversation to memory after the session ends. |
+| Use Customer Interaction Memory | Toggle | Off | Pull relevant past conversation summaries into context at the start of a new session. Enable both for persistent memory across conversations. |
+
+---
+
+## Knowledgebase Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/kb-settings.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Knowledge Base | Dropdown | None | Attach a Knowledge Base so the agent can retrieve answers from your documents during a conversation. |
+
+---
+
+## Function Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/function-settings-chat-email.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Pre Call Tools | Multi-select | Empty | LLM tools that run automatically before the session starts (e.g. fetch customer data). |
+| During Call Tools | Multi-select | Empty | Tools the agent can call mid-conversation (e.g. check order status, send an email). |
+| Post Call Tools | Multi-select | Empty | LLM tools that run automatically after the session ends (e.g. update CRM, send a follow-up). |
+
+---
+
+## Agent Security Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/agent-security-settings-new.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Allow List (Allowed Callers) | Text area | Empty | Regex patterns for contacts allowed to interact with this agent, separated by commas. Leave empty to allow everyone. |
+| Block List (Blocked Callers) | Text area | Empty | Regex patterns for contacts that are blocked, separated by commas. Takes priority over Allow List. |
+
+---
+
+## Post Call Data Analysis
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/post-call-analysis-new.png"
+/>
+
+After each conversation, the agent can automatically analyze the transcript and extract structured data.
+
+| Field | Type | Description |
+|---|---|---|
+| LLM Model | Dropdown | The AI model used to run the post-session analysis. Can differ from the main agent model. |
+| Parameters | Form / JSON | Define the data points to extract from each conversation. Switch between **Form** (add parameters one by one) and **JSON** (paste a raw JSON schema). |
+
+**Parameter fields:**
+
+| Field | Description |
+|---|---|
+| Parameter Name | The key name for this data point (e.g. `summary`, `user_sentiment`). |
+| Details | Description of what this parameter represents and how to extract it. |
+| Type | Data type: `string`, `boolean`, `number`, etc. |
+| Required | Whether this parameter must be present in every analysis output. |

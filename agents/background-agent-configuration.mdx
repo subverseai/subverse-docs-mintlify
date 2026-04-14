@@ -1,0 +1,128 @@
+---
+title: 'Background Agent Configuration'
+description: 'Full configuration reference for Background Agents'
+---
+
+## Identity
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Name | Text | — (required) | Unique identifier. Lowercase letters, numbers, and underscores only (e.g. `data_processor`). Must start with a letter. |
+| Description | Text | `""` | Internal description of what task this agent performs. |
+| Architecture | Dropdown | `Prompt Based` | **Prompt Based** uses a system prompt. **Conversational Flow** uses a visual node-based builder. |
+| Debug Mode | Toggle | Off | Outputs extra internal logs. Useful when building and testing workflows. |
+
+---
+
+## Agent Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/agent-settings-new.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Greeting Message | Text | `""` | The initial prompt or task description sent to the agent when it is invoked. |
+| Greeting Type | Dropdown | `Prompt` | **Prompt** — agent generates a response based on the context. **Say** — outputs exact text (rarely used for background agents). |
+| Who Speaks First | Dropdown | `SubVerseAI Agent` | Keep as **SubVerseAI Agent** so the agent begins processing immediately when triggered. |
+| System Prompt | Text area | Empty | The main system prompt. Describe clearly what input the agent receives, what to do with it, and what output to produce. Use the **Refine using AI** button for assistance. |
+
+---
+
+## Large Language Model Preferences
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/llm-settings-chat-email-new.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| LLM Model | Dropdown | — (required) | The AI model powering this agent. Choose a capable model for complex tasks. Each model shows its speed and reasoning ratings. |
+| Thinking Level | Dropdown | `Default` | Extended reasoning depth. Options: **Default**, **Low**, **Medium**, **High**, **Very High**. For complex tasks like document analysis or data reasoning, use **High** or **Very High**. |
+| Max Tokens | Number | None | Maximum tokens the LLM can generate per response. Leave blank to use the model's default. |
+| Temperature | Slider | `0.5` | Response creativity. For structured tasks (classification, extraction) use `0.0`–`0.3`. For generative tasks (drafting, summarizing) use `0.5`–`0.8`. |
+
+---
+
+## Session Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/session-settings-chat-email.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Communication Method | Dropdown | `Two Way` | **Two Way** — agent exchanges messages internally as part of its task. **One Way** — agent only produces output. |
+| Session Timeout (mins) | Number | None | Minutes after which an idle background task is ended automatically. |
+| Remember Customer Interactions | Toggle | Off | Save a summary of this execution to memory when the task completes. |
+| Use Customer Interaction Memory | Toggle | Off | Pull past execution summaries into context when this agent is triggered again for the same user or entity. |
+
+---
+
+## Knowledgebase Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/kb-settings.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Knowledge Base | Dropdown | None | Attach a Knowledge Base. The agent will search it as part of completing its task. Useful for question-answering or document-grounded tasks. |
+
+---
+
+## Function Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/function-settings-chat-email.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Pre Call Tools | Multi-select | Empty | LLM tools that run before the agent starts its task (e.g. fetch data from an external system). |
+| During Call Tools | Multi-select | Empty | Tools the agent can call while executing (e.g. write to a database, call an external API, send an email). |
+| Post Call Tools | Multi-select | Empty | LLM tools that run after the task completes (e.g. store results, notify another system). |
+
+---
+
+## Agent Security Settings
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/agent-security-settings-new.png"
+/>
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Allow List (Allowed Callers) | Text area | Empty | Regex patterns for sources allowed to trigger this agent, separated by commas. Leave empty to allow all. |
+| Block List (Blocked Callers) | Text area | Empty | Regex patterns for sources that are blocked, separated by commas. Takes priority over Allow List. |
+
+---
+
+## Post Call Data Analysis
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agents/post-call-analysis-new.png"
+/>
+
+After each execution, the agent can automatically analyze the output and extract structured data.
+
+| Field | Type | Description |
+|---|---|---|
+| LLM Model | Dropdown | The AI model used to run the post-execution analysis. Can differ from the main agent model. |
+| Parameters | Form / JSON | Define the data points to extract from each execution. Switch between **Form** (add parameters one by one) and **JSON** (paste a raw JSON schema). |
+
+**Parameter fields:**
+
+| Field | Description |
+|---|---|
+| Parameter Name | The key name for this data point (e.g. `task_completion`, `summary`). |
+| Details | Description of what this parameter represents and how to extract it. |
+| Type | Data type: `string`, `boolean`, `number`, etc. |
+| Required | Whether this parameter must be present in every analysis output. |

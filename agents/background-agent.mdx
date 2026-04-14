@@ -1,0 +1,101 @@
+---
+title: 'Background Agent'
+description: 'Build an AI agent that runs tasks asynchronously as part of automated workflows'
+---
+
+## Overview
+
+A Background Agent runs tasks asynchronously without a live user on the other end. Unlike Chat, Voice, or Email agents, background agents aren't triggered by a user message — they're invoked programmatically as part of an automated workflow, triggered by an event, or called as a **tool** by another agent.
+
+Background agents are the building block for autonomous, multi-step automation inside Subverse's **Agentverse** workflow system. They process data, make decisions, call APIs, and produce results — all without human interaction.
+
+**When to use a Background Agent:**
+- You want to run an AI task automatically as part of a larger workflow
+- You need an agent that processes uploaded files, form submissions, or data events
+- You want to give another agent (Voice, Chat, or Email) the ability to delegate a complex sub-task
+- You need fire-and-forget processing (e.g. "analyze this document and update the CRM")
+
+---
+
+## How to Create
+
+1. Navigate to **Agents** in the left sidebar.
+2. Click **Add Agent** and select **Background Agent** as the agent type.
+3. Fill in the **Identity** fields — name and description.
+4. Write the agent's system prompt — describe the task it should perform when triggered.
+5. Configure the **LLM Service** (provider and model).
+6. Optionally configure **Functions**, **Pipeline Settings**, and **Analytics**.
+7. Click **Save**.
+
+To use the agent in a workflow, add it as a node inside an **Agentverse** flow. To call it as a tool from another agent, deploy it as an **LLM Tool** (see [LLM Tool Deployment](#llm-tool-deployment) below).
+
+---
+
+## LLM Tool Deployment
+
+Background agents can be **deployed as LLM Tools**, making them callable by other agents (Voice, Chat, Email) during their conversations. This lets you build composable AI systems where a front-facing agent delegates complex tasks to a specialized background agent.
+
+**How it works:**
+1. Create the Background Agent and save it.
+2. Navigate to **LLM Tools** and create a new tool.
+3. Set **Deployment Method** to `Background Agent`.
+4. Set the **Agent Name** to the exact name of your Background Agent.
+5. Save the LLM Tool.
+6. Attach the LLM Tool to a Chat, Voice, or Email agent's **During-Session Functions**.
+
+When the front-facing agent decides to use the tool, it invokes the background agent, waits for the result, and incorporates the output into its response.
+
+| Field | Type | Description |
+|---|---|---|
+| Deployment Method | Dropdown | Set to `Background Agent` to link to a Background Agent. |
+| Agent Name | Text | The exact name of the Background Agent to invoke. |
+
+<Note>
+  Background agents used as tools are synchronous from the calling agent's perspective — the calling agent waits for the background agent to finish before continuing. Keep execution time short if using this pattern in a real-time chat or voice context.
+</Note>
+
+---
+
+## How to Test
+
+### Option 1: Manual Trigger via API
+
+Send a POST request to the manual trigger endpoint:
+
+```
+POST /api/agentverse/manual-upload-trigger
+```
+
+This accepts a `multipart/form-data` payload. Include optional files to process and any dynamic variable values. The endpoint is fire-and-forget — it returns immediately and the agent runs in the background. Check the **Execution History** in the dashboard to see the result.
+
+### Option 2: Trigger via an Agentverse Workflow
+
+1. Open **Agentverse** and create or open a workflow.
+2. Add a **Background Agent** node and link it to your agent.
+3. Connect it to a trigger node (e.g. webhook, file upload, or scheduled trigger).
+4. Click **Run** or send a test event.
+5. Check the execution log for the agent's output.
+
+### Option 3: Via LLM Tool
+
+1. Open a Chat or Voice agent that has your LLM Tool attached.
+2. Test the agent using the Chat Sidebar or Call Sidebar.
+3. Send a message that should invoke the tool.
+4. Verify the background agent was called and returned the expected result.
+
+---
+
+## Tips & Notes
+
+- **Output Schema is powerful:** If downstream systems need to parse the agent's output, always define a JSON Output Schema. This prevents the LLM from returning prose instead of structured data.
+- **Max Duration:** Background agents processing large files or making many API calls may need a longer max duration. The default is 10 minutes — increase it if tasks regularly time out.
+- **Thinking Level for complex tasks:** For tasks like multi-document analysis or data reasoning, set Thinking Level to **High** or **Very High** for better accuracy.
+- **Fire-and-forget:** Background agents don't block the caller. Use the execution history to check whether the task succeeded.
+- **Dynamic Variables:** Pass context at invocation time using dynamic variables. This lets you build a single general-purpose agent and customize its behavior per task (e.g. pass document type, user ID, or priority level).
+- **Chaining agents:** You can chain background agents together in Agentverse workflows — the output of one becomes the input to the next. This is the foundation of complex multi-step AI automations.
+
+---
+
+<Card title="Background Agent Configuration" icon="sliders" href="/agents/background-agent-configuration">
+  See the full configuration reference — every field, type, and default value
+</Card>

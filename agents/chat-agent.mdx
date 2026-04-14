@@ -25,7 +25,21 @@ Chat agents can be embedded in your website via a web chat channel, integrated i
 5. Configure the **LLM Service** (provider and model).
 6. Optionally configure **Memory**, **Functions**, **Pipeline Settings**, and **Analytics**.
 7. Click **Save**.
-8. To deploy it, go to **Channels**, create a **Web Chat Channel**, and link this agent.
+
+## Deploy: Connect to a Channel
+
+A saved Chat Agent can be tested from the dashboard immediately. To deploy it for real conversations, connect it to a communication channel. Chat agents support two channel types:
+
+<CardGroup cols={2}>
+  <Card title="WhatsApp Channel" icon="whatsapp" href="/communication-channels/whatsapp">
+    Connect your WhatsApp Business number — customers message your number and the agent replies automatically
+  </Card>
+  <Card title="WebChat Channel" icon="message" href="/communication-channels/webchat">
+    Enable chat on your website or app via webhooks and APIs
+  </Card>
+</CardGroup>
+
+Each channel requires credentials (WhatsApp API key or WebChat credential) stored securely in encrypted form. See **[Credentials](/credentials/overview)** to set these up before creating a channel.
 
 ---
 

@@ -30,14 +30,20 @@ Email agents are powered by an **Email Channel**, which connects a real inbox (v
 
 ### Step 2: Create an Email Channel
 
-An Email Channel connects the agent to a real email address.
+An Email Channel connects the agent to a real email address. You'll need an email credential (SMTP details) set up in **[Credentials](/credentials/overview)** before creating the channel.
 
 1. Navigate to **Channels** in the left sidebar.
-2. Click **Create Channel** and select **Email**.
-3. Fill in the channel configuration (see [Email Channel Configuration](#email-channel-configuration) below).
-4. Click **Save**.
+2. Click **Add Channel** and select **Email**.
+3. Enter the channel name, email address, and select an email credential.
+4. Under **Agent Configuration**, select the Email Agent you just created.
+5. Click **Save**.
 
 Once the channel is active, any email sent to the configured address will be processed by the linked agent.
+
+<Card title="Email Channel Setup" icon="envelope" href="/communication-channels/email">
+  Full setup guide and configuration reference for Email Channels
+</Card>
+
 
 ---
 
@@ -61,30 +67,12 @@ Once the channel is active, any email sent to the configured address will be pro
 
 ---
 
-## Email Channel Configuration
-
-An Email Channel links the agent to a physical email address. You must create a channel before the agent can receive or send emails.
-
-| Field | Type | Default | Description |
-|---|---|---|---|
-| Channel Name | Text | — (required) | Friendly name for this channel (e.g. `Support Inbox`). Internal use only. |
-| Description | Text | None | Optional description for this channel. |
-| Email Address | Text | — (required) | The email address that will receive incoming emails and send replies. |
-| SMTP Credential | Dropdown | — (required) | A saved SMTP credential authorizing sends from this address. Create one under **Settings > Credentials** first. |
-| Linked Agent | Dropdown | — (required) | The Email Agent that should handle incoming emails. Only agents of type **Email** are shown. |
-| Agent Version | Dropdown | `Default` | **Default** = the published/stable version. **Draft** = the latest unpublished version (useful for testing changes). |
-| Enabled | Toggle | On | When on, the channel actively processes incoming emails. Toggle off to pause without deleting. |
-
----
-
 ## Tips & Notes
 
-- **First Speaker should be User:** Email conversations are always initiated by an incoming email. Set First Speaker to **User** so the agent waits rather than sending an unsolicited message first.
+- **First Speaker should be User:** Email conversations are always initiated by an incoming email. Set Who Speaks First to **User** so the agent waits rather than sending an unsolicited message first.
 - **Allow List pattern:** To restrict the agent to only your team's emails, use a pattern like `.*@yourcompany\.com`. Leave Allow List empty to allow all senders.
-- **SMTP Credential:** Set up an SMTP credential (server, port, username, password) under Settings before creating an Email Channel.
 - **Knowledge Base:** If emails often ask FAQs, attach a Knowledge Base with your documentation. The agent will search it before responding.
 - **Memory across threads:** By default, each email is a fresh context. Enable both memory fields to give the agent awareness of prior conversations with the same sender.
-- **Agent Version — Draft vs Default:** Use **Draft** while testing new prompt changes. Switch to **Default** once satisfied to avoid exposing work-in-progress logic to real customers.
 
 ---
 

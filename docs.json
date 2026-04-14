@@ -136,6 +136,24 @@
         ]
       },
       {
+        "tab": "Communication Channels",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["communication-channels/overview"]
+          },
+          {
+            "group": "Channel Types",
+            "pages": [
+              "communication-channels/voice",
+              "communication-channels/whatsapp",
+              "communication-channels/email",
+              "communication-channels/webchat"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Credentials",
         "groups": [
           {
@@ -169,7 +187,7 @@
         ]
       },
       {
-        "tab": "Integration",
+        "tab": "Integrations",
         "groups": [
           {
             "group": "Overview",

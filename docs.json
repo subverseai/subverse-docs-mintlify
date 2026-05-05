@@ -205,7 +205,8 @@
                   "integrations/agentic-functions/default-functions",
                   "integrations/agentic-functions/agent-handoff",
                   "integrations/agentic-functions/background-agent",
-                  "integrations/agentic-functions/custom-functions"
+                  "integrations/agentic-functions/custom-functions",
+                  "integrations/agentic-functions/custom-function-actions"
                 ]
               },
               "integrations/knowledge-base",

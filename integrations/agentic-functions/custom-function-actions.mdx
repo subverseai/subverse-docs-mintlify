@@ -1,0 +1,415 @@
+---
+title: 'Custom Function Actions'
+description: 'Built-in actions available to your custom function code — connect to HTTP APIs, Airtable, Google Sheets, and SubVerse agents without writing any integration boilerplate'
+---
+
+Custom Function Actions are pre-built integrations you can call directly from your custom function code via `subverseActions`. When you build a custom function, you select which actions you want to use and attach the required credentials. The Code Assistant is aware of your selected actions and credentials, so you can describe what you want in plain English and it will generate the correct code for you.
+
+<Info>
+  Actions that require credentials will prompt you to select a saved credential when you add the action to your function. Credentials are stored securely and injected at runtime — your code never contains secrets.
+</Info>
+
+---
+
+## HTTP: Send Request
+
+Make an outbound HTTP request to any URL. Supports all standard methods, custom headers, query parameters, and request body. Optionally authenticates using a stored credential.
+
+**Compatible credentials:** HTTP Basic Auth, HTTP Bearer Auth, HTTP Header Auth (API Key), HTTP Digest Auth, HTTP Query Auth, HTTP Custom Auth
+
+| Parameter | Required | Description |
+|---|---|---|
+| `options.method` | Yes | HTTP method: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS` |
+| `options.url` | Yes | Target URL — must start with `http://` or `https://` |
+| `options.headers` | No | Array of `{ name, value }` pairs for custom request headers |
+| `options.query` | No | Array of `{ name, value }` pairs appended as URL query parameters |
+| `options.body` | No | Request payload — object (auto-serialised as JSON) or raw string |
+| `options.authentication` | No | Auth method: `none` \| `basicAuth` \| `bearerToken` \| `apiKey` \| `customAuth` \| `digestAuth` \| `queryAuth`. Default `none` |
+| `credentialId` | No | Required when `authentication` is not `none`. ID of the saved credential to use |
+| `options.clientOptions.timeout` | No | Request timeout in milliseconds. Default `30000`, max `300000` |
+| `options.clientOptions.followRedirects` | No | Follow 301/302 redirects. Default `true` |
+| `options.clientOptions.ignoreSSL` | No | Bypass SSL certificate validation. Default `false` |
+| `options.clientOptions.responseFormat` | No | Force response format: `autodetect` \| `json` \| `text`. Default `autodetect` |
+| `options.clientOptions.fullResponse` | No | Return `statusCode`, `headers`, and `body` instead of just the body. Default `false` |
+| `options.clientOptions.ignoreResponseCode` | No | Don't throw on 4xx/5xx — handle the error response yourself. Default `false` |
+
+```javascript
+const response = await subverseActions.http.sendRequest({
+  credentialId: 'CREDENTIAL_ID',          // omit when authentication is 'none'
+  options: {
+    method: 'POST',
+    url: 'https://api.example.com/orders',
+    authentication: 'bearerToken',         // matches credential type
+    headers: [
+      { name: 'X-Request-ID', value: body.sessionId }
+    ],
+    body: {
+      customerId: body.params.customer_id,
+      status: 'confirmed'
+    },
+    clientOptions: {
+      timeout: 10000,
+      ignoreResponseCode: true             // handle 4xx without throwing
+    }
+  }
+});
+
+// response.responseCode — HTTP status code
+// response.data        — parsed response body
+// response.message     — status text
+```
+
+---
+
+## Airtable: List Records
+
+Fetch a list of records from an Airtable table. Supports filtering, sorting, field selection, and pagination.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Airtable credential ID |
+| `options.baseId` | Yes | Airtable Base ID — e.g. `appXXXXXXXXXXXXXX` |
+| `options.tableIdOrName` | Yes | Table name or table ID — e.g. `tblXXXXXXXXXXXXXX` |
+| `options.filters.filterByFormula` | No | Airtable formula to filter records |
+| `options.filters.fields` | No | Array of field names to return. Omit for all fields |
+| `options.filters.sort` | No | Array of `{ "Field Name": "asc" \| "desc" }` objects |
+| `options.filters.pageSize` | No | Records per page, max `100` |
+| `options.filters.maxRecords` | No | Total cap on records returned |
+| `options.filters.view` | No | Name or ID of a specific view to apply |
+
+```javascript
+const result = await subverseActions.airtable.getRecordList({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    baseId: 'appXXXXXXXXXXXXXX',
+    tableIdOrName: 'Customers',
+    filters: {
+      filterByFormula: `{Email} = '${body.params.email}'`,
+      fields: ['Name', 'Email', 'Status'],
+      pageSize: 10
+    }
+  }
+});
+
+// result.records — array of { id, createdTime, fields }
+const customer = result.records[0];
+```
+
+## Airtable: Get Record by ID
+
+Retrieve a single Airtable record by its record ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Airtable credential ID |
+| `options.baseId` | Yes | Airtable Base ID |
+| `options.tableIdOrName` | Yes | Table name or table ID |
+| `options.recordId` | Yes | Record ID — e.g. `recXXXXXXXXXXXXXX` |
+
+```javascript
+const record = await subverseActions.airtable.getRecordById({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    baseId: 'appXXXXXXXXXXXXXX',
+    tableIdOrName: 'Orders',
+    recordId: body.params.record_id
+  }
+});
+
+// record.id, record.createdTime, record.fields
+```
+
+## Airtable: Create Record
+
+Create one or more records in an Airtable table. Use `fields` for a single record or `records` for bulk creation.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Airtable credential ID |
+| `options.baseId` | Yes | Airtable Base ID |
+| `options.tableIdOrName` | Yes | Table name or table ID |
+| `options.fields` | One of | Field key-value pairs for a single record |
+| `options.records` | One of | Array of `{ fields: { ... } }` objects for bulk creation |
+| `options.typecast` | No | Auto-convert strings to match field types. Default `false` |
+
+```javascript
+// Single record
+const created = await subverseActions.airtable.createRecord({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    baseId: 'appXXXXXXXXXXXXXX',
+    tableIdOrName: 'Leads',
+    fields: {
+      Name: body.params.name,
+      Email: body.params.email,
+      Source: 'Voice Call'
+    }
+  }
+});
+
+// created.id — new record ID
+```
+
+## Airtable: Update Record
+
+Update specific fields of an existing Airtable record. Only provided fields are changed; others remain untouched.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Airtable credential ID |
+| `options.baseId` | Yes | Airtable Base ID |
+| `options.tableIdOrName` | Yes | Table name or table ID |
+| `options.recordId` | Yes | Record ID to update |
+| `options.fields` | Yes | Object of fields to update |
+| `options.typecast` | No | Auto-convert strings to match field types. Default `false` |
+
+```javascript
+const updated = await subverseActions.airtable.updateRecord({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    baseId: 'appXXXXXXXXXXXXXX',
+    tableIdOrName: 'Orders',
+    recordId: body.params.record_id,
+    fields: {
+      Status: 'Completed',
+      ResolvedAt: new Date().toISOString()
+    }
+  }
+});
+```
+
+## Airtable: Delete Record
+
+Permanently delete a single Airtable record by its record ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Airtable credential ID |
+| `options.baseId` | Yes | Airtable Base ID |
+| `options.tableIdOrName` | Yes | Table name or table ID |
+| `options.recordId` | Yes | Record ID to delete |
+
+```javascript
+const result = await subverseActions.airtable.deleteRecord({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    baseId: 'appXXXXXXXXXXXXXX',
+    tableIdOrName: 'TempRecords',
+    recordId: body.params.record_id
+  }
+});
+
+// result.deleted — true on success
+```
+
+---
+
+## Google Sheets: Read Rows
+
+Read values from a range in a Google Sheet. Returns a 2D array where each inner array is a row.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | No | Required for service account auth. Optional for API key |
+| `options.spreadsheetId` | Yes | Spreadsheet ID from the URL: `/spreadsheets/d/{spreadsheetId}/` |
+| `options.range` | Yes | A1 notation range — e.g. `Sheet1!A1:D10` or just `Sheet1` |
+
+```javascript
+const data = await subverseActions.googleSheets.readRows({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    spreadsheetId: 'YOUR_SPREADSHEET_ID',
+    range: 'Customers!A1:D50'
+  }
+});
+
+// data.values — 2D array; data.values[0] is usually the header row
+const headers = data.values[0];
+const rows = data.values.slice(1);
+```
+
+## Google Sheets: Append Rows
+
+Append rows to the end of a Google Sheet after the last row with data.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Sheets service account credential ID |
+| `options.spreadsheetId` | Yes | Spreadsheet ID |
+| `options.range` | Yes | Sheet name or range — only the sheet name matters for append (e.g. `Sheet1`) |
+| `options.rows` | Yes | Array of rows to append. Each row is an array of cell values |
+| `options.valueInputOption` | No | `RAW` (as-is) or `USER_ENTERED` (parsed). Default `USER_ENTERED` |
+
+```javascript
+const result = await subverseActions.googleSheets.appendRows({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    spreadsheetId: 'YOUR_SPREADSHEET_ID',
+    range: 'Leads',
+    rows: [
+      [body.params.name, body.params.email, new Date().toISOString()]
+    ]
+  }
+});
+
+// result.updates.updatedRows — number of rows added
+```
+
+## Google Sheets: Update Rows
+
+Overwrite existing rows at a specific range. The data dimensions must match the range provided.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Sheets service account credential ID |
+| `options.spreadsheetId` | Yes | Spreadsheet ID |
+| `options.range` | Yes | A1 notation range to overwrite — e.g. `Sheet1!A2:C2` |
+| `options.rows` | Yes | Array of rows. Dimensions must match the range |
+| `options.valueInputOption` | No | `RAW` or `USER_ENTERED`. Default `USER_ENTERED` |
+
+```javascript
+const result = await subverseActions.googleSheets.updateRows({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    spreadsheetId: 'YOUR_SPREADSHEET_ID',
+    range: `Customers!B${body.params.row_number}:C${body.params.row_number}`,
+    rows: [
+      ['Completed', new Date().toISOString()]
+    ]
+  }
+});
+```
+
+---
+
+## SubVerse Agents: Trigger Voice Call
+
+All agent trigger actions authenticate via an `httpHeaderAuth` credential carrying the workspace API key. Set the header name to `x-api-key` and value to your workspace API key.
+
+Trigger an outbound voice call to a customer phone number. The call is queued immediately and dispatched by the voice infrastructure.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | `httpHeaderAuth` credential with `x-api-key` value |
+| `options.phoneNumber` | Yes | Customer number in E.164 format — e.g. `+919876543210` |
+| `options.agentName` | Yes | Name of the agent (use case) to run for this call |
+| `options.agentNumber` | No | Outbound caller ID. Uses workspace default if omitted |
+| `options.metadata` | No | Key-value pairs passed into the agent session — use `{{key}}` in prompts |
+| `options.scheduleTime` | No | ISO 8601 UTC datetime to place the call — e.g. `2025-06-01T09:00:00Z` |
+| `options.startWorkingHour` | No | Earliest time to call, `HH:MM` format — e.g. `09:00` |
+| `options.endWorkingHour` | No | Latest time to call, `HH:MM` format — e.g. `18:00` |
+| `options.timezone` | No | IANA timezone for working hours — e.g. `Asia/Kolkata` |
+| `options.noOfRetries` | No | Retry count on failure. Default `0` |
+| `options.callPriority` | No | Queue priority `1` (highest) – `100` (lowest). Default `10` |
+| `options.options.initialMessage` | No | Opening line spoken when the call connects |
+| `options.options.additionalContext` | No | Extra prompt instructions for this call only |
+
+```javascript
+const call = await subverseActions.agent.callOutboundTrigger({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    phoneNumber: body.params.phone_number,
+    agentName: 'payment-reminder',
+    metadata: {
+      customerName: body.params.name,
+      amountDue: body.params.amount
+    },
+    options: {
+      initialMessage: `Hello ${body.params.name}, this is a reminder about your upcoming payment.`
+    },
+    startWorkingHour: '09:00',
+    endWorkingHour: '18:00',
+    timezone: 'Asia/Kolkata'
+  }
+});
+
+// call.responseCode — 200 on success
+// call.data.jobId   — queue job ID for tracking
+```
+
+## SubVerse Agents: Trigger Chat Message
+
+Send a WhatsApp message or start a chat agent session for a customer.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | `httpHeaderAuth` credential with `x-api-key` value |
+| `options.communicationChannel` | Yes | Name of the WhatsApp channel in your workspace |
+| `options.customerNumber` | Yes | Recipient WhatsApp number in E.164 format |
+| `options.whatsappOptions.messageType` | No | `say` (verbatim) \| `prompt` (LLM-generated) \| `template`. Default `prompt` |
+| `options.whatsappOptions.message` | No | Message text — required when `messageType` is `say` |
+| `options.whatsappOptions.additionalContext` | No | Injected into LLM prompt — used when `messageType` is `prompt` |
+| `options.whatsappOptions.templateId` | No | WhatsApp template name — required when `messageType` is `template` |
+| `options.metadata` | No | Key-value pairs passed into the agent session |
+| `options.scheduleTime` | No | ISO 8601 datetime to schedule the send |
+| `options.agentName` | No | Override the channel's default agent |
+
+```javascript
+const chat = await subverseActions.agent.chatTrigger({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    communicationChannel: 'whatsapp-support',
+    customerNumber: body.params.whatsapp_number,
+    whatsappOptions: {
+      messageType: 'say',
+      message: `Hi ${body.params.name}, your order #${body.params.order_id} has been shipped!`
+    },
+    metadata: {
+      customerName: body.params.name
+    }
+  }
+});
+
+// chat.data.sessionId — session ID for the triggered conversation
+```
+
+## SubVerse Agents: Trigger Email
+
+Send an email or start an email agent session for a customer.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | `httpHeaderAuth` credential with `x-api-key` value |
+| `options.communicationChannel` | Yes | Name of the Email channel in your workspace |
+| `options.customerEmail` | Yes | Recipient email address |
+| `options.emailOptions.messageType` | No | `say` (verbatim body) \| `prompt` (LLM-generated). Default `prompt` |
+| `options.emailOptions.subject` | No | Email subject line |
+| `options.emailOptions.body` | No | Email body (HTML or plain text) — required when `messageType` is `say` |
+| `options.emailOptions.additionalContext` | No | Injected into LLM prompt — used when `messageType` is `prompt` |
+| `options.emailOptions.replyTo` | No | Reply-To address |
+| `options.emailOptions.cc` | No | CC recipients — comma-separated |
+| `options.metadata` | No | Key-value pairs passed into the agent session |
+| `options.scheduleTime` | No | ISO 8601 datetime to schedule the send |
+
+```javascript
+const email = await subverseActions.agent.emailTrigger({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    communicationChannel: 'email-support',
+    customerEmail: body.params.email,
+    emailOptions: {
+      messageType: 'say',
+      subject: `Your order #${body.params.order_id} is confirmed`,
+      body: `<p>Hi ${body.params.name},</p><p>Thank you for your order. We'll notify you when it ships.</p>`
+    },
+    metadata: {
+      customerName: body.params.name
+    }
+  }
+});
+
+// email.data.sessionId — session ID for the triggered conversation
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom Functions" icon="code" href="/integrations/agentic-functions/custom-functions">
+    Write and test custom function code using these actions
+  </Card>
+  <Card title="Credentials" icon="key" href="/credentials/overview">
+    Set up and manage the credentials used by your actions
+  </Card>
+</CardGroup>

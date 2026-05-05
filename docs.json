@@ -181,7 +181,9 @@
               "credentials/types/jwt-auth",
               "credentials/types/http-basic-auth",
               "credentials/types/http-bearer-auth",
-              "credentials/types/http-header-auth"
+              "credentials/types/http-header-auth",
+              "credentials/types/google-sheets-api-key",
+              "credentials/types/google-sheets-service-account"
             ]
           }
         ]

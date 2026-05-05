@@ -196,7 +196,16 @@
           {
             "group": "Integration Types",
             "pages": [
-              "integrations/llm-tools",
+              {
+                "group": "Agentic Functions",
+                "pages": [
+                  "integrations/agentic-functions",
+                  "integrations/agentic-functions/default-functions",
+                  "integrations/agentic-functions/agent-handoff",
+                  "integrations/agentic-functions/background-agent",
+                  "integrations/agentic-functions/custom-functions"
+                ]
+              },
               "integrations/knowledge-base",
               {
                 "group": "Telephony",

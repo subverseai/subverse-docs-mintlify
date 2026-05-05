@@ -1,0 +1,121 @@
+---
+title: 'Overview'
+description: 'Extend your agents with custom logic at every phase of a session'
+---
+
+Agentic Functions let you hook into an agent's lifecycle at three distinct phases — before a session starts, during an active session, and after a session ends. Each phase gives you different capabilities depending on whether the LLM is involved.
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agentic-functions/functions-settings.png"
+/>
+
+## How Agentic Functions Secure Your Agent
+
+SubVerse AI follows a **strict allow-list model** for everything an LLM can do. The LLM only has access to tools you have explicitly attached — it cannot reach outside that boundary.
+
+This means:
+
+- **No open internet access by default.** Even if the underlying model supports web search or URL fetching, those capabilities are gated. The LLM cannot search the web or retrieve a URL unless you have explicitly added that function to the agent.
+- **No implicit tool use.** The LLM cannot call any function, fetch any data, or trigger any system unless it has been attached and described in the agent's function configuration.
+- **Every capability is declared.** Each function you attach comes with a name and description. The LLM reasons over that list to decide what to call and when — it has no visibility into tools that have not been added.
+
+**Example:** A Claude-based agent has access to `web_fetch` and `web_search` natively in the underlying model — but those tools are not available to your agent unless you add them under Default Functions. The LLM will not attempt to use them, and SubVerse AI will not execute them, if they are not attached.
+
+This model ensures your agents behave exactly as designed, with no unexpected side effects.
+
+<Info>
+  If you want your agent to search the web, retrieve URLs, execute code, or access any external resource, you must add the corresponding function explicitly. See [Default Functions](/integrations/agentic-functions/default-functions) for the full list of available platform and LLM-native tools.
+</Info>
+
+---
+
+## Session Phases
+
+<CardGroup cols={3}>
+  <Card title="Pre-Session" icon="hourglass-start" href="#pre-session-functions">
+    Run before the agent activates. Fetch customer data, validate inputs, or halt execution before a session begins.
+  </Card>
+  <Card title="During-Session" icon="bolt" href="#during-session-functions">
+    Functions the LLM can invoke in real time during an active conversation.
+  </Card>
+  <Card title="Post-Session" icon="hourglass-end" href="#post-session-functions">
+    Run after the session ends. Save transcripts, trigger follow-ups, or sync data to external systems.
+  </Card>
+</CardGroup>
+
+---
+
+## Pre-Session Functions
+
+Pre-session functions execute **before** the agent is activated, with no LLM involvement. Use them to prepare context for the session — fetch customer records, validate caller data, or conditionally stop the session from launching.
+
+**Available function types:**
+
+<CardGroup cols={2}>
+  <Card title="Background Agent" icon="robot" href="/integrations/agentic-functions/background-agent">
+    Trigger an asynchronous agent to run preparatory tasks before the session starts.
+  </Card>
+  <Card title="Custom Functions" icon="code" href="/integrations/agentic-functions/custom-functions">
+    Call your own API or webhook to pre-fetch data, validate customers, or set dynamic variables.
+  </Card>
+</CardGroup>
+
+**Key capabilities:**
+
+- **Dynamic Variables** — Return data from your function in `response.dynamicVariables` to inject real-time context into the agent's prompt.
+- **Terminate Agent** — Set `response.terminateAgent: true` to cancel the session before the agent connects (e.g., block spam callers or unauthenticated users).
+
+<Info>
+  The LLM is not active during this phase. LLM-generated parameters are not available in pre-session functions.
+</Info>
+
+---
+
+## During-Session Functions
+
+During-session functions are tools the **LLM can call** while it is actively in conversation. These enable real-time actions like fetching order details, transferring calls, or triggering background tasks — all without interrupting the conversation flow.
+
+**Available function types:**
+
+<CardGroup cols={2}>
+  <Card title="Default Functions" icon="star" href="/integrations/agentic-functions/default-functions">
+    Built-in platform functions like transferring a call or ending a session.
+  </Card>
+  <Card title="Agent Handoff" icon="arrow-right-arrow-left" href="/integrations/agentic-functions/agent-handoff">
+    Seamlessly route the conversation to a different specialized agent.
+  </Card>
+  <Card title="Background Agent" icon="robot" href="/integrations/agentic-functions/background-agent">
+    Trigger an async agent mid-conversation without blocking the LLM.
+  </Card>
+  <Card title="Custom Functions" icon="code" href="/integrations/agentic-functions/custom-functions">
+    Call your own API or webhook with LLM-extracted parameters.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Explicitly instruct the agent in its system prompt to call a function when needed — for example: *"If the user has no further questions, call `end_call` to hang up."*
+</Tip>
+
+---
+
+## Post-Session Functions
+
+Post-session functions run **after the session ends**, once the conversation is fully complete. The LLM is no longer active, so `params` (LLM-extracted parameters) are not populated — but the full request body is available, including `analysis`, `dynamicVariables`, `recordingUrl`, `transcript`, and all session metadata.
+
+Use the `analysis` field to act on what happened in the session: save summaries to your CRM, trigger follow-up messages, route based on sentiment, or sync data to any external system.
+
+**Available function types:**
+
+<CardGroup cols={2}>
+  <Card title="Background Agent" icon="robot" href="/integrations/agentic-functions/background-agent">
+    Trigger a follow-up agent to act on the session body after the call ends.
+  </Card>
+  <Card title="Custom Functions" icon="code" href="/integrations/agentic-functions/custom-functions">
+    Post session data to your own API — read `analysis`, `dynamicVariables`, or `recordingUrl` to drive your logic.
+  </Card>
+</CardGroup>
+
+<Info>
+  `params` is not populated in post-session functions since the LLM is no longer active. Use `analysis` for post-call outcomes (summary, sentiment, custom fields) and `dynamicVariables` for any data carried forward from earlier functions in the session. See the full [session body reference](/integrations/agentic-functions/custom-functions#session-body).
+</Info>

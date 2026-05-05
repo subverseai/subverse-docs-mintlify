@@ -1,0 +1,90 @@
+---
+title: 'Default Functions'
+description: 'Built-in platform actions and LLM-native tools available to every agent'
+---
+
+Default functions are pre-built actions provided by SubVerse AI and the underlying LLM provider. They are always available to the LLM during an active session — no webhook or custom code required. Simply enable the ones you need and instruct the agent when to use them.
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agentic-functions/default-functions.png"
+/>
+
+## Available Default Functions
+
+### Core Platform Functions
+
+These functions are available regardless of which LLM you use.
+
+| Function | Description |
+|---|---|
+| `end_session` | End the session when the conversation is complete. |
+| `schedule_communication` | Schedule a follow-up call, message, or email for a future time. |
+| `query_knowledge_base` | Fetch relevant information from the agent's connected knowledge base. |
+| `fetch_memory` | Retrieve previously stored memory for this customer or session. |
+| `update_memory` | Write new information to memory for use in future sessions. |
+
+### OpenAI LLM Functions
+
+Available when your agent uses an OpenAI model.
+
+| Function | Description |
+|---|---|
+| `web_search` | Search the web for up-to-date information. |
+| `code_interpreter` | Execute Python code in a sandboxed environment for calculations, data analysis, or file generation. |
+
+### Claude LLM Functions
+
+Available when your agent uses an Anthropic Claude model.
+
+| Function | Description |
+|---|---|
+| `web_search` | Search the web for up-to-date information. |
+| `web_fetch` | Retrieve the contents of a specific URL. |
+| `code_execution` | Run code in a sandboxed environment. |
+| `bash` | Execute bash commands in a sandboxed environment. |
+
+### Google Gemini LLM Functions
+
+Available when your agent uses a Google Gemini model.
+
+| Function | Description |
+|---|---|
+| `google_search` | Search Google for up-to-date information. |
+| `url_context` | Retrieve and reason over the contents of a URL. |
+| `google_maps` | Look up locations, directions, and place information. |
+| `code_execution` | Run code in a sandboxed environment. |
+
+## When to Use Default Functions
+
+Default functions cover the most common actions an agent needs during a session. You do not need to create or configure them — just enable the ones relevant to your use case and instruct the agent in its system prompt when to call them.
+
+**Common patterns:**
+
+- End the session automatically once the user's query is resolved.
+- Search the web when the agent needs real-time or external information.
+- Store customer preferences in memory to personalise future sessions.
+- Query the knowledge base for product details or policy documents.
+
+<Tip>
+  Be explicit in the agent's system prompt about when to call each function. For example: *"When the customer says goodbye or their issue is resolved, call `end_session`."* or *"Use `web_search` only when the knowledge base does not contain a definitive answer."*
+</Tip>
+
+## Availability
+
+| Phase | Available |
+|---|---|
+| Pre-Session | No |
+| During-Session | Yes |
+| Post-Session | No |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Agent Handoff" icon="arrow-right-arrow-left" href="/integrations/agentic-functions/agent-handoff">
+    Route conversations to a specialized agent
+  </Card>
+  <Card title="Custom Functions" icon="code" href="/integrations/agentic-functions/custom-functions">
+    Add your own API calls for the LLM to execute
+  </Card>
+</CardGroup>

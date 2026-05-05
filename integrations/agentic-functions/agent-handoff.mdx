@@ -1,0 +1,46 @@
+---
+title: 'Agent Handoff'
+description: 'Route an active conversation to a different specialized agent'
+---
+
+Agent Handoff lets the LLM seamlessly transfer the ongoing session to another agent on your SubVerse workspace. Use it to route customers to the right specialist — for example, escalating from a general support agent to a billing agent — without dropping the conversation.
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/agentic-functions/agent-handoff-functions.png"
+/>
+
+## How It Works
+
+When the LLM determines a handoff is needed (based on your instructions or the conversation context), it calls the handoff function. The session is transferred to the target agent, which picks up with the full conversation context passed along.
+
+## Configuring an Agent Handoff
+
+1. Navigate to **Integrations** → **Agentic Functions** and select your agent.
+2. Under **During-Session Functions**, click **+ Add Function** and choose **Agent Handoff**.
+3. Select the **Target Agent** to hand off to.
+4. Provide a **Description** so the LLM understands when to trigger this handoff (e.g., *"Hand off to the billing agent when the customer asks about invoices or payments"*).
+5. Save the function.
+
+<Tip>
+  Write a clear, specific description. The LLM uses the description to decide when to call the handoff function — vague descriptions lead to incorrect or missed handoffs.
+</Tip>
+
+## Availability
+
+| Phase | Available |
+|---|---|
+| Pre-Session | No |
+| During-Session | Yes |
+| Post-Session | No |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Background Agent" icon="robot" href="/integrations/agentic-functions/background-agent">
+    Trigger async tasks mid-conversation without blocking the LLM
+  </Card>
+  <Card title="Default Functions" icon="star" href="/integrations/agentic-functions/default-functions">
+    Built-in platform actions available to every agent
+  </Card>
+</CardGroup>

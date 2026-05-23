@@ -55,20 +55,9 @@
             "group": "Monitor",
             "pages": [
               "monitor/dashboard",
-              "monitor/customer-interactions",
+              "monitor/session-history",
               "monitor/billing",
-              {
-                "group": "Call History",
-                "pages": [
-                  "agents/call-history",
-                  "call-history/dashboard",
-                  "call-history/call-details",
-                  "call-history/monitoring-guide",
-                  "call-history/troubleshooting",
-                  "call-history/export-reporting",
-                  "call-history/integrations"
-                ]
-              }
+              "call-history/troubleshooting"
             ]
           }
         ]

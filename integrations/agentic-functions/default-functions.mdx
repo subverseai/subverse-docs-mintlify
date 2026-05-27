@@ -21,8 +21,8 @@ These functions are available regardless of which LLM you use.
 | `end_session` | End the session when the conversation is complete. |
 | `schedule_communication` | Schedule a follow-up call, message, or email for a future time. |
 | `query_knowledge_base` | Fetch relevant information from the agent's connected knowledge base. |
-| `fetch_memory` | Retrieve previously stored memory for this customer or session. |
-| `update_memory` | Write new information to memory for use in future sessions. |
+| `fetch_memory` | Retrieve previously stored memory for this customer or session. [Read more](#fetch_memory) |
+| `update_memory` | Write new information to memory for use in future sessions. [Read more](#update_memory) |
 
 ### OpenAI LLM Functions
 
@@ -70,13 +70,92 @@ Default functions cover the most common actions an agent needs during a session.
   Be explicit in the agent's system prompt about when to call each function. For example: *"When the customer says goodbye or their issue is resolved, call `end_session`."* or *"Use `web_search` only when the knowledge base does not contain a definitive answer."*
 </Tip>
 
+## fetch\_memory
+
+`fetch_memory` is a **pre-session** function that retrieves previously stored memory and injects it into the agent's context before the conversation begins. The retrieved memory is placed into a dynamic variable that you define, which you can then reference anywhere in the agent's system prompt.
+
+### How It Works
+
+When a session starts, `fetch_memory` looks up the memory stored under the given `memoryId` and makes it available as a dynamic variable named by `paramName`. From that point on, you can reference the memory in your system prompt using the standard double-curly-brace syntax — `{{ paramName }}`.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `memoryId` | string | Yes | ID of the memory to retrieve. Accepts dynamic variables — use a session variable like `{{ claimId }}` or a nested tool body field like `{{ body.userDetails.id }}`. |
+| `paramName` | string | Yes | Name of the dynamic variable the retrieved memory will be injected into. |
+
+<Info>
+  `memoryId` supports both top-level session variables (`{{ claimId }}`) and nested tool body paths (`{{ body.userDetails.id }}`). This makes it straightforward to scope memory to the specific customer or entity being passed in the request payload — no extra configuration needed.
+</Info>
+
+### Example
+
+```
+// Tool params
+memoryId: {{ claimId }}
+paramName: claimMemory
+
+// Tool response
+{
+  "dynamicVariables": {
+    "claimMemory": "Previous conversation memory for this claim..."
+  }
+}
+
+// System prompt usage
+Here is the previous claim memory which you can refer to if needed: {{ claimMemory }}
+```
+
+<Warning>
+  Memory is **shared across all agents and customers in your workspace**. Always use a customer-specific `memoryId` — such as the customer's user ID or claim ID — to prevent one customer's memory from being accessible to another.
+</Warning>
+
+<Info>
+  If no memory exists for the given `memoryId`, the dynamic variable returns `null`. Handle this gracefully in your system prompt — for example: *"If `{{ claimMemory }}` is empty, treat this as a new customer with no prior history."*
+</Info>
+
+---
+
+## update\_memory
+
+`update_memory` is a **post-session** function that extracts key information from the conversation and saves it under a given `memoryId`. If memory already exists at that ID, the function merges the new conversation with the prior memory to produce an updated record — nothing is lost.
+
+### How It Works
+
+After the session ends, the LLM reads the full conversation alongside your `prompt` instructions, extracts the relevant information, and writes it to the `memoryId`. If existing memory is found at that ID, it is combined with the new extraction so the stored record stays cumulative across sessions.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `memoryId` | string | Yes | ID under which the memory will be stored. Accepts dynamic variables (e.g. `{{ claimId }}`). |
+| `prompt` | string | Yes | Instructions telling the LLM what to extract and save from the conversation. This field is required — `update_memory` will not run without it. |
+
+### Example
+
+```
+// Tool params
+memoryId: {{ claimId }}
+prompt: Store what has been discussed for this claim with dates and issues
+```
+
+<Tip>
+  Be specific in your `prompt`. A vague instruction like *"summarise the conversation"* produces vague memory that is less useful on retrieval. Instead, describe exactly what to capture — dates, decisions, open issues, customer preferences — so the stored memory is immediately actionable next session.
+</Tip>
+
+---
+
 ## Availability
 
-| Phase | Available |
-|---|---|
-| Pre-Session | No |
-| During-Session | Yes |
-| Post-Session | No |
+| Function | Pre-Session | During-Session | Post-Session |
+|---|---|---|---|
+| `end_session` | No | Yes | No |
+| `schedule_communication` | No | Yes | No |
+| `query_knowledge_base` | No | Yes | No |
+| `fetch_memory` | Yes | No | No |
+| `update_memory` | No | No | Yes |
+| LLM-native functions | No | Yes | No |
 
 ## Next Steps
 

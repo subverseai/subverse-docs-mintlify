@@ -403,6 +403,298 @@ const email = await subverseActions.agent.emailTrigger({
 
 ---
 
+## Shopify
+
+The Shopify actions below connect to a Shopify store via a saved Shopify credential. All actions support `credentialId` plus an `options` object, and can override the detected authentication method with `options.authentication`.
+
+**Compatible credentials:** Shopify API Key, Shopify Access Token, Shopify OAuth2
+
+### Shopify Create Order
+
+Create a new order in Shopify. Requires at least one line item. Supports billing/shipping addresses, discount codes, fulfillment options, and email notifications.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.lineItems` | Yes | Array of line items. Each item requires `quantity`; `variantId`, `productId`, `title`, or `price` are optional |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+| `options.email` | No | Customer email address |
+| `options.fulfillmentStatus` | No | `fulfilled`, `null`, `partial`, or `restocked` |
+| `options.inventoryBehaviour` | No | `bypass`, `decrementIgnoringPolicy`, or `decrementObeyingPolicy` |
+| `options.locationId` | No | ID of the location that processed the order |
+| `options.note` | No | Order note |
+| `options.sendFulfillmentReceipt` | No | Send a shipping confirmation email |
+| `options.sendReceipt` | No | Send an order confirmation email |
+| `options.sourceName` | No | Source identifier, e.g. `web` |
+| `options.tags` | No | Comma-separated tags |
+| `options.test` | No | Mark as a test order. Default `true` |
+| `options.billingAddress` | No | Billing address object |
+| `options.shippingAddress` | No | Shipping address object |
+| `options.discountCodes` | No | Array of `{ amount, code, type }` discounts |
+
+```javascript
+const order = await subverseActions.shopify.createOrder({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    lineItems: [{ variantId: body.params.variant_id, quantity: 1 }],
+    email: body.params.email,
+    shippingAddress: {
+      firstName: body.params.first_name,
+      lastName: body.params.last_name,
+      city: body.params.city,
+      country: body.params.country
+    },
+    sendReceipt: true
+  }
+});
+
+// order.id — new Shopify order ID
+```
+
+### Shopify Get Order
+
+Retrieve a single Shopify order by its ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.orderId` | Yes | Numeric ID of the Shopify order |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+| `options.fields` | No | Comma-separated fields to include in the response |
+
+```javascript
+const order = await subverseActions.shopify.getOrder({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    orderId: body.params.order_id,
+    fields: 'id,email,financial_status'
+  }
+});
+```
+
+### Shopify Get All Orders
+
+Retrieve a list of Shopify orders with optional filtering and pagination.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.returnAll` | No | Auto-paginate to fetch all matching orders |
+| `options.limit` | No | Max orders to return (default `50`, max `250`) |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+| `options.status` | No | `open`, `closed`, `cancelled`, or `any` |
+| `options.financialStatus` | No | e.g. `paid`, `pending`, `refunded` |
+| `options.fulfillmentStatus` | No | e.g. `shipped`, `unshipped`, `partial` |
+| `options.createdAtMin` / `options.createdAtMax` | No | ISO 8601 datetime range for created at |
+| `options.updatedAtMin` / `options.updatedAtMax` | No | ISO 8601 datetime range for updated at |
+| `options.processedAtMin` / `options.processedAtMax` | No | ISO 8601 datetime range for processed at |
+| `options.sinceId` | No | Return only orders after this ID |
+| `options.ids` | No | Comma-separated order IDs |
+| `options.attributionAppId` | No | Filter by attribution app ID |
+| `options.fields` | No | Comma-separated fields to include |
+
+```javascript
+const orders = await subverseActions.shopify.getAllOrders({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    status: 'open',
+    limit: 50
+  }
+});
+
+// orders — array of order objects
+```
+
+### Shopify Update Order
+
+Update an existing Shopify order by ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.orderId` | Yes | Numeric ID of the order to update |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+| `options.email` | No | Updated customer email |
+| `options.note` | No | Internal note |
+| `options.tags` | No | Comma-separated tags replacing existing tags |
+| `options.sourceName` | No | Source identifier |
+| `options.locationId` | No | Location ID |
+| `options.shippingAddress` | No | Updated shipping address |
+
+```javascript
+const updated = await subverseActions.shopify.updateOrder({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    orderId: body.params.order_id,
+    note: 'Customer requested expedited handling',
+    tags: 'vip,priority'
+  }
+});
+```
+
+### Shopify Delete Order
+
+Permanently delete a Shopify order. Only test orders can be deleted via the API.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.orderId` | Yes | Numeric ID of the order to delete |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+
+```javascript
+const result = await subverseActions.shopify.deleteOrder({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    orderId: body.params.order_id
+  }
+});
+
+// result.success — true on success
+```
+
+### Shopify Create Product
+
+Create a new product in your Shopify store. A title is required.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.title` | Yes | Product name |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+| `options.bodyHtml` | No | HTML description |
+| `options.handle` | No | URL-friendly handle |
+| `options.productType` | No | Product type category |
+| `options.publishedAt` | No | ISO 8601 datetime to publish. Set `null` to unpublish |
+| `options.publishedScope` | No | `global` (Online Store + POS) or `web` (Online Store only) |
+| `options.tags` | No | Comma-separated tags |
+| `options.templateSuffix` | No | Liquid template suffix |
+| `options.vendor` | No | Brand or vendor name |
+
+```javascript
+const product = await subverseActions.shopify.createProduct({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    title: body.params.title,
+    bodyHtml: body.params.description,
+    vendor: body.params.vendor,
+    productType: body.params.product_type
+  }
+});
+
+// product.id — new Shopify product ID
+```
+
+### Shopify Get Product
+
+Retrieve a single Shopify product by its ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.productId` | Yes | Numeric ID of the Shopify product |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+| `options.fields` | No | Comma-separated fields to include in the response |
+
+```javascript
+const product = await subverseActions.shopify.getProduct({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    productId: body.params.product_id,
+    fields: 'id,title,variants'
+  }
+});
+```
+
+### Shopify Get All Products
+
+Retrieve a list of Shopify products with optional filtering and pagination.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.returnAll` | No | Auto-paginate to fetch all matching products |
+| `options.limit` | No | Max products to return (default `50`, max `250`) |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+| `options.title` | No | Filter by exact title |
+| `options.vendor` | No | Filter by vendor |
+| `options.handle` | No | Filter by handle |
+| `options.productType` | No | Filter by product type |
+| `options.status` | No | `active`, `archived`, or `draft` |
+| `options.publishedStatus` | No | `published`, `unpublished`, or `any` |
+| `options.ids` | No | Comma-separated product IDs |
+| `options.sinceId` | No | Return only products after this ID |
+| `options.createdAtMin` / `options.createdAtMax` | No | ISO 8601 datetime range |
+| `options.updatedAtMin` / `options.updatedAtMax` | No | ISO 8601 datetime range |
+| `options.publishedAtMin` / `options.publishedAtMax` | No | ISO 8601 datetime range |
+| `options.fields` | No | Comma-separated fields to include |
+
+```javascript
+const products = await subverseActions.shopify.getAllProducts({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    vendor: body.params.vendor,
+    status: 'active',
+    limit: 50
+  }
+});
+
+// products — array of product objects
+```
+
+### Shopify Update Product
+
+Update an existing Shopify product by ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.productId` | Yes | Numeric ID of the product to update |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+| `options.title` | No | Updated product title |
+| `options.bodyHtml` | No | Updated HTML description |
+| `options.handle` | No | Updated URL-friendly handle |
+| `options.productType` | No | Updated product type |
+| `options.publishedAt` | No | ISO 8601 datetime. Set `null` to unpublish |
+| `options.publishedScope` | No | `global` or `web` |
+| `options.tags` | No | Updated comma-separated tags |
+| `options.templateSuffix` | No | Updated Liquid template suffix |
+| `options.vendor` | No | Updated vendor name |
+
+```javascript
+const updated = await subverseActions.shopify.updateProduct({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    productId: body.params.product_id,
+    title: body.params.title,
+    tags: body.params.tags
+  }
+});
+```
+
+### Shopify Delete Product
+
+Permanently delete a Shopify product by its ID. This cannot be undone.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Credential ID for the Shopify store |
+| `options.productId` | Yes | Numeric ID of the product to delete |
+| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
+
+```javascript
+const result = await subverseActions.shopify.deleteProduct({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    productId: body.params.product_id
+  }
+});
+
+// result.success — true on success
+```
+
+---
+
 ## Next Steps
 
 <CardGroup cols={2}>

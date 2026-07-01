@@ -46,6 +46,7 @@
                       "allowedOverallInterruptions": "True",
                       "allowedInterruptionsInitially": "False",
                       "ttsLanguage": "hi",
+                      "ttsGender": "male",
                       "voiceId": "IvLWq57RKibBrqZGpQrC",
                       "speed": "2",
                       "transferNumber": "+912298765432",
@@ -323,6 +324,7 @@
                       "allowedOverallInterruptions": "True",
                       "allowedInterruptionsInitially": "False",
                       "ttsLanguage": "hi",
+                      "ttsGender": "male",
                       "voiceId": "IvLWq57RKibBrqZGpQrC",
                       "speed": "2",
                       "transferNumber": "+912298765432",
@@ -437,6 +439,7 @@
                       "allowedOverallInterruptions": "True",
                       "allowedInterruptionsInitially": "False",
                       "ttsLanguage": "hi",
+                      "ttsGender": "male",
                       "voiceId": "IvLWq57RKibBrqZGpQrC",
                       "speed": "2",
                       "transferNumber": "+912298765432",
@@ -971,6 +974,14 @@
               "hi"
             ],
             "example": "en"
+          },
+          "ttsGender": {
+            "type": "string",
+            "description": "The gender of the voice agent used to speak with the user.",
+            "enum": [
+              "male",
+              "female"
+            ]
           },
           "voiceId": {
             "type": "string",

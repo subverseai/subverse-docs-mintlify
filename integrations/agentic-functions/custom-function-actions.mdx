@@ -24,30 +24,28 @@ Make an outbound HTTP request to any URL. Supports all standard methods, custom 
 | `options.headers` | No | Array of `{ name, value }` pairs for custom request headers |
 | `options.query` | No | Array of `{ name, value }` pairs appended as URL query parameters |
 | `options.body` | No | Request payload — object (auto-serialised as JSON) or raw string |
-| `options.authentication` | No | Auth method: `none` \| `basicAuth` \| `bearerToken` \| `apiKey` \| `customAuth` \| `digestAuth` \| `queryAuth`. Default `none` |
-| `credentialId` | No | Required when `authentication` is not `none`. ID of the saved credential to use |
-| `options.clientOptions.timeout` | No | Request timeout in milliseconds. Default `30000`, max `300000` |
-| `options.clientOptions.followRedirects` | No | Follow 301/302 redirects. Default `true` |
-| `options.clientOptions.ignoreSSL` | No | Bypass SSL certificate validation. Default `false` |
-| `options.clientOptions.responseFormat` | No | Force response format: `autodetect` \| `json` \| `text`. Default `autodetect` |
-| `options.clientOptions.fullResponse` | No | Return `statusCode`, `headers`, and `body` instead of just the body. Default `false` |
-| `options.clientOptions.ignoreResponseCode` | No | Don't throw on 4xx/5xx — handle the error response yourself. Default `false` |
+| `credentialId` | No | ID of the saved credential to use |
+| `options.options.timeout` | No | Request timeout in milliseconds. Default `30000`, max `300000` |
+| `options.options.followRedirects` | No | Follow 301/302 redirects. Default `true` |
+| `options.options.ignoreSSL` | No | Bypass SSL certificate validation. Default `false` |
+| `options.options.responseFormat` | No | Force response format: `autodetect` \| `json` \| `text`. Default `autodetect` |
+| `options.options.fullResponse` | No | Return `statusCode`, `headers`, and `body` instead of just the body. Default `false` |
+| `options.options.ignoreResponseCode` | No | Don't throw on 4xx/5xx — handle the error response yourself. Default `false` |
 
 ```javascript
 const response = await subverseActions.http.sendRequest({
-  credentialId: 'CREDENTIAL_ID',          // omit when authentication is 'none'
+  credentialId: 'CREDENTIAL_ID', //optional
   options: {
     method: 'POST',
     url: 'https://api.example.com/orders',
-    authentication: 'bearerToken',         // matches credential type
     headers: [
-      { name: 'X-Request-ID', value: body.sessionId }
+      { name: 'custom-headers', value: 'custom-value' }
     ],
     body: {
       customerId: body.params.customer_id,
       status: 'confirmed'
     },
-    clientOptions: {
+    options: {
       timeout: 10000,
       ignoreResponseCode: true             // handle 4xx without throwing
     }
@@ -405,7 +403,7 @@ const email = await subverseActions.agent.emailTrigger({
 
 ## Shopify
 
-The Shopify actions below connect to a Shopify store via a saved Shopify credential. All actions support `credentialId` plus an `options` object, and can override the detected authentication method with `options.authentication`.
+The Shopify actions below connect to a Shopify store via a saved Shopify credential. All actions support `credentialId` plus an `options` object.
 
 **Compatible credentials:** Shopify API Key, Shopify Access Token, Shopify OAuth2
 
@@ -417,7 +415,6 @@ Create a new order in Shopify. Requires at least one line item. Supports billing
 |---|---|---|
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.lineItems` | Yes | Array of line items. Each item requires `quantity`; `variantId`, `productId`, `title`, or `price` are optional |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 | `options.email` | No | Customer email address |
 | `options.fulfillmentStatus` | No | `fulfilled`, `null`, `partial`, or `restocked` |
 | `options.inventoryBehaviour` | No | `bypass`, `decrementIgnoringPolicy`, or `decrementObeyingPolicy` |
@@ -459,7 +456,6 @@ Retrieve a single Shopify order by its ID.
 |---|---|---|
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.orderId` | Yes | Numeric ID of the Shopify order |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 | `options.fields` | No | Comma-separated fields to include in the response |
 
 ```javascript
@@ -481,7 +477,6 @@ Retrieve a list of Shopify orders with optional filtering and pagination.
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.returnAll` | No | Auto-paginate to fetch all matching orders |
 | `options.limit` | No | Max orders to return (default `50`, max `250`) |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 | `options.status` | No | `open`, `closed`, `cancelled`, or `any` |
 | `options.financialStatus` | No | e.g. `paid`, `pending`, `refunded` |
 | `options.fulfillmentStatus` | No | e.g. `shipped`, `unshipped`, `partial` |
@@ -513,7 +508,6 @@ Update an existing Shopify order by ID.
 |---|---|---|
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.orderId` | Yes | Numeric ID of the order to update |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 | `options.email` | No | Updated customer email |
 | `options.note` | No | Internal note |
 | `options.tags` | No | Comma-separated tags replacing existing tags |
@@ -540,7 +534,6 @@ Permanently delete a Shopify order. Only test orders can be deleted via the API.
 |---|---|---|
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.orderId` | Yes | Numeric ID of the order to delete |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 
 ```javascript
 const result = await subverseActions.shopify.deleteOrder({
@@ -561,7 +554,6 @@ Create a new product in your Shopify store. A title is required.
 |---|---|---|
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.title` | Yes | Product name |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 | `options.bodyHtml` | No | HTML description |
 | `options.handle` | No | URL-friendly handle |
 | `options.productType` | No | Product type category |
@@ -593,7 +585,6 @@ Retrieve a single Shopify product by its ID.
 |---|---|---|
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.productId` | Yes | Numeric ID of the Shopify product |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 | `options.fields` | No | Comma-separated fields to include in the response |
 
 ```javascript
@@ -615,7 +606,6 @@ Retrieve a list of Shopify products with optional filtering and pagination.
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.returnAll` | No | Auto-paginate to fetch all matching products |
 | `options.limit` | No | Max products to return (default `50`, max `250`) |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 | `options.title` | No | Filter by exact title |
 | `options.vendor` | No | Filter by vendor |
 | `options.handle` | No | Filter by handle |
@@ -650,7 +640,6 @@ Update an existing Shopify product by ID.
 |---|---|---|
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.productId` | Yes | Numeric ID of the product to update |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 | `options.title` | No | Updated product title |
 | `options.bodyHtml` | No | Updated HTML description |
 | `options.handle` | No | Updated URL-friendly handle |
@@ -680,7 +669,6 @@ Permanently delete a Shopify product by its ID. This cannot be undone.
 |---|---|---|
 | `credentialId` | Yes | Credential ID for the Shopify store |
 | `options.productId` | Yes | Numeric ID of the product to delete |
-| `options.authentication` | No | `apiKey`, `accessToken`, or `oAuth2` |
 
 ```javascript
 const result = await subverseActions.shopify.deleteProduct({

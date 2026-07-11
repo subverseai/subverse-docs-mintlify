@@ -28,7 +28,7 @@ Make an outbound HTTP request to any URL. Supports all standard methods, custom 
 | `options.options.timeout` | No | Request timeout in milliseconds. Default `30000`, max `300000` |
 | `options.options.followRedirects` | No | Follow 301/302 redirects. Default `true` |
 | `options.options.ignoreSSL` | No | Bypass SSL certificate validation. Default `false` |
-| `options.options.responseFormat` | No | Force response format: `autodetect` \| `json` \| `text`. Default `autodetect` |
+| `options.options.responseFormat` | No | Force response format: `autodetect` \| `json` \| `text` \| `base64`. Default `autodetect`. Use `base64` for binary files. |
 | `options.options.fullResponse` | No | Return `statusCode`, `headers`, and `body` instead of just the body. Default `false` |
 | `options.options.ignoreResponseCode` | No | Don't throw on 4xx/5xx — handle the error response yourself. Default `false` |
 
@@ -397,6 +397,55 @@ const email = await subverseActions.agent.emailTrigger({
 });
 
 // email.data.sessionId — session ID for the triggered conversation
+```
+
+---
+
+## Email Send
+
+Send an email directly through an SMTP server using a saved **Email (SMTP / IMAP)** credential. This action is useful for transactional emails, alerts, and reports from a custom function.
+
+**Compatible credentials:** [Email (SMTP / IMAP)](/credentials/types/email-smtp)
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Email (SMTP / IMAP) credential ID |
+| `options.fromEmail` | Yes | Sender email address |
+| `options.toEmail` | Yes | Recipient email address |
+| `options.subject` | Yes | Email subject line |
+| `options.emailFormat` | No | `text`, `html`, or `both`. Default `both` |
+| `options.text` | No | Plain text body |
+| `options.html` | No | HTML body (used when `emailFormat` is `html` or `both`) |
+| `options.ccEmail` | No | CC recipient address |
+| `options.bccEmail` | No | BCC recipient address |
+| `options.replyTo` | No | Reply-To address |
+| `options.attachments` | No | Array of `{ fileName, fileContent, mimeType }` objects. `fileContent` must be Base64-encoded |
+| `options.ignoreSSL` | No | Bypass SSL certificate validation. Default `false` |
+| `options.appendAttribution` | No | Append a "Sent via SubverseAI" footer. Default `false` |
+
+```javascript
+const result = await subverseActions.email.send({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fromEmail: 'support@company.com',
+    toEmail: body.params.customer_email,
+    subject: `Your order #${body.params.order_id} is confirmed`,
+    emailFormat: 'both',
+    text: `Hi ${body.params.name}, your order has been confirmed.`,
+    html: `<p>Hi ${body.params.name},</p><p>Your order <strong>#${body.params.order_id}</strong> is confirmed.</p>`,
+    attachments: [
+      {
+        fileName: 'invoice.pdf',
+        fileContent: body.params.invoice_base64,
+        mimeType: 'application/pdf'
+      }
+    ]
+  }
+});
+
+// result.messageId — SMTP message ID
+// result.accepted — array of accepted addresses
+// result.rejected — array of rejected addresses
 ```
 
 ---

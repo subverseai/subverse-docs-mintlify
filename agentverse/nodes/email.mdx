@@ -1,0 +1,136 @@
+---
+title: 'Send Email'
+description: 'Send automated emails through any SMTP server from an AgentVerse orchestration'
+---
+
+# Send Email
+
+The **Send Email** node sends emails through an SMTP server. Use it for transactional messages, alerts, reports, and follow-ups inside an orchestration.
+
+![Send Email Node](/images/agentverse/send-email-action-node.png)
+
+---
+
+## Credentials
+
+This node requires an **[Email (SMTP / IMAP)](/credentials/types/email-smtp)** credential.
+
+To create a credential:
+1. Go to **Settings → Credentials → New Credential**
+2. Select **Email (SMTP / IMAP)**
+3. Enter your SMTP username, password, host, port, and encryption
+
+---
+
+## Use Cases
+
+- **Order Confirmations**: Email receipts and invoices after a purchase
+- **Appointment Reminders**: Send appointment details to customers
+- **Status Alerts**: Notify internal teams or customers when events occur
+- **Reports**: Email generated summaries or documents
+- **Follow-ups**: Send post-call or post-chat summaries
+
+---
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Credential** | Credential | Yes | Select an [Email (SMTP / IMAP)](/credentials/types/email-smtp) credential |
+| **From Email** | String | Yes | Sender email address |
+| **To Email** | String | Yes | Recipient email address |
+| **CC Email** | String | No | CC recipient address |
+| **BCC Email** | String | No | BCC recipient address |
+| **Reply To** | String | No | Reply-To address |
+| **Subject** | String | Yes | Email subject line |
+| **Email Format** | Select | Yes | `HTML`, `Text`, or `Both` (default: `HTML`) |
+| **Text** | String | No | Plain text body. Shown when Email Format is `Text` or `Both` |
+| **HTML** | String | No | HTML body. Shown when Email Format is `HTML` or `Both`. Supports the built-in HTML editor |
+| **Attachments** | Collection | No | Files to attach. Each attachment needs `File Name`, `File Content (Base64)`, and `MIME Type` |
+| **Ignore SSL Issues (Insecure)** | Boolean | No | Bypass SSL certificate validation (default: disabled) |
+| **Append Attribution** | Boolean | No | Add a "Sent via SubverseAI" footer (default: disabled) |
+
+### Email Format
+
+| Format | Behavior |
+|---|---|
+| `HTML` | Sends only the HTML body |
+| `Text` | Sends only the plain text body |
+| `Both` | Sends both HTML and plain text; the recipient's client decides which to display |
+
+### Attachments
+
+Each attachment requires:
+
+| Field | Required | Description |
+|---|---|---|
+| **File Name** | Yes | File name including extension, e.g. `invoice.pdf` |
+| **File Content (Base64)** | Yes | Base64-encoded file content |
+| **MIME Type** | No | MIME type, e.g. `application/pdf`. Defaults to `application/octet-stream` |
+
+Use `{{ }}` expressions to pass Base64 content from an upstream **HTTP Request** node (Base64 response format) or any other node.
+
+---
+
+## Output Data
+
+A successful send returns:
+
+```json
+{
+  "messageId": "<message-id@example.com>",
+  "response": "250 OK",
+  "accepted": ["recipient@example.com"],
+  "rejected": []
+}
+```
+
+Reference in downstream nodes:
+
+```
+{{ sendEmail.messageId }}
+{{ sendEmail.accepted }}
+{{ sendEmail.rejected }}
+```
+
+---
+
+## Common Patterns
+
+### Fetch a File and Email It
+
+```
+HTTP Request (Base64 response format)
+  ↓
+Send Email (attachment from HTTP Request output)
+```
+
+Map the attachment `File Content (Base64)` field to:
+
+```
+{{ httpRequest.data }}
+```
+
+### Send AI-Generated Follow-up
+
+```
+AI Agent Node (generate email subject and body)
+  ↓
+Send Email (subject and body linked from AI Agent output)
+```
+
+---
+
+## Related Nodes
+
+- [HTTP Request](./http-request.md) — Fetch files or data to include in an email
+- [SubVerse Agents](./subverse-agents.md) — Hand off email conversations to an AI agent
+- [Conditions](./conditions.md) — Branch based on send success or failure
+
+<Tip>
+  Link the **Subject**, **HTML**, and **Text** fields from an upstream **AI Agent** node to generate personalized, context-aware emails.
+</Tip>
+
+<Warning>
+  For Gmail and other providers with app-specific passwords, use the app password in the credential, not your regular account password.
+</Warning>

@@ -95,6 +95,7 @@
               "agentverse/nodes/shopify",
               "agentverse/nodes/whatsapp",
               "agentverse/nodes/http-request",
+              "agentverse/nodes/email",
               "agentverse/nodes/file-upload",
               "agentverse/nodes/respond-to-webhook"
             ]
@@ -165,6 +166,7 @@
               "credentials/types/s3-storage",
               "credentials/types/whatsapp-api",
               "credentials/types/whatsapp-trigger-api",
+              "credentials/types/email-smtp",
               "credentials/types/sip-credentials",
               "credentials/types/oauth2-api",
               "credentials/types/jwt-auth",

@@ -1,6 +1,6 @@
 ---
 title: 'Custom Function Actions'
-description: 'Built-in actions available to your custom function code — connect to HTTP APIs, Airtable, Google Sheets, and SubVerse agents without writing any integration boilerplate'
+description: 'Built-in actions available to your custom function code — connect to HTTP APIs, Airtable, Google Sheets, WhatsApp, Shopify, and SubVerse agents without writing any integration boilerplate'
 ---
 
 Custom Function Actions are pre-built integrations you can call directly from your custom function code via `subverseActions`. When you build a custom function, you select which actions you want to use and attach the required credentials. The Code Assistant is aware of your selected actions and credentials, so you can describe what you want in plain English and it will generate the correct code for you.
@@ -728,6 +728,107 @@ const result = await subverseActions.shopify.deleteProduct({
 });
 
 // result.success — true on success
+```
+
+---
+
+## WhatsApp
+
+The WhatsApp actions let you send messages directly via the WhatsApp Business API using a saved **WhatsApp** credential. All three actions require a `credentialId`, the recipient's phone number, and your sender's **Phone Number ID** (not stored in the credential — supply it explicitly in `options`).
+
+**Compatible credentials:** WhatsApp (Access Token + Business Account ID)
+
+### WhatsApp Send Text Message
+
+Send a plain text message to a WhatsApp number.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | WhatsApp credential ID |
+| `options.phoneNumberId` | Yes | Your WhatsApp Business sender phone number ID |
+| `options.to` | Yes | Recipient phone number in E.164 format — e.g. `+919876543210` |
+| `options.message` | Yes | The text content to send |
+| `options.previewUrl` | No | Show a URL preview inside the message. Default `false` |
+
+```javascript
+const result = await subverseActions.whatsapp.sendTextMessage({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    phoneNumberId: '1234567890',
+    to: body.params.customer_number,
+    message: `Hi ${body.params.name}, your booking is confirmed for ${body.params.date}.`
+  }
+});
+
+// result.messages[0].id — WhatsApp message ID
+// result.contacts[0].wa_id — recipient's WhatsApp ID
+```
+
+### WhatsApp Send Template Message
+
+Send an approved WhatsApp message template. Templates must be created and approved in your Meta Business account before use.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | WhatsApp credential ID |
+| `options.phoneNumberId` | Yes | Your WhatsApp Business sender phone number ID |
+| `options.to` | Yes | Recipient phone number in E.164 format |
+| `options.templateName` | Yes | Exact name of the approved template |
+| `options.languageCode` | Yes | Template language code — e.g. `en_US` |
+| `options.components` | No | Array of component objects to fill template variables. Each object has a `type` (`header`, `body`, or `button`) and `parameters` array |
+
+```javascript
+const result = await subverseActions.whatsapp.sendTemplateMessage({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    phoneNumberId: '1234567890',
+    to: body.params.customer_number,
+    templateName: 'order_shipped',
+    languageCode: 'en_US',
+    components: [
+      {
+        type: 'body',
+        parameters: [
+          { type: 'text', text: body.params.order_id },
+          { type: 'text', text: body.params.tracking_number }
+        ]
+      }
+    ]
+  }
+});
+
+// result.messages[0].id — WhatsApp message ID
+```
+
+### WhatsApp Send Media Message
+
+Send an image, video, audio file, document, or sticker to a WhatsApp number.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | WhatsApp credential ID |
+| `options.phoneNumberId` | Yes | Your WhatsApp Business sender phone number ID |
+| `options.to` | Yes | Recipient phone number in E.164 format |
+| `options.mediaType` | Yes | Type of media: `image`, `video`, `audio`, `document`, or `sticker` |
+| `options.mediaUrl` | One of | Public URL of the media file |
+| `options.mediaId` | One of | WhatsApp media ID of a previously uploaded file. Provide either `mediaUrl` or `mediaId` |
+| `options.caption` | No | Caption text shown with the media (supported for `image`, `video`, `document`) |
+| `options.filename` | No | Display filename shown to the recipient (documents only) |
+
+```javascript
+const result = await subverseActions.whatsapp.sendMediaMessage({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    phoneNumberId: '1234567890',
+    to: body.params.customer_number,
+    mediaType: 'document',
+    mediaUrl: body.params.invoice_url,
+    caption: `Invoice for order #${body.params.order_id}`,
+    filename: `invoice-${body.params.order_id}.pdf`
+  }
+});
+
+// result.messages[0].id — WhatsApp message ID
 ```
 
 ---

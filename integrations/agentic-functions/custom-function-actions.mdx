@@ -833,6 +833,188 @@ const result = await subverseActions.whatsapp.sendMediaMessage({
 
 ---
 
+## Freshdesk
+
+The Freshdesk actions connect to your Freshdesk support desk using a saved **Freshdesk API** credential. All actions require a `credentialId` plus an `options` object.
+
+**Compatible credentials:** [Freshdesk API](/credentials/types/freshdesk-api)
+
+### Freshdesk Create Ticket
+
+Create a new support ticket in Freshdesk. Requires a requester identifier and value.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.requester` | No | Requester identifier: `email`, `facebookId`, `phone`, `requesterId`, `twitterId`, `uniqueExternalId`. Default `requesterId` |
+| `options.requesterIdentificationValue` | Yes | Value for the selected requester identifier |
+| `options.status` | No | `open`, `pending`, `resolved`, or `closed`. Default `open` |
+| `options.priority` | No | `low`, `medium`, `high`, or `urgent`. Default `low` |
+| `options.source` | No | `chat`, `email`, `feedbackWidget`, `mobileHelp`, `OutboundEmail`, `phone`, or `portal`. Default `portal` |
+| `options.name` | No | Name of the requester |
+| `options.subject` | No | Subject of the ticket |
+| `options.description` | No | HTML content of the ticket |
+| `options.type` | No | Ticket type, e.g. `Question`, `Incident`, `Problem`, `Feature Request`, `Refund` |
+| `options.agent` | No | Agent ID to assign the ticket to |
+| `options.company` | No | Company ID of the requester |
+| `options.product` | No | Product ID associated with the ticket |
+| `options.group` | No | Group ID to assign the ticket to |
+| `options.ccEmails` | No | Comma-separated CC email addresses |
+| `options.tags` | No | Comma-separated tags |
+| `options.dueBy` | No | ISO 8601 datetime when the ticket is due |
+| `options.frDueBy` | No | ISO 8601 datetime when the first response is due |
+| `options.emailConfigId` | No | Email config ID |
+
+```javascript
+const ticket = await subverseActions.freshdesk.createTicket({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    requester: 'email',
+    requesterIdentificationValue: body.params.customer_email,
+    subject: `Support request from ${body.params.customer_name}`,
+    description: `<p>${body.params.issue_description}</p>`,
+    priority: 'high',
+    source: 'phone',
+    type: 'Incident'
+  }
+});
+
+// ticket.id — new Freshdesk ticket ID
+```
+
+### Freshdesk Get Ticket
+
+Retrieve a single Freshdesk ticket by ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.ticketId` | Yes | ID of the ticket to retrieve |
+
+```javascript
+const ticket = await subverseActions.freshdesk.getTicket({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    ticketId: body.params.ticket_id
+  }
+});
+```
+
+### Freshdesk Get All Tickets
+
+List Freshdesk tickets with optional filters and pagination.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.returnAll` | No | Auto-paginate to fetch all matching tickets |
+| `options.limit` | No | Max tickets to return (default `5`, max `100`) |
+| `options.companyId` | No | Filter by company ID |
+| `options.include` | No | Array of related data to include: `company`, `description`, `requester`, `stats` |
+| `options.order` | No | Sort order: `asc` or `desc`. Default `desc` |
+| `options.orderBy` | No | Sort by `createdAt`, `dueBy`, or `updatedAt` |
+| `options.requesterEmail` | No | Filter by requester email address |
+| `options.requesterId` | No | Filter by requester ID |
+| `options.updatedSince` | No | ISO 8601 timestamp — tickets updated after this time |
+
+```javascript
+const tickets = await subverseActions.freshdesk.getAllTickets({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    requesterEmail: body.params.customer_email,
+    limit: 10
+  }
+});
+
+// tickets — array of ticket objects
+```
+
+### Freshdesk Update Ticket
+
+Update an existing Freshdesk ticket by ID. Only provided fields are changed.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.ticketId` | Yes | ID of the ticket to update |
+| `options.requester` | No | Requester identifier. If provided, `requesterIdentificationValue` is also required |
+| `options.requesterIdentificationValue` | No | Required when `requester` is provided |
+| `options.status` | No | `open`, `pending`, `resolved`, or `closed` |
+| `options.priority` | No | `low`, `medium`, `high`, or `urgent` |
+| `options.source` | No | `chat`, `email`, `feedbackWidget`, `mobileHelp`, `OutboundEmail`, `phone`, or `portal` |
+| `options.name` | No | Name of the requester |
+| `options.subject` | No | Subject of the ticket |
+| `options.description` | No | HTML content of the ticket |
+| `options.type` | No | Ticket type |
+| `options.agent` | No | Agent ID to assign the ticket to |
+| `options.company` | No | Company ID of the requester |
+| `options.product` | No | Product ID associated with the ticket |
+| `options.group` | No | Group ID to assign the ticket to |
+| `options.ccEmails` | No | Comma-separated CC email addresses |
+| `options.tags` | No | Comma-separated tags |
+| `options.dueBy` | No | ISO 8601 datetime when the ticket is due |
+| `options.frDueBy` | No | ISO 8601 datetime when the first response is due |
+| `options.emailConfigId` | No | Email config ID |
+
+```javascript
+const updated = await subverseActions.freshdesk.updateTicket({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    ticketId: body.params.ticket_id,
+    status: 'resolved',
+    priority: 'medium'
+  }
+});
+```
+
+### Freshdesk Delete Ticket
+
+Delete a Freshdesk ticket by ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.ticketId` | Yes | ID of the ticket to delete |
+
+```javascript
+const result = await subverseActions.freshdesk.deleteTicket({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    ticketId: body.params.ticket_id
+  }
+});
+
+// result.success — true on success
+```
+
+### Freshdesk Add Ticket Note
+
+Add a reply or private note to a Freshdesk ticket.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.ticketId` | Yes | ID of the ticket to add the note to |
+| `options.noteBody` | Yes | Content of the note or reply |
+| `options.private` | No | If `true`, the note is private (internal). Default `false` |
+| `options.notifyEmails` | No | Comma-separated email addresses to notify |
+| `options.incoming` | No | Whether the note appears as created from outside the web portal. Default `true` |
+
+```javascript
+const note = await subverseActions.freshdesk.addTicketNote({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    ticketId: body.params.ticket_id,
+    noteBody: `Customer called about ${body.params.issue}. Escalated to L2.`,
+    private: true
+  }
+});
+
+// note.id — new note ID
+```
+
+---
+
 ## Next Steps
 
 <CardGroup cols={2}>

@@ -410,16 +410,16 @@ Send an email directly through an SMTP server using a saved **Email (SMTP / IMAP
 | Parameter | Required | Description |
 |---|---|---|
 | `credentialId` | Yes | Email (SMTP / IMAP) credential ID |
-| `options.fromEmail` | Yes | Sender email address |
+| `options.fromEmail` | No | Sender address in `sender@example.com` or `Name <sender@example.com>` format. Defaults to the credential username when omitted |
 | `options.toEmail` | Yes | Recipient email address |
 | `options.subject` | Yes | Email subject line |
 | `options.emailFormat` | No | `text`, `html`, or `both`. Default `both` |
-| `options.text` | No | Plain text body |
-| `options.html` | No | HTML body (used when `emailFormat` is `html` or `both`) |
+| `options.text` | No | Plain text body. Provide it when `emailFormat` is `text` or `both` |
+| `options.html` | No | HTML body. Provide it when `emailFormat` is `html` or `both` |
 | `options.ccEmail` | No | CC recipient address |
 | `options.bccEmail` | No | BCC recipient address |
 | `options.replyTo` | No | Reply-To address |
-| `options.attachments` | No | Array of `{ fileName, fileContent, mimeType }` objects. `fileContent` must be Base64-encoded |
+| `options.attachments` | No | Array of `{ fileUrl, fileName? }` objects. `fileUrl` is required and must be a valid URL; `fileName` is optional and is derived from the URL when omitted |
 | `options.ignoreSSL` | No | Bypass SSL certificate validation. Default `false` |
 | `options.appendAttribution` | No | Append a "Sent via SubverseAI" footer. Default `false` |
 
@@ -427,7 +427,6 @@ Send an email directly through an SMTP server using a saved **Email (SMTP / IMAP
 const result = await subverseActions.email.send({
   credentialId: 'CREDENTIAL_ID',
   options: {
-    fromEmail: 'support@company.com',
     toEmail: body.params.customer_email,
     subject: `Your order #${body.params.order_id} is confirmed`,
     emailFormat: 'both',
@@ -435,9 +434,8 @@ const result = await subverseActions.email.send({
     html: `<p>Hi ${body.params.name},</p><p>Your order <strong>#${body.params.order_id}</strong> is confirmed.</p>`,
     attachments: [
       {
-        fileName: 'invoice.pdf',
-        fileContent: body.params.invoice_base64,
-        mimeType: 'application/pdf'
+        fileUrl: body.params.invoice_url,
+        fileName: 'invoice.pdf'
       }
     ]
   }
@@ -734,9 +732,9 @@ const result = await subverseActions.shopify.deleteProduct({
 
 ## WhatsApp
 
-The WhatsApp actions let you send messages directly via the WhatsApp Business API using a saved **WhatsApp** credential. All three actions require a `credentialId`, the recipient's phone number, and your sender's **Phone Number ID** (not stored in the credential — supply it explicitly in `options`).
+The WhatsApp actions let you send messages directly through the Meta WhatsApp Business Cloud API using a saved **WhatsApp API** credential. All three actions require a `credentialId`, the recipient's phone number, and your sender's **Phone Number ID** (not stored in the credential — supply it explicitly in `options`).
 
-**Compatible credentials:** WhatsApp (Access Token + Business Account ID)
+**Compatible credentials:** [WhatsApp API](/credentials/types/whatsapp-api) (`whatsAppApi`, with Access Token and Business Account ID)
 
 ### WhatsApp Send Text Message
 

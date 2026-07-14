@@ -1,6 +1,11 @@
+---
+title: 'WhatsApp Business Cloud'
+description: 'Send messages and manage media through the WhatsApp Business Cloud API'
+---
+
 # WhatsApp Business Cloud
 
-The **WhatsApp Business Cloud** node lets you send messages and share media via the WhatsApp Business API from within an orchestration.
+The **WhatsApp Business Cloud** node lets you send text, contacts, locations, templates, and media through the Meta WhatsApp Business Cloud API.
 
 ![WhatsApp Business Cloud Node](/images/agentverse/whatsapp-action-node.png)
 
@@ -8,60 +13,72 @@ The **WhatsApp Business Cloud** node lets you send messages and share media via 
 
 ## Credentials
 
-This node requires a **WhatsApp** credential.
+This node requires a **[WhatsApp API](/credentials/types/whatsapp-api)** credential.
 
 To create a credential:
 1. Go to **Settings → Credentials → New Credential**
-2. Select **WhatsApp**
-3. Enter your WhatsApp Business API **Access Token** and **Business Account ID**
+2. Select **WhatsApp API**
+3. Enter your Meta **Access Token** and **Business Account ID**
 
 ---
 
-## Operations
+## Resources and Operations
 
 ### Message
 
 | Operation | Description |
 |---|---|
-| `Send Text` | Send a plain text message to a phone number |
-| `Send Template` | Send an approved WhatsApp message template |
-| `Send Media` | Send an image, video, audio, or document |
+| `Send` | Send a text, contact, location, audio, document, image, or video message |
+| `Send and Wait for Response` | Send a message and pause the orchestration until the recipient responds or the wait expires |
+| `Send Template` | Send a template approved in your Meta Business account |
+
+### Media
+
+| Operation | Description |
+|---|---|
+| `Upload` | Upload a file to Meta and return its WhatsApp media ID |
+| `Download` | Retrieve media information by WhatsApp media ID |
+| `Delete` | Delete media by WhatsApp media ID |
 
 ---
 
-## Parameters: Send Text
+## Common Message Parameters
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| **Credential** | Credential | Yes | Select or create a WhatsApp credential |
-| **Sender Phone Number ID** | String | Yes | The phone number ID of your WhatsApp Business sender (found in your Meta Business account) |
-| **To** | String | Yes | Recipient phone number in E.164 format (e.g. `+919876543210`) |
-| **Message** | String | Yes | The text message to send |
-| **Preview URL** | Boolean | No | Enable URL link previews in the message |
+| **Credential** | Credential | Yes | Select or create a [WhatsApp API](/credentials/types/whatsapp-api) credential |
+| **Sender Phone Number (or ID)** | Select | Yes | Sender number loaded from the credential's Business Account ID |
+| **Recipient's Phone Number** | String | Yes | Recipient phone number including the country code, for example `+919876543210` |
+| **Message Type** | Select | For `Send` | `Audio`, `Contacts`, `Document`, `Image`, `Location`, `Text`, or `Video` |
 
-## Parameters: Send Template
+## Send Media in a Message
+
+For `Audio`, `Document`, `Image`, and `Video` messages, choose where the media comes from:
+
+| Source | Description |
+|---|---|
+| **Link** | Provide a URL that WhatsApp can download |
+| **WhatsApp Media** | Provide the ID of media already uploaded to Meta |
+| **Upload File** | Drag and drop or select a local file. SubverseAI uploads the file and resolves its temporary signed URL when sending |
+
+Documents can include a filename. Images, videos, and documents can include a caption.
+
+## Send Template Parameters
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| **Credential** | Credential | Yes | Select or create a WhatsApp credential |
-| **Sender Phone Number ID** | String | Yes | The phone number ID of your WhatsApp Business sender |
-| **Recipient's Phone Number** | String | Yes | The recipient's phone number in E.164 format |
-| **Template Name** | String | Yes | The exact name of the approved message template |
-| **Language Code** | String | Yes | Template language code (e.g. `en_US`) |
-| **Components** | Collection | No | Template variable substitutions for header, body, and button sections |
+| **Template** | Select | Yes | Approved template loaded from the connected WhatsApp Business account |
+| **Components** | Collection | No | Dynamic `header`, `body`, and `button` values. Button components support a subtype and zero-based index |
 
-## Parameters: Send Media
+## Media Resource Parameters
 
-| Parameter | Type | Required | Description |
+| Operation | Parameter | Required | Description |
 |---|---|---|---|
-| **Credential** | Credential | Yes | Select or create a WhatsApp credential |
-| **Sender Phone Number ID** | String | Yes | The phone number ID of your WhatsApp Business sender |
-| **To** | String | Yes | Recipient phone number in E.164 format |
-| **Media Type** | Select | Yes | `image`, `video`, `audio`, `document`, or `sticker` |
-| **Media URL** | String | One of | Public URL of the media file |
-| **Media ID** | String | One of | WhatsApp media ID of a previously uploaded file. Provide either **Media URL** or **Media ID** |
-| **Caption** | String | No | Caption text to include with the media (supported for image, video, document) |
-| **Filename** | String | No | Display filename shown to the recipient (documents only) |
+| `Upload` | **Sender Phone Number (or ID)** | Yes | Phone number under which Meta stores the media |
+| `Upload` | **Upload File** | Yes | Drag and drop or select the file to upload |
+| `Upload` | **Filename** | No | Optional name to use for the uploaded file |
+| `Download` | **Media ID** | Yes | ID of the media to retrieve |
+| `Delete` | **Media ID** | Yes | ID of the media to delete |
 
 ---
 

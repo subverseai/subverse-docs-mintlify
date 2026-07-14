@@ -37,7 +37,7 @@ To create a credential:
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | **Credential** | Credential | Yes | Select an [Email (SMTP / IMAP)](/credentials/types/email-smtp) credential |
-| **From Email** | String | Yes | Sender email address |
+| **From Email** | String | No | Sender address in `sender@example.com` or `Name <sender@example.com>` format. Defaults to the credential username when omitted |
 | **To Email** | String | Yes | Recipient email address |
 | **CC Email** | String | No | CC recipient address |
 | **BCC Email** | String | No | BCC recipient address |
@@ -46,7 +46,7 @@ To create a credential:
 | **Email Format** | Select | Yes | `HTML`, `Text`, or `Both` (default: `HTML`) |
 | **Text** | String | No | Plain text body. Shown when Email Format is `Text` or `Both` |
 | **HTML** | String | No | HTML body. Shown when Email Format is `HTML` or `Both`. Supports the built-in HTML editor |
-| **Attachments** | Collection | No | Files to attach. Each attachment needs `File Name`, `File Content (Base64)`, and `MIME Type` |
+| **Attachments** | Collection | No | Files to attach by public link or direct upload. Each attachment requires a file URL; the file name is optional |
 | **Ignore SSL Issues (Insecure)** | Boolean | No | Bypass SSL certificate validation (default: disabled) |
 | **Append Attribution** | Boolean | No | Add a "Sent via SubverseAI" footer (default: disabled) |
 
@@ -60,15 +60,15 @@ To create a credential:
 
 ### Attachments
 
-Each attachment requires:
+Each attachment supports:
 
 | Field | Required | Description |
 |---|---|---|
-| **File Name** | Yes | File name including extension, e.g. `invoice.pdf` |
-| **File Content (Base64)** | Yes | Base64-encoded file content |
-| **MIME Type** | No | MIME type, e.g. `application/pdf`. Defaults to `application/octet-stream` |
+| **Attachment Type** | Yes | Choose `Link` for an existing URL or `Upload File` to upload a file directly |
+| **File URL** | Yes | Public URL for link mode. In upload mode, this value is set automatically after the file is uploaded |
+| **File Name** | No | Name shown in the email, e.g. `invoice.pdf`. When omitted, the node derives it from the URL |
 
-Use `{{ }}` expressions to pass Base64 content from an upstream **HTTP Request** node (Base64 response format) or any other node.
+Uploaded files stored by SubverseAI are resolved to a temporary signed URL when the email is sent.
 
 ---
 
@@ -97,19 +97,19 @@ Reference in downstream nodes:
 
 ## Common Patterns
 
-### Fetch a File and Email It
+### Attach a File by URL
 
 ```
-HTTP Request (Base64 response format)
+HTTP Request or upstream node (returns a file URL)
   ↓
-Send Email (attachment from HTTP Request output)
+Send Email (Attachment Type: Link)
 ```
 
-Map the attachment `File Content (Base64)` field to:
+Map the attachment **File URL** to the upstream URL. You can leave **File Name** blank to derive it automatically from the URL.
 
-```
-{{ httpRequest.data }}
-```
+### Upload and Attach a File
+
+Choose **Upload File** in the attachment, then drag and drop or select the file. The uploaded file URL is populated automatically.
 
 ### Send AI-Generated Follow-up
 

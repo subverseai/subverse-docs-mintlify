@@ -1,0 +1,159 @@
+# Freshdesk
+
+The **Freshdesk** node lets you manage support tickets in Freshdesk from within an orchestration — create, retrieve, update, delete, and add notes to tickets.
+
+![Freshdesk Node](/images/agentverse/freshdesk-action-node.png)
+
+---
+
+## Credentials
+
+This node requires a **Freshdesk API** credential with your Freshdesk domain and API key.
+
+To create a credential:
+1. Go to **Settings → Credentials → New Credential**
+2. Select **Freshdesk API**
+3. Enter your **API Key** and **Domain**
+
+See [Freshdesk API Credentials](/credentials/types/freshdesk-api) for detailed setup instructions.
+
+---
+
+## Operations
+
+### Ticket
+
+| Operation | Description |
+|---|---|
+| `Create` | Create a new support ticket |
+| `Get` | Retrieve a single ticket by ID |
+| `Get Many` | List tickets with optional filters and pagination |
+| `Update` | Update an existing ticket |
+| `Delete` | Delete a ticket by ID |
+| `Add Note` | Add a public reply or private note to a ticket |
+
+---
+
+## Parameters: Create Ticket
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Credential** | Credential | Yes | Select or create a Freshdesk API credential |
+| **Requester Identification** | Select | Yes | How to identify the requester: `email`, `facebookId`, `phone`, `requesterId`, `twitterId`, or `uniqueExternalId` |
+| **Value** | String | Yes | Value for the selected requester identifier |
+| **Status** | Select | Yes | `open`, `pending`, `resolved`, or `closed` |
+| **Priority** | Select | Yes | `low`, `medium`, `high`, or `urgent` |
+| **Source** | Select | Yes | `chat`, `email`, `feedbackWidget`, `mobileHelp`, `OutboundEmail`, `phone`, or `portal` |
+| **Agent Name or ID** | Options | No | Agent to assign the ticket to |
+| **CC Emails** | String | No | Comma-separated email addresses to CC |
+| **Company Name or ID** | Options | No | Company ID of the requester |
+| **Description** | String | No | HTML content of the ticket |
+| **Due By** | DateTime | No | ISO timestamp when the ticket is due to be resolved |
+| **Email Config ID** | Number | No | Email config ID used for this ticket |
+| **FR Due By** | DateTime | No | ISO timestamp when the first response is due |
+| **Group Name or ID** | Options | No | Group to assign the ticket to |
+| **Name** | String | No | Name of the requester |
+| **Product Name or ID** | Options | No | Product associated with the ticket |
+| **Subject** | String | No | Subject of the ticket |
+| **Tags** | String | No | Comma-separated tags |
+| **Type** | Select | No | `Question`, `Incident`, `Problem`, `Feature Request`, or `Refund` |
+
+## Parameters: Get Ticket
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Credential** | Credential | Yes | Select or create a Freshdesk API credential |
+| **Ticket ID** | String | Yes | ID of the ticket to retrieve |
+
+## Parameters: Get Many Tickets
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Credential** | Credential | Yes | Select or create a Freshdesk API credential |
+| **Return All** | Boolean | No | Fetch all pages of results |
+| **Limit** | Number | No | Maximum number of tickets to return (default `5`, max `100`) |
+| **Company ID** | String | No | Filter by company ID |
+| **Include** | Multi-Select | No | Include related data: `company`, `description`, `requester`, or `stats` |
+| **Order** | Select | No | Sort order: `asc` or `desc` |
+| **Order By** | Select | No | Sort by `createdAt`, `dueBy`, or `updatedAt` |
+| **Requester Email** | String | No | Filter by requester email address |
+| **Requester ID** | String | No | Filter by requester ID |
+| **Updated Since** | DateTime | No | Filter tickets updated after this timestamp |
+
+## Parameters: Update Ticket
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Credential** | Credential | Yes | Select or create a Freshdesk API credential |
+| **Ticket ID** | String | Yes | ID of the ticket to update |
+| **Update Fields** | Collection | No | Fields to update. Supports the same options as **Create Ticket** |
+
+## Parameters: Delete Ticket
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Credential** | Credential | Yes | Select or create a Freshdesk API credential |
+| **Ticket ID** | String | Yes | ID of the ticket to delete |
+
+## Parameters: Add Note
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Credential** | Credential | Yes | Select or create a Freshdesk API credential |
+| **Ticket ID** | String | Yes | ID of the ticket to add the note to |
+| **Body** | String | Yes | Content of the note or reply |
+| **Private** | Boolean | Yes | If `true`, the note is private (internal). If `false`, it is sent as a public reply |
+| **Notify Emails** | String | No | Comma-separated email addresses to notify |
+| **Incoming** | Boolean | No | Whether the note appears as being created from outside the web portal |
+
+---
+
+## Output Data
+
+A single ticket returned from `Get` or `Create`:
+
+```json
+{
+  "id": 1,
+  "subject": "Login issue",
+  "description": "User cannot log in.",
+  "status": 2,
+  "priority": 1,
+  "source": 2,
+  "requester_id": 42,
+  "responder_id": 5,
+  "created_at": "2024-06-01T12:00:00Z",
+  "updated_at": "2024-06-01T12:00:00Z"
+}
+```
+
+A note returned from `Add Note`:
+
+```json
+{
+  "id": 1,
+  "body": "We are looking into this issue and will update you shortly.",
+  "private": false,
+  "user_id": 5,
+  "ticket_id": 1,
+  "created_at": "2024-06-01T12:00:00Z",
+  "updated_at": "2024-06-01T12:00:00Z"
+}
+```
+
+Reference fields in downstream nodes:
+
+```
+{{ freshdesk.id }}
+{{ freshdesk.subject }}
+{{ freshdesk.status }}
+{{ freshdesk.requester_id }}
+{{ freshdesk.responder_id }}
+```
+
+---
+
+## Related Nodes
+
+- [HTTP Request](./http-request.md) — Call custom Freshdesk API endpoints not covered by this node
+- [Send Email](./email.md) — Notify customers or agents about ticket updates

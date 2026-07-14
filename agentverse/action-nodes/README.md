@@ -10,13 +10,15 @@ Action nodes receive data from upstream nodes, perform their operation, and pass
 
 | Node | Service | Description |
 |---|---|---|
-| [Slack](./nodes/slack.md) | Slack | Send messages, manage channels, users, and files |
-| [Airtable](./nodes/airtable.md) | Airtable | Read, create, update, and delete records |
-| [Shopify](./nodes/shopify.md) | Shopify | Manage orders, products, customers, and inventory |
-| [WhatsApp](./nodes/whatsapp.md) | WhatsApp | Send messages and manage contacts |
-| [HTTP Request](./nodes/http-request.md) | Any API | Make HTTP requests to any external endpoint |
-| [File Upload](./nodes/file-upload.md) | Cloud Storage | Upload files to S3 cloud storage |
-| [Respond to Webhook](./nodes/respond-to-webhook.md) | AgentVerse | Send a custom HTTP response back to a webhook caller |
+| [Slack](../nodes/slack.mdx) | Slack | Send messages, manage channels, users, and files |
+| [Airtable](../nodes/airtable.mdx) | Airtable | Read, create, update, and delete records |
+| [Shopify](../nodes/shopify.mdx) | Shopify | Manage orders, products, customers, and inventory |
+| [WhatsApp](../nodes/whatsapp.mdx) | WhatsApp | Send messages and manage contacts |
+| [Freshdesk](../nodes/freshdesk.mdx) | Freshdesk | Manage support tickets, notes, and replies |
+| [HTTP Request](../nodes/http-request.mdx) | Any API | Make HTTP requests to any external endpoint |
+| [Send Email](../nodes/email.mdx) | SMTP | Send emails through any SMTP server |
+| [File Upload](../nodes/file-upload.mdx) | Cloud Storage | Upload files to S3 cloud storage |
+| [Respond to Webhook](../nodes/respond-to-webhook.mdx) | AgentVerse | Send a custom HTTP response back to a webhook caller |
 
 ---
 

@@ -94,7 +94,9 @@
               "agentverse/nodes/airtable",
               "agentverse/nodes/shopify",
               "agentverse/nodes/whatsapp",
+              "agentverse/nodes/freshdesk",
               "agentverse/nodes/http-request",
+              "agentverse/nodes/email",
               "agentverse/nodes/file-upload",
               "agentverse/nodes/respond-to-webhook"
             ]
@@ -165,6 +167,8 @@
               "credentials/types/s3-storage",
               "credentials/types/whatsapp-api",
               "credentials/types/whatsapp-trigger-api",
+              "credentials/types/freshdesk-api",
+              "credentials/types/email-smtp",
               "credentials/types/sip-credentials",
               "credentials/types/jwt-auth",
               "credentials/types/http-basic-auth",

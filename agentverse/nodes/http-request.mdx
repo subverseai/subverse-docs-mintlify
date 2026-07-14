@@ -1,6 +1,11 @@
+---
+title: 'HTTP Request'
+description: 'Make HTTP calls to any external API or web endpoint from an AgentVerse orchestration'
+---
+
 # HTTP Request
 
-The **HTTP Request** node makes HTTP calls to any external API or web endpoint. It supports all standard HTTP methods and a wide range of authentication types.
+The **HTTP Request** node makes HTTP calls to any external API or web endpoint. It supports all standard HTTP methods, custom headers, query parameters, multiple body formats, and a wide range of authentication types.
 
 ![HTTP Request Node](/images/agentverse/http-request-action-node.png)
 
@@ -23,7 +28,6 @@ The **HTTP Request** node makes HTTP calls to any external API or web endpoint. 
 |---|---|---|---|
 | **Method** | Select | Yes | HTTP method: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS` |
 | **URL** | String | Yes | The full URL of the endpoint |
-| **Authentication** | Select | No | Authentication method (see below) |
 | **Send Headers** | Boolean | No | Enable to add custom request headers |
 | **Send Query Parameters** | Boolean | No | Enable to add query string parameters to the URL |
 | **Body Type** | Select | No | Format of the request body (for POST/PUT/PATCH) |
@@ -31,6 +35,9 @@ The **HTTP Request** node makes HTTP calls to any external API or web endpoint. 
 | **Options — Timeout** | Number | No | Request timeout in milliseconds (default: `30000`, max: `300000`) |
 | **Options — Follow Redirects** | Boolean | No | Whether to follow HTTP redirects (default: enabled) |
 | **Options — Ignore SSL Issues** | Boolean | No | Skip SSL certificate verification (use with caution) |
+| **Options — Response Format** | Select | No | How to parse the response: `autodetect`, `json`, `text`, or `base64` (default: `autodetect`) |
+| **Options — Full Response** | Boolean | No | Return status code, headers, and body instead of just the body (default: disabled) |
+| **Options — Ignore Response Code** | Boolean | No | Don't throw on 4xx/5xx — handle the error response yourself (default: disabled) |
 
 ### Body Types
 
@@ -43,19 +50,18 @@ The **HTTP Request** node makes HTTP calls to any external API or web endpoint. 
 
 ---
 
-## Authentication
+## Response Format
 
-| Type | Description |
+Use **Response Format** to control how the node parses the API response:
+
+| Format | When to use |
 |---|---|
-| `None` | No authentication |
-| `Basic Auth` | Username and password via HTTP Basic Authentication |
-| `Bearer Token` | `Authorization: Bearer <token>` header |
-| `API Key` | Custom header or query parameter with an API key |
-| `Digest Auth` | HTTP Digest Authentication |
-| `OAuth2` | OAuth2 Bearer token with automatic refresh |
-| `Custom` | Manually specify any authentication header(s) |
+| `Autodetect` | Let the node choose based on the `Content-Type` header |
+| `JSON` | Force parsing as JSON |
+| `Text` | Return the response as a plain string |
+| `Base64` | Return binary data (images, PDFs, audio) as a Base64 string |
 
----
+**Tip:** Choose `Base64` when you need to pass binary files to downstream nodes such as **Send Email** attachments or file upload actions.
 
 ## Output Data
 
@@ -83,6 +89,14 @@ When **Full Response** is enabled:
 }
 ```
 
+When **Response Format** is set to `Base64`:
+
+```json
+{
+  "data": "iVBORw0KGgoAAAANSUhEUgAAAA..."
+}
+```
+
 Reference fields in downstream nodes:
 
 ```
@@ -105,5 +119,10 @@ For APIs that return paginated results, enable **Pagination** under Options:
 
 ## Related Nodes
 
-- [Respond to Webhook](./respond-to-webhook.md) — Return an HTTP response from an orchestration
-- [Conditions](./conditions.md) — Branch based on HTTP response status or body
+- [Respond to Webhook](./respond-to-webhook) — Return an HTTP response from an orchestration
+- [Conditions](./conditions ) — Branch based on HTTP response status or body
+- [Send Email](./email) — Attach binary data fetched via HTTP Request
+
+<Tip>
+  Combine **HTTP Request** (Base64 response format) with **Send Email** to fetch a document from an API and email it as an attachment.
+</Tip>

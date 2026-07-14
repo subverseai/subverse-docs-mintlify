@@ -1,6 +1,6 @@
 ---
 title: 'Custom Function Actions'
-description: 'Built-in actions available to your custom function code — connect to HTTP APIs, Airtable, Google Sheets, and SubVerse agents without writing any integration boilerplate'
+description: 'Built-in actions available to your custom function code — connect to HTTP APIs, Airtable, Google Sheets, WhatsApp, Shopify, and SubVerse agents without writing any integration boilerplate'
 ---
 
 Custom Function Actions are pre-built integrations you can call directly from your custom function code via `subverseActions`. When you build a custom function, you select which actions you want to use and attach the required credentials. The Code Assistant is aware of your selected actions and credentials, so you can describe what you want in plain English and it will generate the correct code for you.
@@ -28,7 +28,7 @@ Make an outbound HTTP request to any URL. Supports all standard methods, custom 
 | `options.options.timeout` | No | Request timeout in milliseconds. Default `30000`, max `300000` |
 | `options.options.followRedirects` | No | Follow 301/302 redirects. Default `true` |
 | `options.options.ignoreSSL` | No | Bypass SSL certificate validation. Default `false` |
-| `options.options.responseFormat` | No | Force response format: `autodetect` \| `json` \| `text`. Default `autodetect` |
+| `options.options.responseFormat` | No | Force response format: `autodetect` \| `json` \| `text` \| `base64`. Default `autodetect`. Use `base64` for binary files. |
 | `options.options.fullResponse` | No | Return `statusCode`, `headers`, and `body` instead of just the body. Default `false` |
 | `options.options.ignoreResponseCode` | No | Don't throw on 4xx/5xx — handle the error response yourself. Default `false` |
 
@@ -401,6 +401,53 @@ const email = await subverseActions.agent.emailTrigger({
 
 ---
 
+## Email Send
+
+Send an email directly through an SMTP server using a saved **Email (SMTP / IMAP)** credential. This action is useful for transactional emails, alerts, and reports from a custom function.
+
+**Compatible credentials:** [Email (SMTP / IMAP)](/credentials/types/email-smtp)
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Email (SMTP / IMAP) credential ID |
+| `options.fromEmail` | No | Sender address in `sender@example.com` or `Name <sender@example.com>` format. Defaults to the credential username when omitted |
+| `options.toEmail` | Yes | Recipient email address |
+| `options.subject` | Yes | Email subject line |
+| `options.emailFormat` | No | `text`, `html`, or `both`. Default `both` |
+| `options.text` | No | Plain text body. Provide it when `emailFormat` is `text` or `both` |
+| `options.html` | No | HTML body. Provide it when `emailFormat` is `html` or `both` |
+| `options.ccEmail` | No | CC recipient address |
+| `options.bccEmail` | No | BCC recipient address |
+| `options.replyTo` | No | Reply-To address |
+| `options.attachments` | No | Array of `{ fileUrl, fileName? }` objects. `fileUrl` is required and must be a valid URL; `fileName` is optional and is derived from the URL when omitted |
+| `options.ignoreSSL` | No | Bypass SSL certificate validation. Default `false` |
+| `options.appendAttribution` | No | Append a "Sent via SubverseAI" footer. Default `false` |
+
+```javascript
+const result = await subverseActions.email.send({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    toEmail: body.params.customer_email,
+    subject: `Your order #${body.params.order_id} is confirmed`,
+    emailFormat: 'both',
+    text: `Hi ${body.params.name}, your order has been confirmed.`,
+    html: `<p>Hi ${body.params.name},</p><p>Your order <strong>#${body.params.order_id}</strong> is confirmed.</p>`,
+    attachments: [
+      {
+        fileUrl: body.params.invoice_url,
+        fileName: 'invoice.pdf'
+      }
+    ]
+  }
+});
+
+// result.messageId — SMTP message ID
+// result.accepted — array of accepted addresses
+// result.rejected — array of rejected addresses
+```
+
+---
+
 ## Shopify
 
 The Shopify actions below connect to a Shopify store via a saved Shopify credential. All actions support `credentialId` plus an `options` object.
@@ -679,6 +726,289 @@ const result = await subverseActions.shopify.deleteProduct({
 });
 
 // result.success — true on success
+```
+
+---
+
+## WhatsApp
+
+The WhatsApp actions let you send messages directly through the Meta WhatsApp Business Cloud API using a saved **WhatsApp API** credential. All three actions require a `credentialId`, the recipient's phone number, and your sender's **Phone Number ID** (not stored in the credential — supply it explicitly in `options`).
+
+**Compatible credentials:** [WhatsApp API](/credentials/types/whatsapp-api) (`whatsAppApi`, with Access Token and Business Account ID)
+
+### WhatsApp Send Text Message
+
+Send a plain text message to a WhatsApp number.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | WhatsApp credential ID |
+| `options.phoneNumberId` | Yes | Your WhatsApp Business sender phone number ID |
+| `options.to` | Yes | Recipient phone number in E.164 format — e.g. `+919876543210` |
+| `options.message` | Yes | The text content to send |
+| `options.previewUrl` | No | Show a URL preview inside the message. Default `false` |
+
+```javascript
+const result = await subverseActions.whatsapp.sendTextMessage({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    phoneNumberId: '1234567890',
+    to: body.params.customer_number,
+    message: `Hi ${body.params.name}, your booking is confirmed for ${body.params.date}.`
+  }
+});
+
+// result.messages[0].id — WhatsApp message ID
+// result.contacts[0].wa_id — recipient's WhatsApp ID
+```
+
+### WhatsApp Send Template Message
+
+Send an approved WhatsApp message template. Templates must be created and approved in your Meta Business account before use.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | WhatsApp credential ID |
+| `options.phoneNumberId` | Yes | Your WhatsApp Business sender phone number ID |
+| `options.to` | Yes | Recipient phone number in E.164 format |
+| `options.templateName` | Yes | Exact name of the approved template |
+| `options.languageCode` | Yes | Template language code — e.g. `en_US` |
+| `options.components` | No | Array of component objects to fill template variables. Each object has a `type` (`header`, `body`, or `button`) and `parameters` array |
+
+```javascript
+const result = await subverseActions.whatsapp.sendTemplateMessage({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    phoneNumberId: '1234567890',
+    to: body.params.customer_number,
+    templateName: 'order_shipped',
+    languageCode: 'en_US',
+    components: [
+      {
+        type: 'body',
+        parameters: [
+          { type: 'text', text: body.params.order_id },
+          { type: 'text', text: body.params.tracking_number }
+        ]
+      }
+    ]
+  }
+});
+
+// result.messages[0].id — WhatsApp message ID
+```
+
+### WhatsApp Send Media Message
+
+Send an image, video, audio file, document, or sticker to a WhatsApp number.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | WhatsApp credential ID |
+| `options.phoneNumberId` | Yes | Your WhatsApp Business sender phone number ID |
+| `options.to` | Yes | Recipient phone number in E.164 format |
+| `options.mediaType` | Yes | Type of media: `image`, `video`, `audio`, `document`, or `sticker` |
+| `options.mediaUrl` | One of | Public URL of the media file |
+| `options.mediaId` | One of | WhatsApp media ID of a previously uploaded file. Provide either `mediaUrl` or `mediaId` |
+| `options.caption` | No | Caption text shown with the media (supported for `image`, `video`, `document`) |
+| `options.filename` | No | Display filename shown to the recipient (documents only) |
+
+```javascript
+const result = await subverseActions.whatsapp.sendMediaMessage({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    phoneNumberId: '1234567890',
+    to: body.params.customer_number,
+    mediaType: 'document',
+    mediaUrl: body.params.invoice_url,
+    caption: `Invoice for order #${body.params.order_id}`,
+    filename: `invoice-${body.params.order_id}.pdf`
+  }
+});
+
+// result.messages[0].id — WhatsApp message ID
+```
+
+---
+
+## Freshdesk
+
+The Freshdesk actions connect to your Freshdesk support desk using a saved **Freshdesk API** credential. All actions require a `credentialId` plus an `options` object.
+
+**Compatible credentials:** [Freshdesk API](/credentials/types/freshdesk-api)
+
+### Freshdesk Create Ticket
+
+Create a new support ticket in Freshdesk. Requires a requester identifier and value.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.requester` | No | Requester identifier: `email`, `facebookId`, `phone`, `requesterId`, `twitterId`, `uniqueExternalId`. Default `requesterId` |
+| `options.requesterIdentificationValue` | Yes | Value for the selected requester identifier |
+| `options.status` | No | `open`, `pending`, `resolved`, or `closed`. Default `open` |
+| `options.priority` | No | `low`, `medium`, `high`, or `urgent`. Default `low` |
+| `options.source` | No | `chat`, `email`, `feedbackWidget`, `mobileHelp`, `OutboundEmail`, `phone`, or `portal`. Default `portal` |
+| `options.name` | No | Name of the requester |
+| `options.subject` | No | Subject of the ticket |
+| `options.description` | No | HTML content of the ticket |
+| `options.type` | No | Ticket type, e.g. `Question`, `Incident`, `Problem`, `Feature Request`, `Refund` |
+| `options.agent` | No | Agent ID to assign the ticket to |
+| `options.company` | No | Company ID of the requester |
+| `options.product` | No | Product ID associated with the ticket |
+| `options.group` | No | Group ID to assign the ticket to |
+| `options.ccEmails` | No | Comma-separated CC email addresses |
+| `options.tags` | No | Comma-separated tags |
+| `options.dueBy` | No | ISO 8601 datetime when the ticket is due |
+| `options.frDueBy` | No | ISO 8601 datetime when the first response is due |
+| `options.emailConfigId` | No | Email config ID |
+
+```javascript
+const ticket = await subverseActions.freshdesk.createTicket({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    requester: 'email',
+    requesterIdentificationValue: body.params.customer_email,
+    subject: `Support request from ${body.params.customer_name}`,
+    description: `<p>${body.params.issue_description}</p>`,
+    priority: 'high',
+    source: 'phone',
+    type: 'Incident'
+  }
+});
+
+// ticket.id — new Freshdesk ticket ID
+```
+
+### Freshdesk Get Ticket
+
+Retrieve a single Freshdesk ticket by ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.ticketId` | Yes | ID of the ticket to retrieve |
+
+```javascript
+const ticket = await subverseActions.freshdesk.getTicket({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    ticketId: body.params.ticket_id
+  }
+});
+```
+
+### Freshdesk Get All Tickets
+
+List Freshdesk tickets with optional filters and pagination.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.returnAll` | No | Auto-paginate to fetch all matching tickets |
+| `options.limit` | No | Max tickets to return (default `5`, max `100`) |
+| `options.companyId` | No | Filter by company ID |
+| `options.include` | No | Array of related data to include: `company`, `description`, `requester`, `stats` |
+| `options.order` | No | Sort order: `asc` or `desc`. Default `desc` |
+| `options.orderBy` | No | Sort by `createdAt`, `dueBy`, or `updatedAt` |
+| `options.requesterEmail` | No | Filter by requester email address |
+| `options.requesterId` | No | Filter by requester ID |
+| `options.updatedSince` | No | ISO 8601 timestamp — tickets updated after this time |
+
+```javascript
+const tickets = await subverseActions.freshdesk.getAllTickets({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    requesterEmail: body.params.customer_email,
+    limit: 10
+  }
+});
+
+// tickets — array of ticket objects
+```
+
+### Freshdesk Update Ticket
+
+Update an existing Freshdesk ticket by ID. Only provided fields are changed.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.ticketId` | Yes | ID of the ticket to update |
+| `options.requester` | No | Requester identifier. If provided, `requesterIdentificationValue` is also required |
+| `options.requesterIdentificationValue` | No | Required when `requester` is provided |
+| `options.status` | No | `open`, `pending`, `resolved`, or `closed` |
+| `options.priority` | No | `low`, `medium`, `high`, or `urgent` |
+| `options.source` | No | `chat`, `email`, `feedbackWidget`, `mobileHelp`, `OutboundEmail`, `phone`, or `portal` |
+| `options.name` | No | Name of the requester |
+| `options.subject` | No | Subject of the ticket |
+| `options.description` | No | HTML content of the ticket |
+| `options.type` | No | Ticket type |
+| `options.agent` | No | Agent ID to assign the ticket to |
+| `options.company` | No | Company ID of the requester |
+| `options.product` | No | Product ID associated with the ticket |
+| `options.group` | No | Group ID to assign the ticket to |
+| `options.ccEmails` | No | Comma-separated CC email addresses |
+| `options.tags` | No | Comma-separated tags |
+| `options.dueBy` | No | ISO 8601 datetime when the ticket is due |
+| `options.frDueBy` | No | ISO 8601 datetime when the first response is due |
+| `options.emailConfigId` | No | Email config ID |
+
+```javascript
+const updated = await subverseActions.freshdesk.updateTicket({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    ticketId: body.params.ticket_id,
+    status: 'resolved',
+    priority: 'medium'
+  }
+});
+```
+
+### Freshdesk Delete Ticket
+
+Delete a Freshdesk ticket by ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.ticketId` | Yes | ID of the ticket to delete |
+
+```javascript
+const result = await subverseActions.freshdesk.deleteTicket({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    ticketId: body.params.ticket_id
+  }
+});
+
+// result.success — true on success
+```
+
+### Freshdesk Add Ticket Note
+
+Add a reply or private note to a Freshdesk ticket.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Freshdesk API credential ID |
+| `options.ticketId` | Yes | ID of the ticket to add the note to |
+| `options.noteBody` | Yes | Content of the note or reply |
+| `options.private` | No | If `true`, the note is private (internal). Default `false` |
+| `options.notifyEmails` | No | Comma-separated email addresses to notify |
+| `options.incoming` | No | Whether the note appears as created from outside the web portal. Default `true` |
+
+```javascript
+const note = await subverseActions.freshdesk.addTicketNote({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    ticketId: body.params.ticket_id,
+    noteBody: `Customer called about ${body.params.issue}. Escalated to L2.`,
+    private: true
+  }
+});
+
+// note.id — new note ID
 ```
 
 ---

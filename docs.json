@@ -166,11 +166,12 @@
               "credentials/types/whatsapp-api",
               "credentials/types/whatsapp-trigger-api",
               "credentials/types/sip-credentials",
-              "credentials/types/oauth2-api",
               "credentials/types/jwt-auth",
               "credentials/types/http-basic-auth",
               "credentials/types/http-bearer-auth",
               "credentials/types/http-header-auth",
+              "credentials/types/http-query-auth",
+              "credentials/types/http-custom-auth",
               "credentials/types/google-sheets-api-key",
               "credentials/types/google-sheets-service-account"
             ]

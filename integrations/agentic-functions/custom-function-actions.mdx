@@ -338,6 +338,8 @@ Send a WhatsApp message or start a chat agent session for a customer.
 | `options.whatsappOptions.message` | No | Message text — required when `messageType` is `say` |
 | `options.whatsappOptions.additionalContext` | No | Injected into LLM prompt — used when `messageType` is `prompt` |
 | `options.whatsappOptions.templateId` | No | WhatsApp template name — required when `messageType` is `template` |
+| `options.whatsappOptions.templateLanguage` | No | BCP-47 language code for the template (e.g. `en`, `en_US`, `hi`). Default `en` |
+| `options.whatsappOptions.templateVariables` | No | Key/value pairs substituted into the WhatsApp template body placeholders. Only used when `messageType` is `template` |
 | `options.metadata` | No | Key-value pairs passed into the agent session |
 | `options.scheduleTime` | No | ISO 8601 datetime to schedule the send |
 | `options.agentName` | No | Override the channel's default agent |
@@ -360,6 +362,29 @@ const chat = await subverseActions.agent.chatTrigger({
 
 // chat.data.sessionId — session ID for the triggered conversation
 ```
+
+<Note title="Template messages">
+  When `messageType` is `template`, provide `templateId`, `templateLanguage`, and `templateVariables` to fill the template's placeholders. `templateVariables` is decoupled from `metadata` — only `templateVariables` is used for template substitution.
+
+  ```javascript
+  const chat = await subverseActions.agent.chatTrigger({
+    credentialId: 'CREDENTIAL_ID',
+    options: {
+      communicationChannel: 'whatsapp-support',
+      customerNumber: body.params.whatsapp_number,
+      whatsappOptions: {
+        messageType: 'template',
+        templateId: 'order_confirmation',
+        templateLanguage: 'en_US',
+        templateVariables: {
+          customer_name: body.params.name,
+          order_id: body.params.order_id
+        }
+      }
+    }
+  });
+  ```
+</Note>
 
 ## SubVerse Agents Trigger Email
 

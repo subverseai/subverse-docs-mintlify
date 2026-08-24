@@ -45,6 +45,22 @@ The **SubVerse Agents** node executes a SubVerse AI agent on a specific communic
 | **Customer Phone Number** | String | Yes | The WhatsApp number to message (E.164 format) |
 | **Bot Phone Number** | Select | No | The SubVerse AI WhatsApp sender number — leave empty to use the default |
 
+#### WhatsApp Options
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Message Type** | Select | No | `Prompt (AI-driven)` \| `Say (Fixed message)` \| `Template`. Default `Prompt` |
+| **Message** | String | No | Fixed message text — required when **Message Type** is `Say` |
+| **Template ID** | String | No | WhatsApp template name — required when **Message Type** is `Template` |
+| **Template Language** | String | No | BCP-47 language code for the template (e.g. `en`, `en_US`, `hi`). Default `en` |
+| **Template Variables** | Key-Value | No | Key/value pairs substituted into the WhatsApp template body placeholders. Only visible when **Message Type** is `Template` |
+| **Additional Context** | String | No | Extra instructions injected into the LLM prompt — only used when **Message Type** is `Prompt` |
+| **Attachment URLs** | String | No | Comma-separated list of publicly accessible URLs to attach |
+
+<Note title="Template Variables vs Customer Metadata">
+  **Template Variables** fill the placeholders in a WhatsApp template body (e.g. `{{1}}`, `{{customer_name}}`). They are independent from **Customer Metadata** — metadata is passed into the agent session for prompt substitution, while template variables are sent directly to the WhatsApp template. Only template variables are used for template substitution; metadata is never sent as template variables.
+</Note>
+
 ### Email
 
 | Parameter | Type | Required | Description |

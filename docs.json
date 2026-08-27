@@ -92,6 +92,7 @@
             "pages": [
               "agentverse/nodes/slack",
               "agentverse/nodes/airtable",
+              "agentverse/nodes/google-sheets",
               "agentverse/nodes/shopify",
               "agentverse/nodes/whatsapp",
               "agentverse/nodes/freshdesk",
@@ -177,6 +178,7 @@
               "credentials/types/http-query-auth",
               "credentials/types/http-custom-auth",
               "credentials/types/google-sheets-api-key",
+              "credentials/types/google-sheets-oauth2-api",
               "credentials/types/google-sheets-service-account"
             ]
           }

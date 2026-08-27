@@ -206,18 +206,22 @@ const result = await subverseActions.airtable.deleteRecord({
 
 Read values from a range in a Google Sheet. Returns a 2D array where each inner array is a row.
 
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API, Google Sheets API Key (public sheets only)
+
 | Parameter | Required | Description |
 |---|---|---|
-| `credentialId` | No | Required for service account auth. Optional for API key |
+| `credentialId` | No | Required for service account and OAuth2. Optional for API key on public sheets |
 | `options.spreadsheetId` | Yes | Spreadsheet ID from the URL: `/spreadsheets/d/{spreadsheetId}/` |
 | `options.range` | Yes | A1 notation range — e.g. `Sheet1!A1:D10` or just `Sheet1` |
+| `options.valueRenderOption` | No | `FORMATTED_VALUE` (default), `FORMULA`, or `UNFORMATTED_VALUE` |
 
 ```javascript
 const data = await subverseActions.googleSheets.readRows({
   credentialId: 'CREDENTIAL_ID',
   options: {
     spreadsheetId: 'YOUR_SPREADSHEET_ID',
-    range: 'Customers!A1:D50'
+    range: 'Customers!A1:D50',
+    valueRenderOption: 'FORMATTED_VALUE'
   }
 });
 
@@ -230,9 +234,11 @@ const rows = data.values.slice(1);
 
 Append rows to the end of a Google Sheet after the last row with data.
 
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API
+
 | Parameter | Required | Description |
 |---|---|---|
-| `credentialId` | Yes | Google Sheets service account credential ID |
+| `credentialId` | Yes | Google Sheets credential ID (service account or OAuth2) |
 | `options.spreadsheetId` | Yes | Spreadsheet ID |
 | `options.range` | Yes | Sheet name or range — only the sheet name matters for append (e.g. `Sheet1`) |
 | `options.rows` | Yes | Array of rows to append. Each row is an array of cell values |
@@ -257,9 +263,11 @@ const result = await subverseActions.googleSheets.appendRows({
 
 Overwrite existing rows at a specific range. The data dimensions must match the range provided.
 
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API
+
 | Parameter | Required | Description |
 |---|---|---|
-| `credentialId` | Yes | Google Sheets service account credential ID |
+| `credentialId` | Yes | Google Sheets credential ID (service account or OAuth2) |
 | `options.spreadsheetId` | Yes | Spreadsheet ID |
 | `options.range` | Yes | A1 notation range to overwrite — e.g. `Sheet1!A2:C2` |
 | `options.rows` | Yes | Array of rows. Dimensions must match the range |
@@ -276,6 +284,193 @@ const result = await subverseActions.googleSheets.updateRows({
     ]
   }
 });
+```
+
+## Google Sheets Append or Update Rows
+
+Upsert rows by a lookup column. For each row, if an existing row has a matching value at the lookup column index, that row is updated in place; otherwise the row is appended after the last row with data.
+
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Sheets credential ID (service account or OAuth2) |
+| `options.spreadsheetId` | Yes | Spreadsheet ID |
+| `options.range` | Yes | A1 notation range to search and write within (e.g. `Sheet1!A1:D` or `Sheet1`) |
+| `options.rows` | Yes | Array of rows to upsert. Each row is an array of cell values |
+| `options.lookupColumnIndex` | Yes | 0-based column index used to match rows (0 = column A) |
+| `options.valueInputOption` | No | `RAW` or `USER_ENTERED`. Default `USER_ENTERED` |
+
+```javascript
+const result = await subverseActions.googleSheets.appendOrUpdateRows({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    spreadsheetId: 'YOUR_SPREADSHEET_ID',
+    range: 'Customers!A1:D',
+    rows: [
+      [body.params.email, body.params.name, body.params.phone, 'Active']
+    ],
+    lookupColumnIndex: 0  // match on column A (email)
+  }
+});
+
+// result.appendResult — present if new rows were appended
+// result.updateResults — array of update results for matched rows
+```
+
+## Google Sheets Clear Range
+
+Clear values from a range in a Google Sheet. Cell values are removed but formatting and data validation rules are preserved.
+
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Sheets credential ID (service account or OAuth2) |
+| `options.spreadsheetId` | Yes | Spreadsheet ID |
+| `options.range` | Yes | A1 notation range to clear — e.g. `Sheet1!A1:D10` |
+
+```javascript
+const result = await subverseActions.googleSheets.clearRange({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    spreadsheetId: 'YOUR_SPREADSHEET_ID',
+    range: 'Sheet1!A2:D100'
+  }
+});
+
+// result.cleared — true on success
+```
+
+## Google Sheets Create Sheet
+
+Create a new sheet (tab) within an existing Google Spreadsheet. Returns the new sheet's numeric ID and title.
+
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Sheets credential ID (service account or OAuth2) |
+| `options.spreadsheetId` | Yes | Spreadsheet to add the sheet to |
+| `options.title` | Yes | Title for the new tab — must be non-empty and unique |
+| `options.rowCount` | No | Number of rows. Default `1000` |
+| `options.columnCount` | No | Number of columns. Default `26` |
+
+```javascript
+const result = await subverseActions.googleSheets.createSheet({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    spreadsheetId: 'YOUR_SPREADSHEET_ID',
+    title: 'February 2025',
+    rowCount: 500,
+    columnCount: 10
+  }
+});
+
+// result.sheetId — numeric ID of the new sheet
+// result.title — the title of the new sheet
+```
+
+## Google Sheets Delete Sheet
+
+Permanently delete a sheet (tab) from a Google Spreadsheet by its numeric sheet ID. This action cannot be undone.
+
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Sheets credential ID (service account or OAuth2) |
+| `options.spreadsheetId` | Yes | Spreadsheet ID |
+| `options.sheetId` | Yes | Numeric ID of the sheet (tab) to delete |
+
+```javascript
+const result = await subverseActions.googleSheets.deleteSheet({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    spreadsheetId: 'YOUR_SPREADSHEET_ID',
+    sheetId: 1234567890
+  }
+});
+
+// result.deleted — true on success
+```
+
+## Google Sheets Delete Rows or Columns
+
+Delete one or more ranges of rows or columns from a Google Sheet. Uses 0-based indices — rows or columns after the deleted range shift to fill the gap. Supports deleting multiple non-contiguous ranges in a single request.
+
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Sheets credential ID (service account or OAuth2) |
+| `options.spreadsheetId` | Yes | Spreadsheet ID |
+| `options.dimension` | Yes | `ROWS` or `COLUMNS` |
+| `options.ranges` | Yes | Array of `{ sheetId, startIndex, endIndex }` — at least one required |
+| `options.ranges[].sheetId` | Yes | Numeric sheet ID (tab ID) |
+| `options.ranges[].startIndex` | Yes | 0-based index of first row/column to delete (row 1 = index 0) |
+| `options.ranges[].endIndex` | Yes | 0-based index after the last row/column to delete (must be > startIndex) |
+
+```javascript
+const result = await subverseActions.googleSheets.deleteRowsOrColumns({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    spreadsheetId: 'YOUR_SPREADSHEET_ID',
+    dimension: 'ROWS',
+    ranges: [
+      { sheetId: 0, startIndex: 2, endIndex: 5 }  // deletes rows 3, 4, 5 (1-based)
+    ]
+  }
+});
+
+// result.deleted — true on success
+```
+
+## Google Sheets Create Spreadsheet
+
+Create a new Google Spreadsheet owned by the authenticated account. Requires a title. Returns the new spreadsheet ID and URL.
+
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Sheets credential ID (service account or OAuth2) |
+| `options.title` | Yes | Spreadsheet title — must be non-empty |
+| `options.locale` | No | Spreadsheet locale (e.g. `en_US`). Default `en_US` |
+
+```javascript
+const result = await subverseActions.googleSheets.createSpreadsheet({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    title: 'Monthly Sales Report',
+    locale: 'en_US'
+  }
+});
+
+// result.spreadsheetId — ID of the new spreadsheet
+// result.spreadsheetUrl — URL to open the spreadsheet in Google Sheets
+```
+
+## Google Sheets Delete Spreadsheet
+
+Move a Google Spreadsheet to trash by its ID. Uses the Google Drive API — the spreadsheet is trashed (not permanently destroyed) and can be restored from Google Drive trash.
+
+**Compatible credentials:** Google Sheets Service Account, Google Sheets OAuth2 API
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Sheets credential ID (service account or OAuth2) |
+| `options.spreadsheetId` | Yes | Spreadsheet ID to delete |
+
+```javascript
+const result = await subverseActions.googleSheets.deleteSpreadsheet({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    spreadsheetId: 'YOUR_SPREADSHEET_ID'
+  }
+});
+
+// result.deleted — true on success
 ```
 
 ---

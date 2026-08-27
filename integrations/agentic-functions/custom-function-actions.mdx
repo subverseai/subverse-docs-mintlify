@@ -399,7 +399,7 @@ Send an email or start an email agent session for a customer.
 | `options.emailOptions.subject` | No | Email subject line |
 | `options.emailOptions.body` | No | Email body (HTML or plain text) — required when `messageType` is `say` |
 | `options.emailOptions.additionalContext` | No | Injected into LLM prompt — used when `messageType` is `prompt` |
-| `options.emailOptions.replyTo` | No | Reply-To address |
+| `options.emailOptions.replyTo` | No | Optional sessionId of the existing email session to reply to. When provided, the outbound email is threaded onto that session with the correct In-Reply-To/References, accumulated Cc/Bcc, and quoted context. Omit to start a fresh email thread |
 | `options.emailOptions.cc` | No | CC recipients — comma-separated |
 | `options.metadata` | No | Key-value pairs passed into the agent session |
 | `options.scheduleTime` | No | ISO 8601 datetime to schedule the send |

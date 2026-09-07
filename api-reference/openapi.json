@@ -21,7 +21,7 @@
   "paths": {
     "/call/trigger": {
       "post": {
-        "description": "Directly trigger a call without workflow",
+        "description": "Place a call to a customer using your chosen agent and settings.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -283,6 +283,222 @@
         "tags": [
           "Call"
         ]
+      }
+    },
+    "/session/fetch/{sessionId}": {
+      "get": {
+        "summary": "Get session details",
+        "description": "Get everything about a single session in one place — who was involved, what was said, how it went, and when it happened. For phone calls, you'll also see the call duration, retry info, and a link to the recording.",
+        "operationId": "getSessionDetails",
+        "tags": [
+          "Session"
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "description": "The unique identifier of the session.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "sess_01H8XK3Q9V1YJZ5T7N2A8B9C0D"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session details found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDetailsResponse"
+                },
+                "examples": {
+                  "200 success": {
+                    "summary": "200 - Session details found",
+                    "value": {
+                      "responseCode": 200,
+                      "message": "Session details found",
+                      "data": {
+                        "sessionId": "sess_01H8XK3Q9V1YJZ5T7N2A8B9C0D",
+                        "agentDetails": {
+                          "name": "SupportBot",
+                          "number": "+15551234567",
+                          "email": "agent@example.com",
+                          "version": "v1.2.0"
+                        },
+                        "userDetails": {
+                          "id": "u_42",
+                          "name": "Jane Doe",
+                          "number": "+15557654321",
+                          "email": "jane@example.com"
+                        },
+                        "dynamicVariables": {
+                          "plan": "pro",
+                          "accountId": "acc_99"
+                        },
+                        "communicationChannelType": "inboundSipTrunk",
+                        "communicationChannelName": "Inbound Support Line",
+                        "transcript": [
+                          {
+                            "type": "message",
+                            "role": "user",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "Hi, I want to check my refund."
+                              }
+                            ],
+                            "senderId": "+15557654321",
+                            "senderName": "Jane Doe",
+                            "agentName": "SupportBot",
+                            "metadata": {},
+                            "timestamp": "2026-09-07T10:00:00.000Z"
+                          },
+                          {
+                            "type": "function_call",
+                            "name": "lookupRefund",
+                            "call_id": "call_abc",
+                            "arguments": {
+                              "accountId": "acc_99"
+                            },
+                            "phase": "during",
+                            "timestamp": "2026-09-07T10:00:03.000Z"
+                          },
+                          {
+                            "type": "function_call_output",
+                            "name": "lookupRefund",
+                            "call_id": "call_abc",
+                            "output": "{\"status\":\"processing\"}",
+                            "is_error": false,
+                            "executionTimeMs": 340,
+                            "phase": "during",
+                            "timestamp": "2026-09-07T10:00:03.340Z"
+                          },
+                          {
+                            "type": "thinking",
+                            "thinking": "The user is asking about a refund. I should look up their account first.",
+                            "timestamp": "2026-09-07T10:00:02.500Z"
+                          },
+                          {
+                            "type": "summary",
+                            "summary": "User asked about refund status, agent confirmed processing.",
+                            "timestamp": "2026-09-07T10:01:00.000Z"
+                          }
+                        ],
+                        "analysis": {
+                          "summary": "User asked about refund status; agent confirmed processing.",
+                          "sentiment": "positive"
+                        },
+                        "status": "call_hangup",
+                        "time": "2026-09-07T10:00:00.000Z",
+                        "createdAt": "2026-09-07T10:00:00.000Z",
+                        "updatedAt": "2026-09-07T10:03:04.000Z",
+                        "duration": 184,
+                        "retryAttemptNo": 0,
+                        "recordingUrl": "https://s3.example.com/signed/recordings/sess_...wav?sig=..."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - API key is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "apiKeyMissing": {
+                    "summary": "401 - API key missing",
+                    "value": {
+                      "responseCode": 401,
+                      "errorCode": "apiKeyMissing",
+                      "message": "API key missing",
+                      "data": null
+                    }
+                  },
+                  "apiKeyInvalid": {
+                    "summary": "401 - Invalid API key",
+                    "value": {
+                      "responseCode": 401,
+                      "errorCode": "apiKeyInvalid",
+                      "message": "Invalid API key",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found - the session ID does not exist in the workspace associated with your API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "sessionNotFound": {
+                    "summary": "404 - Session not found",
+                    "value": {
+                      "responseCode": 404,
+                      "errorCode": "sessionNotFound",
+                      "message": "Session not found",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error - the sessionId path parameter is missing or empty.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "validationError": {
+                    "summary": "422 - Validation error",
+                    "value": {
+                      "responseCode": 422,
+                      "errorCode": "validationError",
+                      "message": "Expected string length greater or equal to 1",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "internalError": {
+                    "summary": "500 - Internal server error",
+                    "value": {
+                      "responseCode": 500,
+                      "errorCode": "internalError",
+                      "message": "Internal server error",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   },

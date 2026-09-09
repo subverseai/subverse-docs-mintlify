@@ -194,8 +194,8 @@
     },
     "/call/signed-recording-url": {
       "get": {
-        "summary": "Generate a secure, time-limited signed URL for a call recording.",
-        "description": "Generates a secure, time-limited pre-signed URL to access a call recording. The generated link is temporary to ensure data security and prevent unauthorized access. You must provide either 'callId' or 'callRecordingUrl' in the query parameters.",
+        "summary": "Generate a secure, time-limited signed URL for a SubVerse private asset",
+        "description": "Generates a secure, time-limited pre-signed URL for an asset stored in the SubVerse private S3 bucket, such as call recordings or session attachments. You must provide either 'callId' or 'callRecordingUrl' in the query parameters.",
         "operationId": "getSignedRecordingUrl",
         "parameters": [
           {
@@ -211,7 +211,7 @@
           {
             "name": "callRecordingUrl",
             "in": "query",
-            "description": "A direct S3/Storage URL to a call recording.",
+            "description": "A direct S3/Storage URL to a SubVerse private asset (e.g., a call recording, session attachment, etc.).",
             "required": false,
             "schema": {
               "type": "string",

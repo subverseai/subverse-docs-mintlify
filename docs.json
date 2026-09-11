@@ -237,18 +237,6 @@
             "pages": [
               "api-reference/direct-call/signed-url"
             ]
-          },
-          {
-            "group": "Workflow",
-            "pages": [
-              "api-reference/workflow/trigger",
-              "api-reference/workflow/edit",
-              "api-reference/workflow/delete"
-            ]
-          },
-          {
-            "group": "Agent",
-            "pages": ["api-reference/agent/blueprints"]
           }
         ]
       }

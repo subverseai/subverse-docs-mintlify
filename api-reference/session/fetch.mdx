@@ -1,0 +1,446 @@
+---
+title: 'Get Session Details'
+openapi: 'GET /session/fetch/{sessionId}'
+---
+
+Retrieve full details of a specific session by its ID.
+
+## Endpoint
+
+```
+GET /api/session/fetch/{sessionId}
+```
+
+## Authentication
+
+All requests require an API key passed in the `x-api-key` header.
+
+```
+x-api-key: your_workspace_api_key
+```
+
+Contact your workspace admin if you don't have an API key.
+
+## Path Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `sessionId` | string | Yes | The unique identifier of the session. |
+
+## Response
+
+### Success (200)
+
+```json
+{
+  "responseCode": 200,
+  "message": "Session details found",
+  "data": {
+    "sessionId": "sess_01H8XK3Q9V1YJZ5T7N2A8B9C0D",
+    "agentDetails": {
+      "name": "SupportBot",
+      "number": "+15551234567",
+      "email": "agent@example.com",
+      "version": "v1.2.0"
+    },
+    "userDetails": {
+      "id": "u_42",
+      "name": "Jane Doe",
+      "number": "+15557654321",
+      "email": "jane@example.com"
+    },
+    "dynamicVariables": {
+      "plan": "pro",
+      "accountId": "acc_99"
+    },
+    "communicationChannelType": "inboundSipTrunk",
+    "communicationChannelName": "Inbound Support Line",
+    "transcript": [...],
+    "analysis": {
+      "summary": "User asked about refund status; agent confirmed processing.",
+      "sentiment": "positive"
+    },
+    "status": "call_hangup",
+    "time": "2026-09-07T10:00:00.000Z",
+    "createdAt": "2026-09-07T10:00:00.000Z",
+    "updatedAt": "2026-09-07T10:03:04.000Z",
+    "duration": 184,
+    "retryAttemptNo": 0,
+    "recordingUrl": "https://s3.example.com/signed/recordings/sess_...wav?sig=..."
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `sessionId` | string | Unique session identifier. |
+| `agentDetails` | object | Details of the agent that handled the session. |
+| `agentDetails.name` | string | Agent name. |
+| `agentDetails.number` | string \| null | Agent phone number (if applicable). |
+| `agentDetails.email` | string \| null | Agent email address (if applicable). |
+| `agentDetails.version` | string \| null | Agent version label. |
+| `userDetails` | object | Details of the user/customer in the session. |
+| `userDetails.id` | string | User identifier (phone number, email, or custom ID). |
+| `userDetails.name` | string \| null | User display name. |
+| `userDetails.number` | string \| null | User phone number. |
+| `userDetails.email` | string \| null | User email address. |
+| `dynamicVariables` | object \| null | Custom variables associated with the session. |
+| `communicationChannelType` | string | The channel type used for the session. Possible values: `email`, `inboundSipTrunk`, `outboundSipTrunk`, `waChat`, `waVoice`, `sms`, `webChat`. |
+| `communicationChannelName` | string \| null | Human-readable name of the channel. |
+| `transcript` | array | Full conversation transcript. See [Transcript Entry Types](#transcript-entry-types) below. |
+| `analysis` | object \| null | AI-generated post-session analysis (summary, sentiment, tags, etc.). Content depends on your agent's analytics configuration. |
+| `status` | string | Current session status. See [Session Statuses](#session-statuses) below. |
+| `time` | string (ISO 8601) | When the session started. |
+| `createdAt` | string (ISO 8601) | When the session record was created. |
+| `updatedAt` | string (ISO 8601) | When the session record was last updated. |
+| `duration` | number \| null | Session duration in seconds. **Only present for call sessions.** |
+| `retryAttemptNo` | number | Retry attempt number (0 = original, 1+ = retry). **Only present for call sessions.** |
+| `recordingUrl` | string \| null | Signed URL to the call recording (expires after a limited time). **Only present for call sessions.** |
+
+<Note>
+`duration`, `retryAttemptNo`, and `recordingUrl` are only included for call sessions (SIP trunk channels). For chat, email, WhatsApp, and other non-call sessions, these fields are omitted entirely.
+</Note>
+
+---
+
+## Transcript Entry Types
+
+The `transcript` array contains entries in chronological order. Each entry has a `type` field that determines its structure.
+
+### 1. Message (`type: "message"`)
+
+A text or media message from the user, agent, or background agent.
+
+```json
+{
+  "type": "message",
+  "role": "user",
+  "content": [
+    {
+      "type": "text",
+      "text": "Hi, I want to check my refund."
+    }
+  ],
+  "senderId": "+15557654321",
+  "senderName": "Jane Doe",
+  "agentName": "SupportBot",
+  "metadata": {},
+  "timestamp": "2026-09-07T10:00:00.000Z"
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `role` | string | Who sent the message: `user`, `assistant`, or `backgroundAgent`. |
+| `content` | array | One or more content items. See [Content Item Types](#content-item-types). |
+| `senderId` | string \| null | Sender identifier (phone number or email). |
+| `senderName` | string \| null | Sender display name. |
+| `agentName` | string \| null | Agent name (for assistant messages). |
+| `metadata` | object \| null | Channel-specific extras (e.g. email subject, custom context). |
+| `timestamp` | string (ISO 8601) | When the message was sent. |
+
+### 2. Function Call (`type: "function_call"`)
+
+The agent invoked a tool/function.
+
+```json
+{
+  "type": "function_call",
+  "name": "lookupRefund",
+  "call_id": "call_abc",
+  "arguments": { "accountId": "acc_99" },
+  "phase": "during",
+  "timestamp": "2026-09-07T10:00:03.000Z"
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `name` | string | Name of the tool/function called. |
+| `call_id` | string | Unique identifier for this tool call. |
+| `arguments` | object | Arguments passed to the tool. |
+| `phase` | string \| null | When the tool ran: `pre`, `during`, or `post` session. |
+| `timestamp` | string (ISO 8601) | When the tool was called. |
+
+### 3. Function Call Output (`type: "function_call_output"`)
+
+The result returned by a tool execution.
+
+```json
+{
+  "type": "function_call_output",
+  "name": "lookupRefund",
+  "call_id": "call_abc",
+  "output": "{\"status\":\"processing\"}",
+  "is_error": false,
+  "executionTimeMs": 340,
+  "phase": "during",
+  "timestamp": "2026-09-07T10:00:03.340Z"
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `name` | string | Name of the tool that produced this output. |
+| `call_id` | string | Matches the `call_id` of the corresponding function call. |
+| `output` | string | The tool's output (typically a JSON string). |
+| `is_error` | boolean | Whether the tool execution resulted in an error. |
+| `executionTimeMs` | number \| null | Tool execution time in milliseconds. |
+| `phase` | string \| null | When the tool ran: `pre`, `during`, or `post` session. |
+| `timestamp` | string (ISO 8601) | When the output was produced. |
+
+### 4. Thinking (`type: "thinking"`)
+
+The agent's internal reasoning for a turn.
+
+```json
+{
+  "type": "thinking",
+  "thinking": "The user is asking about a refund. I should look up their account first.",
+  "timestamp": "2026-09-07T10:00:02.500Z"
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `thinking` | string | The agent's reasoning text. |
+| `timestamp` | string (ISO 8601) | When this reasoning was generated. |
+
+### 5. Summary (`type: "summary"`)
+
+A generated summary of the conversation up to a certain point.
+
+```json
+{
+  "type": "summary",
+  "summary": "User asked about refund status, agent confirmed processing.",
+  "timestamp": "2026-09-07T10:01:00.000Z"
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `summary` | string | Summary text of the preceding conversation. |
+| `timestamp` | string (ISO 8601) | When the summary was generated. |
+
+---
+
+## Content Item Types
+
+Each message entry's `content` array contains one or more items. The `type` field determines the structure.
+
+### Text
+
+```json
+{
+  "type": "text",
+  "text": "Hello, how can I help you?"
+}
+```
+
+### Image
+
+```json
+{
+  "type": "image",
+  "mimeType": "image/jpeg",
+  "url": "https://s3.example.com/signed/image.jpg?sig=...",
+  "caption": "Screenshot of the issue"
+}
+```
+
+### Video
+
+```json
+{
+  "type": "video",
+  "mimeType": "video/mp4",
+  "url": "https://s3.example.com/signed/video.mp4?sig=...",
+  "caption": "Screen recording"
+}
+```
+
+### Audio
+
+```json
+{
+  "type": "audio",
+  "mimeType": "audio/ogg",
+  "url": "https://s3.example.com/signed/audio.ogg?sig=..."
+}
+```
+
+### File
+
+```json
+{
+  "type": "file",
+  "mimeType": "application/pdf",
+  "url": "https://s3.example.com/signed/document.pdf?sig=...",
+  "filename": "invoice.pdf"
+}
+```
+
+### Button (Quick Reply)
+
+```json
+{
+  "type": "button",
+  "text": "Yes, proceed",
+  "payload": "confirm_proceed"
+}
+```
+
+<Note>
+Media URLs (`image`, `video`, `audio`, `file`) are signed and expire after a limited time. Download or cache them promptly.
+</Note>
+
+---
+
+## Session Statuses
+
+| Status | Description |
+|---|---|
+| `active` | Session is currently in progress. |
+| `completed` | Session has ended normally. |
+| `call_in_queue` | Call is queued and waiting to be placed. |
+| `call_placed` | Call has been placed but not yet answered. |
+| `call_in_progress` | Call is currently connected. |
+| `call_errored` | Call encountered an error. |
+| `call_expired` | Call expired before being answered. |
+| `call_hangup` | Call was hung up (completed). |
+| `agent_errored` | Agent encountered an error during the session. |
+| `call_canceled` | Call was canceled. |
+| `could_not_connect` | Call could not be connected. |
+
+---
+
+## Errors
+
+All errors follow the same response format:
+
+```json
+{
+  "responseCode": <http_status>,
+  "errorCode": "<error_code>",
+  "message": "<human_readable_message>",
+  "data": null
+}
+```
+
+### 401 — Unauthorized
+
+**Missing API key:**
+
+```json
+{
+  "responseCode": 401,
+  "errorCode": "apiKeyMissing",
+  "message": "API key missing",
+  "data": null
+}
+```
+
+**Invalid API key:**
+
+```json
+{
+  "responseCode": 401,
+  "errorCode": "apiKeyInvalid",
+  "message": "Invalid API key",
+  "data": null
+}
+```
+
+### 404 — Session Not Found
+
+The session ID does not exist in the workspace associated with your API key.
+
+```json
+{
+  "responseCode": 404,
+  "errorCode": "sessionNotFound",
+  "message": "Session not found",
+  "data": null
+}
+```
+
+### 422 — Validation Error
+
+The `sessionId` path parameter is missing or empty.
+
+```json
+{
+  "responseCode": 422,
+  "errorCode": "validationError",
+  "message": "Expected string length greater or equal to 1",
+  "data": null
+}
+```
+
+### 500 — Internal Server Error
+
+```json
+{
+  "responseCode": 500,
+  "errorCode": "internalError",
+  "message": "Internal server error",
+  "data": null
+}
+```
+
+---
+
+## Code Examples
+
+### cURL
+
+```bash
+curl -s -H "x-api-key: YOUR_API_KEY" \
+  https://api.subverseai.com/api/session/fetch/SESSION_ID
+```
+
+### JavaScript
+
+```javascript
+const response = await fetch(
+  "https://api.subverseai.com/api/session/fetch/SESSION_ID",
+  {
+    headers: {
+      "x-api-key": "YOUR_API_KEY",
+    },
+  }
+);
+
+const result = await response.json();
+console.log(result.data);
+```
+
+### Python
+
+```python
+import requests
+
+response = requests.get(
+    "https://api.subverseai.com/api/session/fetch/SESSION_ID",
+    headers={"x-api-key": "YOUR_API_KEY"},
+)
+
+data = response.json()
+print(data["data"])
+```
+
+### Node.js (axios)
+
+```javascript
+const axios = require("axios");
+
+const { data } = await axios.get(
+  "https://api.subverseai.com/api/session/fetch/SESSION_ID",
+  { headers: { "x-api-key": "YOUR_API_KEY" } }
+);
+
+console.log(data.data);
+```

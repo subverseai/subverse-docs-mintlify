@@ -1193,6 +1193,217 @@
             "example": "SupportBot"
           }
         }
+      },
+      "SessionDetailsResponse": {
+        "type": "object",
+        "required": [
+          "responseCode",
+          "message",
+          "data"
+        ],
+        "properties": {
+          "responseCode": {
+            "type": "integer",
+            "description": "HTTP status code indicating the result of the request.",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable message describing the result of the request.",
+            "example": "Session details found"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SessionDetails"
+          }
+        }
+      },
+      "SessionDetails": {
+        "type": "object",
+        "required": [
+          "sessionId",
+          "agentDetails",
+          "userDetails",
+          "communicationChannelType",
+          "transcript",
+          "status",
+          "time",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "Unique session identifier.",
+            "example": "sess_01H8XK3Q9V1YJZ5T7N2A8B9C0D"
+          },
+          "agentDetails": {
+            "$ref": "#/components/schemas/SessionAgentDetails"
+          },
+          "userDetails": {
+            "$ref": "#/components/schemas/SessionUserDetails"
+          },
+          "dynamicVariables": {
+            "type": "object",
+            "nullable": true,
+            "description": "Custom variables associated with the session.",
+            "example": {
+              "plan": "pro",
+              "accountId": "acc_99"
+            }
+          },
+          "communicationChannelType": {
+            "type": "string",
+            "description": "The channel type used for the session.",
+            "enum": [
+              "email",
+              "inboundSipTrunk",
+              "outboundSipTrunk",
+              "waChat",
+              "waVoice",
+              "sms",
+              "webChat"
+            ],
+            "example": "inboundSipTrunk"
+          },
+          "communicationChannelName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Human-readable name of the channel.",
+            "example": "Inbound Support Line"
+          },
+          "transcript": {
+            "type": "array",
+            "description": "Full conversation transcript in chronological order. Each entry has a `type` field that determines its structure (message, function_call, function_call_output, thinking, or summary).",
+            "items": {
+              "type": "object"
+            }
+          },
+          "analysis": {
+            "type": "object",
+            "nullable": true,
+            "description": "AI-generated post-session analysis (summary, sentiment, tags, etc.). Content depends on your agent's analytics configuration.",
+            "example": {
+              "summary": "User asked about refund status; agent confirmed processing.",
+              "sentiment": "positive"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Current session status.",
+            "enum": [
+              "active",
+              "completed",
+              "call_in_queue",
+              "call_placed",
+              "call_in_progress",
+              "call_errored",
+              "call_expired",
+              "call_hangup",
+              "agent_errored",
+              "call_canceled",
+              "could_not_connect"
+            ],
+            "example": "call_hangup"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the session started (ISO 8601).",
+            "example": "2026-09-07T10:00:00.000Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the session record was created (ISO 8601).",
+            "example": "2026-09-07T10:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the session record was last updated (ISO 8601).",
+            "example": "2026-09-07T10:03:04.000Z"
+          },
+          "duration": {
+            "type": "number",
+            "nullable": true,
+            "description": "Session duration in seconds. Only present for call sessions (SIP trunk channels).",
+            "example": 184
+          },
+          "retryAttemptNo": {
+            "type": "number",
+            "nullable": true,
+            "description": "Retry attempt number (0 = original, 1+ = retry). Only present for call sessions.",
+            "example": 0
+          },
+          "recordingUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Signed URL to the call recording (expires after a limited time). Only present for call sessions.",
+            "example": "https://s3.example.com/signed/recordings/sess_...wav?sig=..."
+          }
+        }
+      },
+      "SessionAgentDetails": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Agent name.",
+            "example": "SupportBot"
+          },
+          "number": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent phone number (if applicable).",
+            "example": "+15551234567"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent email address (if applicable).",
+            "example": "agent@example.com"
+          },
+          "version": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent version label.",
+            "example": "v1.2.0"
+          }
+        }
+      },
+      "SessionUserDetails": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User identifier (phone number, email, or custom ID).",
+            "example": "u_42"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "User display name.",
+            "example": "Jane Doe"
+          },
+          "number": {
+            "type": "string",
+            "nullable": true,
+            "description": "User phone number.",
+            "example": "+15557654321"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "User email address.",
+            "example": "jane@example.com"
+          }
+        }
       }
     },
     "securitySchemes": {

@@ -228,25 +228,14 @@
             "group": "Call",
             "pages": [
               "api-reference/direct-call/trigger",
-              "api-reference/direct-call/cancel",
+              "api-reference/direct-call/cancel"
+            ]
+          },
+          {
+            "group": "Storage",
+            "pages": [
               "api-reference/direct-call/signed-url"
             ]
-          },
-          {
-            "group": "Workflow",
-            "pages": [
-              "api-reference/workflow/trigger",
-              "api-reference/workflow/edit",
-              "api-reference/workflow/delete"
-            ]
-          },
-          {
-            "group": "Agent",
-            "pages": ["api-reference/agent/blueprints"]
-          },
-          {
-            "group": "Session",
-            "pages": ["api-reference/session/fetch"]
           }
         ]
       }

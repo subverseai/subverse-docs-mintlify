@@ -236,6 +236,10 @@
             "pages": [
               "api-reference/direct-call/signed-url"
             ]
+          },
+          {
+            "group": "Session",
+            "pages": ["api-reference/session/fetch"]
           }
         ]
       }

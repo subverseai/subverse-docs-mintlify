@@ -1,6 +1,6 @@
 ---
 title: 'Custom Function Actions'
-description: 'Built-in actions available to your custom function code — connect to HTTP APIs, Airtable, Google Sheets, WhatsApp, Shopify, and SubVerse agents without writing any integration boilerplate'
+description: 'Built-in actions available to your custom function code — connect to HTTP APIs, Airtable, Google Sheets, Google Drive, WhatsApp, Shopify, and SubVerse agents without writing any integration boilerplate'
 ---
 
 Custom Function Actions are pre-built integrations you can call directly from your custom function code via `subverseActions`. When you build a custom function, you select which actions you want to use and attach the required credentials. The Code Assistant is aware of your selected actions and credentials, so you can describe what you want in plain English and it will generate the correct code for you.
@@ -609,6 +609,493 @@ const result = await subverseActions.googleSheets.deleteSpreadsheet({
   credentialId: 'CREDENTIAL_ID',
   options: {
     spreadsheetId: 'YOUR_SPREADSHEET_ID'
+  }
+});
+
+// result.deleted — true on success
+```
+
+---
+
+## Google Drive
+
+The Google Drive actions let your custom function work with files and folders stored in Google Drive — list them, read their contents, upload new ones, organize them into folders, and share them with people.
+
+**Compatible credentials:** [Google Drive Service Account](/credentials/types/google-drive-service-account), [Google Drive OAuth2 API](/credentials/types/google-drive-oauth2-api)
+
+<Info title="My Drive vs. Shared Drives">
+  By default, every action below only looks at "My Drive" — the personal Drive space belonging to whoever the credential connects to. If a file instead lives in a **Shared Drive** (a Drive space owned jointly by a team, common in Google Workspace organisations), add `includeSharedDrives: true` to `options`, and optionally `driveId` to point at one specific Shared Drive. Every action accepts these two options even though they're not repeated in every table below.
+</Info>
+
+<Info title="Files vs. folders">
+  In Google Drive, a folder is really just a special kind of file. That's why the "delete" and "share" actions below come in a Folder version as well as a File version — they do the same thing, but the Folder version exists so it's clear in your code which one you mean. Both use the same `fileId` field to identify what you're acting on.
+</Info>
+
+### Google Drive List Files
+
+Get a list of files and folders in Google Drive, optionally narrowed down to one folder or matched against a search term. Use this to find a file's ID before you read, update, or share it.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.query` | No | A search phrase using Google Drive's search syntax — for example `name contains 'report'` to find files with "report" in the name |
+| `options.folderId` | No | Only show files inside this folder. Use the `id` of a folder returned by a previous `listFiles`, `getFile`, or `createFolder` call |
+| `options.pageSize` | No | How many files to return at once, between 1 and 1000. Default `100` |
+| `options.pageToken` | No | Pass the `nextPageToken` from a previous `listFiles` result to fetch the next page of results |
+| `options.orderBy` | No | How to sort the results — e.g. `modifiedTime desc` for most recently changed first |
+| `options.whatToSearch` | No | Restrict to `all` (default), `files`, or `folders` |
+| `options.fileTypes` | No | Array of MIME types to match, e.g. `['application/pdf', 'application/vnd.google-apps.document']`. A type ending in `/*` (e.g. `'image/*'`) matches any MIME type with that prefix. Ignored when `whatToSearch` is `folders` |
+| `options.includeTrashed` | No | Include items currently in the trash. Default `false` |
+| `options.includeSharedDrives` | No | Also search Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the search to one specific Shared Drive |
+
+```javascript
+const result = await subverseActions.googleDrive.listFiles({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    query: `name contains '${body.params.customer_name}'`,
+    folderId: 'YOUR_FOLDER_ID'
+  }
+});
+
+// result.files — array of { id, name, mimeType, parents, size, createdTime, modifiedTime, webViewLink }
+// result.nextPageToken — present if there are more results to fetch
+```
+
+### Google Drive Get File
+
+Look up the details of a single file or folder — its name, type, size, and when it was created or last changed — using its ID.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.fileId` | Yes | The file (or folder) to look up — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
+| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
+
+```javascript
+const file = await subverseActions.googleDrive.getFile({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fileId: body.params.file_id
+  }
+});
+
+// file.name, file.mimeType, file.size, file.webViewLink
+```
+
+### Google Drive Download File
+
+Download a file's contents. If the file is a Google Docs, Sheets, Slides, or Drawings file (which don't have raw bytes the way a PDF does), it's automatically converted to a normal file format first — a sensible default per source type (Docs→HTML, Sheets→CSV, Slides→PowerPoint, Drawings→JPEG), or a format you choose.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.fileId` | Yes | The file to download — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
+| `options.exportMimeType` | No | Only used for Google Docs/Sheets/Slides/Drawings files — the format to convert to, e.g. `text/plain`, `application/pdf`, or `text/csv`. Omit to use the per-type default |
+| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
+
+```javascript
+const file = await subverseActions.googleDrive.downloadFile({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fileId: body.params.file_id
+  }
+});
+
+// file.content — the file's contents, encoded as base64 text
+// file.fileName, file.mimeType, file.size
+```
+
+### Google Drive Upload File
+
+Create a new file in Google Drive from content your function already has — for example a generated report, a call transcript, or a PDF you built earlier in the function.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.name` | Yes | Name for the new file, e.g. `"invoice.pdf"` |
+| `options.content` | Yes | The file's contents. By default this should be base64-encoded text; set `contentEncoding` to `text` to send plain text as-is instead |
+| `options.contentEncoding` | No | `base64` (default, for binary files like PDFs or images) or `text` (for plain text content) |
+| `options.mimeType` | No | The file's type, e.g. `application/pdf` or `text/plain`. Default `application/octet-stream` (generic binary file) |
+| `options.folderId` | No | Folder to upload into — the `id` from a `listFiles`, `getFile`, or `createFolder` result. Omitted uploads to the top level of "My Drive" |
+| `options.includeSharedDrives` | No | Upload into a Shared Drive instead of "My Drive". Default `false` |
+| `options.driveId` | No | The specific Shared Drive to upload into |
+
+```javascript
+const uploaded = await subverseActions.googleDrive.uploadFile({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    name: `invoice-${body.params.order_id}.pdf`,
+    content: body.params.invoice_base64,
+    mimeType: 'application/pdf',
+    folderId: 'YOUR_FOLDER_ID'
+  }
+});
+
+// uploaded.id, uploaded.name, uploaded.webViewLink
+```
+
+### Google Drive Create From Text
+
+Create a native Google Doc, Sheet, or Slides file directly from plain text — Google Drive converts the text into a real, editable file of that type, not a `.txt` file sitting in Drive. Use this instead of Upload File when you want the result to open as an actual Google Doc/Sheet/Slides file rather than a plain-text file.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.name` | Yes | Name for the new file |
+| `options.text` | Yes | Plain text content — Google Drive auto-converts it into the native format you pick below |
+| `options.targetType` | Yes | Which native Google app format to create: `document`, `spreadsheet`, or `presentation` |
+| `options.folderId` | No | Folder to create the file into — the `id` from a `listFiles`, `getFile`, or `createFolder` result. Omitted creates it at the top level of "My Drive" |
+| `options.includeSharedDrives` | No | Create inside a Shared Drive instead of "My Drive". Default `false` |
+| `options.driveId` | No | The specific Shared Drive to create it in |
+
+```javascript
+const doc = await subverseActions.googleDrive.createFromText({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    name: `Call Summary - ${body.params.customer_name}`,
+    text: body.params.call_summary,
+    targetType: 'document'
+  }
+});
+
+// doc.id, doc.name, doc.webViewLink — opens as a real, editable Google Doc
+```
+
+### Google Drive Create Folder
+
+Create a new folder in Google Drive, optionally inside another folder.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.name` | Yes | Name for the new folder |
+| `options.folderId` | No | Parent folder to create it inside — the `id` from a `listFiles`, `getFile`, or `createFolder` result. Omitted creates it at the top level of "My Drive" |
+| `options.folderColorRgb` | No | RGB hex color for the folder (e.g. `#ac725e`). An unsupported color falls back to the closest one in Drive's palette |
+| `options.includeSharedDrives` | No | Create the folder inside a Shared Drive instead of "My Drive". Default `false` |
+| `options.driveId` | No | The specific Shared Drive to create it in |
+
+```javascript
+const folder = await subverseActions.googleDrive.createFolder({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    name: `${body.params.customer_name} - Documents`,
+    folderId: 'YOUR_PARENT_FOLDER_ID'
+  }
+});
+
+// folder.id, folder.name, folder.webViewLink
+```
+
+### Google Drive Update File
+
+Rename a file, change its description, and/or replace its contents entirely. Leave `content` out to only change the name or description without touching the file itself.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.fileId` | Yes | The file to update — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
+| `options.name` | No | New name for the file |
+| `options.description` | No | New description for the file |
+| `options.content` | No | New file contents. When provided, this **replaces** the file's existing contents completely |
+| `options.contentEncoding` | No | `base64` (default) or `text` — only relevant when `content` is provided |
+| `options.mimeType` | No | The type of the replacement content — only relevant when `content` is provided |
+| `options.trashed` | No | When `true`, trashes the file as part of this same call (an alternative to Delete File when you're already updating other fields). When `false`, untrashes it. Omit to leave trash state unchanged |
+| `options.fields` | No | Array of field names to return instead of the full default set — e.g. `['id', 'name']` for a smaller response |
+| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
+
+```javascript
+const updated = await subverseActions.googleDrive.updateFile({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fileId: body.params.file_id,
+    name: 'Final Report.pdf'
+  }
+});
+
+// updated.name, updated.modifiedTime
+```
+
+### Google Drive Copy File
+
+Make a duplicate of an existing file, optionally giving the copy a new name or putting it in a different folder.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.fileId` | Yes | The file to copy — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
+| `options.name` | No | Name for the copy. Omitted keeps the original name (Drive adds "Copy of" automatically) |
+| `options.folderId` | No | Folder to place the copy into — the `id` from a `listFiles`, `getFile`, or `createFolder` result. Omitted places it next to the original |
+| `options.description` | No | A short description to set on the new copy |
+| `options.copyRequiresWriterPermission` | No | When `true`, disables the options to copy, print, or download the new copy for readers and commenters. Default `false` |
+| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
+
+```javascript
+const copy = await subverseActions.googleDrive.copyFile({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fileId: body.params.template_file_id,
+    name: `${body.params.customer_name} - Contract.pdf`
+  }
+});
+
+// copy.id, copy.name, copy.webViewLink
+```
+
+### Google Drive Move File
+
+Move a file from one folder into another.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.fileId` | Yes | The file to move — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
+| `options.targetFolderId` | Yes | The folder to move it into — the `id` from a `listFiles`, `getFile`, or `createFolder` result |
+| `options.removeFromAllParents` | No | When `true` (default), the file is removed from every folder it's currently in, so it only lives in the new folder. Set `false` to instead add the new folder as an extra location, leaving the file visible in both places |
+| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
+
+```javascript
+const moved = await subverseActions.googleDrive.moveFile({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fileId: body.params.file_id,
+    targetFolderId: 'ARCHIVE_FOLDER_ID'
+  }
+});
+
+// moved.parents — the file's new folder location(s)
+```
+
+### Google Drive Delete File
+
+Move a file to the trash (recoverable from Google Drive's trash, like deleting a file on your computer) or permanently delete it.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.fileId` | Yes | The file to delete — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
+| `options.permanent` | No | When `true`, permanently deletes the file — this **cannot be undone**. Default `false` just moves it to trash |
+| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
+
+```javascript
+const result = await subverseActions.googleDrive.deleteFile({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fileId: body.params.file_id
+  }
+});
+
+// result.deleted — true on success
+// result.permanentlyDeleted — false if it was just moved to trash
+```
+
+### Google Drive Delete Folder
+
+Move a folder to the trash or permanently delete it. This is the same action as Delete Google Drive File — folders are files in Drive — but named separately to make your custom function code easier to read.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.fileId` | Yes | The folder to delete (field is named `fileId` because folders are Drive files) — the `id` from a `listFiles`, `getFile`, or `createFolder` result |
+| `options.permanent` | No | When `true`, permanently deletes the folder and everything in it — this **cannot be undone**. Default `false` just moves it to trash |
+| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
+
+```javascript
+const result = await subverseActions.googleDrive.deleteFolder({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fileId: body.params.folder_id
+  }
+});
+
+// result.deleted — true on success
+```
+
+### Google Drive Share File
+
+Give someone access to a file — as a specific person by email, everyone at a company domain, or anyone with the link — and choose what they're allowed to do with it (view, comment, or edit).
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.fileId` | Yes | The file to share — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
+| `options.role` | Yes | What they can do: `reader` (view only), `commenter`, `writer` (edit), `owner`, or (Shared Drives only) `fileOrganizer` / `organizer`. Setting `owner` also REQUIRES `options.transferOwnership: true` below, or Google rejects the request. |
+| `options.type` | Yes | Who this applies to: `user` (one person), `group` (a Google Group), `domain` (everyone at a company domain), or `anyone` (anyone with the link) |
+| `options.emailAddress` | Required when `type` is `user` or `group` | The email address to share with |
+| `options.domain` | Required when `type` is `domain` | The company domain to share with, e.g. `example.com` |
+| `options.sendNotificationEmail` | No | Whether Google emails `emailAddress` to let them know they now have access. Default `false` |
+| `options.transferOwnership` | Required when `role` is `owner` | Confirms you actually want to transfer ownership to this person (the current owner becomes a writer). This is irreversible via this action. Default `false` |
+| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
+
+```javascript
+const result = await subverseActions.googleDrive.shareFile({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fileId: body.params.file_id,
+    role: 'reader',
+    type: 'user',
+    emailAddress: body.params.customer_email,
+    sendNotificationEmail: true
+  }
+});
+
+// result.permissionId — ID of the new sharing permission
+```
+
+### Google Drive Share Folder
+
+Give someone access to a folder — everything inside it becomes visible to them too. This is the same action as Share Google Drive File — folders are files in Drive — but named separately to make your custom function code easier to read.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.fileId` | Yes | The folder to share (field is named `fileId` because folders are Drive files) — the `id` from a `listFiles`, `getFile`, or `createFolder` result |
+| `options.role` | Yes | What they can do: `reader` (view only), `commenter`, `writer` (edit), `owner`, or (Shared Drives only) `fileOrganizer` / `organizer`. Setting `owner` also REQUIRES `options.transferOwnership: true` below, or Google rejects the request. |
+| `options.type` | Yes | Who this applies to: `user` (one person), `group` (a Google Group), `domain` (everyone at a company domain), or `anyone` (anyone with the link) |
+| `options.emailAddress` | Required when `type` is `user` or `group` | The email address to share with |
+| `options.domain` | Required when `type` is `domain` | The company domain to share with, e.g. `example.com` |
+| `options.sendNotificationEmail` | No | Whether Google emails `emailAddress` to let them know they now have access. Default `false` |
+| `options.transferOwnership` | Required when `role` is `owner` | Confirms you actually want to transfer ownership to this person (the current owner becomes a writer). This is irreversible via this action. Default `false` |
+| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
+| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
+
+```javascript
+const result = await subverseActions.googleDrive.shareFolder({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    fileId: body.params.folder_id,
+    role: 'writer',
+    type: 'anyone'
+  }
+});
+
+// result.permissionId — ID of the new sharing permission
+```
+
+<Info title="Shared Drives vs. files/folders inside one">
+  Everything above works *inside* a Shared Drive (a Drive space owned jointly by a team, not any one person) the same way it works in "My Drive" — just add `includeSharedDrives: true`. The five actions below are different: they manage the **Shared Drive itself** — creating, renaming, or deleting the container — not files inside it. Most day-to-day automations never need these; they're for the rare case where your function needs to provision or retire a Shared Drive, not just work with files in one an admin already created.
+</Info>
+
+### Google Drive Create Drive
+
+Create a new Shared Drive.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.name` | Yes | Name for the new Shared Drive |
+| `options.colorRgb` | No | RGB hex color for the Shared Drive, e.g. `#ac725e` |
+| `options.hidden` | No | Whether the Shared Drive is hidden from the default view. Default `false` |
+| `options.restrictions.adminManagedRestrictions` | No | Whether copy/print/download should be disabled for readers and commenters on files inside this Shared Drive — overrides the same per-file setting when true |
+| `options.restrictions.copyRequiresWriterPermission` | No | Whether copy/print/download should be disabled for readers and commenters on files inside this Shared Drive |
+| `options.restrictions.domainUsersOnly` | No | Whether access to this Shared Drive is restricted to users of the domain it belongs to |
+| `options.restrictions.driveMembersOnly` | No | Whether access to items inside this Shared Drive is restricted to its members |
+
+```javascript
+const drive = await subverseActions.googleDrive.createDrive({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    name: `${body.params.customer_name} - Shared Drive`
+  }
+});
+
+// drive.id — pass this as driveId to every other Shared-Drive-scoped action
+```
+
+### Google Drive Get Drive
+
+Fetch a Shared Drive's own details (name, color, restrictions) — not the files inside it.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.driveId` | Yes | The Shared Drive to fetch — the `id` from a `createDrive` or `listDrives` result |
+| `options.useDomainAdminAccess` | No | Issue the request as a domain administrator — grants access if the credential belongs to an admin of the domain the Shared Drive belongs to, even without being a member. Default `false` |
+
+```javascript
+const drive = await subverseActions.googleDrive.getDrive({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    driveId: body.params.drive_id
+  }
+});
+
+// drive.name, drive.colorRgb, drive.restrictions
+```
+
+### Google Drive List Drives
+
+List Shared Drives the credential can see.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.query` | No | Shared Drive search syntax to filter results, e.g. `name contains 'Marketing'` |
+| `options.pageSize` | No | How many results to return at once, between 1 and 100. Default `100` |
+| `options.pageToken` | No | Pass the `nextPageToken` from a previous `listDrives` result to fetch the next page |
+| `options.useDomainAdminAccess` | No | List every Shared Drive in the domain as a domain administrator, not just ones the credential is a member of. Default `false` |
+
+```javascript
+const result = await subverseActions.googleDrive.listDrives({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    query: `name contains '${body.params.team_name}'`
+  }
+});
+
+// result.drives — array of { id, name, colorRgb, createdTime }
+```
+
+### Google Drive Update Drive
+
+Rename a Shared Drive and/or change its color or access restrictions.
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.driveId` | Yes | The Shared Drive to update — the `id` from a `createDrive` or `listDrives` result |
+| `options.name` | No | New name. Omit to leave unchanged |
+| `options.colorRgb` | No | New RGB hex color. Omit to leave unchanged |
+| `options.restrictions` | No | Object with any of `adminManagedRestrictions`, `copyRequiresWriterPermission`, `domainUsersOnly`, `driveMembersOnly` — only the fields provided are changed |
+
+```javascript
+const updated = await subverseActions.googleDrive.updateDrive({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    driveId: body.params.drive_id,
+    name: 'Marketing Team (Archived)'
+  }
+});
+
+// updated.name
+```
+
+### Google Drive Delete Drive
+
+Permanently delete a Shared Drive.
+
+<Warning>
+  Google **requires** the Shared Drive to already be empty (all items permanently deleted first) — there's no "force" option. A non-empty drive is rejected with Google's own error. This action cannot be undone.
+</Warning>
+
+| Parameter | Required | Description |
+|---|---|---|
+| `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
+| `options.driveId` | Yes | The Shared Drive to delete — the `id` from a `createDrive` or `listDrives` result |
+
+```javascript
+const result = await subverseActions.googleDrive.deleteDrive({
+  credentialId: 'CREDENTIAL_ID',
+  options: {
+    driveId: body.params.drive_id
   }
 });
 

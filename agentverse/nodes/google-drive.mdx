@@ -1,0 +1,353 @@
+# Google Drive
+
+The **Google Drive** node lets you work with files and folders in Google Drive from an AgentVerse workflow — list and search for files, read their contents, upload new ones, organize them into folders, share them with people, and manage Shared Drives themselves.
+
+---
+
+## Credentials
+
+Two credential types are supported:
+
+| Type | Description |
+|---|---|
+| **Google Drive Service Account** | Server-to-server authentication using a service account JSON key — works with any file or folder shared with the service account's email, or (with domain-wide delegation) as a specific person in your Google Workspace organisation |
+| **Google Drive OAuth2 API** | Sign in with your own Google account — accesses any file your account can open, no manual sharing required |
+
+To create a credential:
+1. Go to **Settings → Credentials → New Credential**
+2. Select the desired Google Drive credential type
+3. Complete the authentication flow
+
+<Info>
+  See the full setup walkthroughs for [Google Drive OAuth2 API](/credentials/types/google-drive-oauth2-api) and [Google Drive Service Account](/credentials/types/google-drive-service-account) credentials, including how to enable the Google Drive API and share files with a service account.
+</Info>
+
+---
+
+## My Drive vs. Shared Drives
+
+By default, every operation below only looks at **My Drive** — the personal Drive space belonging to whoever the credential connects to. If a file instead lives in a **Shared Drive** (a Drive space owned jointly by a team, common in Google Workspace organisations), turn on **Include Shared Drives** in the node's parameters, and optionally set **Drive ID** to point at one specific Shared Drive.
+
+---
+
+## Operations
+
+### File
+
+| Operation | Description |
+|---|---|
+| `List Files` | List or search for files and folders, optionally narrowed to one parent folder |
+| `Get File` | Look up a single file's details (name, type, size, links, timestamps) by ID |
+| `Download File` | Download a file's contents — Google Docs/Sheets/Slides are automatically converted to a normal file format first |
+| `Upload File` | Create a new file from content provided in the workflow |
+| `Create From Text` | Create a native Google Doc/Sheet/Slides file directly from plain text, using Drive's own auto-conversion |
+| `Update File` | Rename a file, change its description, and/or replace its contents |
+| `Copy File` | Duplicate an existing file |
+| `Move File` | Move a file into a different folder |
+| `Delete File` | Move a file to trash, or permanently delete it |
+| `Share File` | Grant access to a file to a person, a company domain, or anyone with the link |
+
+### Folder
+
+| Operation | Description |
+|---|---|
+| `Create Folder` | Create a new folder, optionally inside another folder |
+| `Update Folder` | Rename a folder |
+| `Move Folder` | Move a folder into a different parent folder |
+| `Copy Folder` | Duplicate a folder |
+| `Delete Folder` | Move a folder to trash, or permanently delete it (and everything inside it) |
+| `Share Folder` | Grant access to a folder — everything inside it becomes visible too |
+
+<Info>
+  In Google Drive, a folder is really just a special kind of file. `Delete Folder` and `Share Folder` do the same thing as `Delete File` and `Share File` — they're listed separately so it's clear which one you mean when building a workflow.
+</Info>
+
+### Drive
+
+| Operation | Description |
+|---|---|
+| `Create` | Create a new Shared Drive |
+| `Get` | Get a Shared Drive's own details (name, color, restrictions) |
+| `List` | List Shared Drives the credential can see |
+| `Update` | Rename a Shared Drive and/or change its color or access restrictions |
+| `Delete` | Delete a Shared Drive — it must already be empty |
+
+<Info title="Shared Drives vs. files/folders inside one">
+  The File and Folder operations above already work *inside* a Shared Drive the same way they work in My Drive — just turn on **Include Shared Drives**. The Drive resource is different: it manages the **Shared Drive itself** — creating, renaming, or deleting the container — not files inside it. Most workflows never need this; it's for the rare case where you need to provision or retire a Shared Drive rather than just work with files in one an admin already created.
+</Info>
+
+---
+
+## Parameters: List Files
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Query** | String | No | A search phrase using Google Drive's search syntax — e.g. `name contains 'report'` |
+| **Folder ID** | String | No | Only show files inside this folder |
+| **Page Size** | Number | No | How many files to return at once, between 1 and 1000. Default `100` |
+| **Page Token** | String | No | Continues from a previous `List Files` result to fetch the next page |
+| **Order By** | String | No | How to sort results — e.g. `modifiedTime desc` for most recently changed first |
+| **What to Search** | Select | No | `Files and Folders` (default), `Files Only`, or `Folders Only` |
+| **File Types** | Multi-select | No | Only return files matching one of these MIME types. A type ending in `/*` (e.g. Image) matches any MIME type with that prefix. Ignored when What to Search is Folders Only |
+| **Include Trashed** | Boolean | No | Whether to include items currently in the trash. Default `false` |
+| **Include Shared Drives** | Boolean | No | Also search Shared Drives, not just My Drive. Default `false` |
+| **Drive ID** | String | No | Limit the search to one specific Shared Drive |
+
+## Parameters: Get File
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **File ID** | String | Yes | The file (or folder) to look up |
+| **Include Shared Drives** | Boolean | No | Also look in Shared Drives, not just My Drive. Default `false` |
+| **Drive ID** | String | No | Limit the lookup to one specific Shared Drive |
+
+## Parameters: Download File
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **File ID** | String | Yes | The file to download |
+| **Export MIME Type** | String | No | Only used for Google Docs/Sheets/Slides/Drawings files — the format to convert to, e.g. `text/plain`, `application/pdf`, or `text/csv`. Leave empty to use the per-type default (Docs→HTML, Sheets→CSV, Slides→PowerPoint, Drawings→JPEG) |
+| **Include Shared Drives** | Boolean | No | Also look in Shared Drives, not just My Drive. Default `false` |
+| **Drive ID** | String | No | Limit the lookup to one specific Shared Drive |
+
+## Parameters: Upload File
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Name** | String | Yes | Name for the new file, e.g. `invoice.pdf` |
+| **Content** | String | Yes | The file's contents (base64-encoded, or plain text — see **Content Encoding**) |
+| **Content Encoding** | Select | No | `Base64` (default, for binary files like PDFs or images) or `Text` (for plain text) |
+| **MIME Type** | String | No | The file's type, e.g. `application/pdf`. Default `application/octet-stream` |
+| **Folder ID** | String | No | Folder to upload into. Omitted uploads to the top level of My Drive |
+| **Include Shared Drives** | Boolean | No | Upload into a Shared Drive instead of My Drive. Default `false` |
+| **Drive ID** | String | No | The specific Shared Drive to upload into |
+
+## Parameters: Create From Text
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Name** | String | Yes | Name for the new file |
+| **Text** | String | Yes | Plain text content — Google Drive auto-converts it into the native app format below |
+| **Target Type** | Select | Yes | `Google Doc`, `Google Sheet`, or `Google Slides` |
+| **Folder ID** | String | No | Folder to create the file into. Omitted creates it at the top level of My Drive |
+| **Include Shared Drives** | Boolean | No | Create inside a Shared Drive instead of My Drive. Default `false` |
+| **Drive ID** | String | No | The specific Shared Drive to create it in |
+
+## Parameters: Create Folder
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Name** | String | Yes | Name for the new folder |
+| **Folder ID** | String | No | Parent folder to create it inside. Omitted creates it at the top level of My Drive |
+| **Folder Color** | Color | No | RGB color for the folder. An unsupported color falls back to the closest one in Drive's palette |
+| **Include Shared Drives** | Boolean | No | Create the folder inside a Shared Drive instead of My Drive. Default `false` |
+| **Drive ID** | String | No | The specific Shared Drive to create it in |
+
+## Parameters: Update File / Update Folder
+
+Update Folder only exposes **File ID** and **New Name** (a folder rename) — the content/trash/field-selection parameters below apply to Update File only.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **File ID** | String | Yes | The file (or folder) to update |
+| **Name** | String | No | New name |
+| **Description** | String | No | New description for the file |
+| **Content** | String | No | New file contents. When provided, this **replaces** the file's existing contents completely |
+| **Content Encoding** | Select | No | `Base64` (default) or `Text` — only relevant when Content is provided |
+| **MIME Type** | String | No | The type of the replacement content — only relevant when Content is provided |
+| **Move to Trash** | Boolean | No | When `true`, trashes the file as part of this same call (an alternative to using Delete). When `false`, untrashes it. Leave unset to leave trash state unchanged |
+| **Return Fields** | Multi-select | No | Only return these fields instead of the full default set. Leave empty for the default set |
+| **Include Shared Drives** | Boolean | No | Also look in Shared Drives, not just My Drive. Default `false` |
+| **Drive ID** | String | No | Limit the lookup to one specific Shared Drive |
+
+## Parameters: Copy File / Copy Folder
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **File ID** | String | Yes | The file (or folder) to copy |
+| **New Name** | String | No | Name for the copy. Omitted keeps the original name (Drive adds "Copy of" automatically) |
+| **Folder ID** / **Parent Folder ID** | String | No | Folder to place the copy into. Omitted places it next to the original |
+| **Description** | String | No | A short description to set on the new copy. File resource only |
+| **Copy Requires Writer Permission** | Boolean | No | When `true`, disables the options to copy, print, or download the new copy for readers and commenters. Default `false`. File resource only |
+| **Include Shared Drives** | Boolean | No | Also look in Shared Drives, not just My Drive. Default `false` |
+| **Drive ID** | String | No | Limit the lookup to one specific Shared Drive |
+
+## Parameters: Move File / Move Folder
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **File ID** | String | Yes | The file (or folder) to move |
+| **Target Folder ID** | String | Yes | The folder to move it into |
+| **Remove From All Parents** | Boolean | No | When `true` (default), the item is removed from every folder it's currently in, so it only lives in the new folder. Set `false` to add the new folder as an extra location instead |
+| **Include Shared Drives** | Boolean | No | Also look in Shared Drives, not just My Drive. Default `false` |
+| **Drive ID** | String | No | Limit the lookup to one specific Shared Drive |
+
+## Parameters: Delete File / Delete Folder
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **File ID** | String | Yes | The file (or folder) to delete |
+| **Permanent** | Boolean | No | When `true`, permanently deletes it — this **cannot be undone**. Default `false` just moves it to trash |
+| **Include Shared Drives** | Boolean | No | Also look in Shared Drives, not just My Drive. Default `false` |
+| **Drive ID** | String | No | Limit the lookup to one specific Shared Drive |
+
+## Parameters: Share File / Share Folder
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **File ID** | String | Yes | The file (or folder) to share |
+| **Role** | Select | Yes | What they can do: `Reader` (view only), `Commenter`, `Writer` (edit), `Owner`, or (Shared Drives only) `File Organizer` / `Organizer`. Setting `Owner` also requires turning on **Transfer Ownership** below, or Google rejects the request |
+| **Type** | Select | Yes | Who this applies to: `User` (one person), `Group` (a Google Group), `Domain` (everyone at a company domain), or `Anyone` (anyone with the link) |
+| **Email Address** | String | Required when Type is User or Group | The email address to share with |
+| **Domain** | String | Required when Type is Domain | The company domain to share with, e.g. `example.com` |
+| **Send Notification Email** | Boolean | No | Whether Google emails the recipient to let them know they now have access. Default `false` |
+| **Transfer Ownership** | Boolean | Required when Role is Owner | Confirms you actually want to transfer ownership to this person (the current owner becomes a writer). This is irreversible. Only shown when Role is Owner. Default `false` |
+| **Include Shared Drives** | Boolean | No | Also look in Shared Drives, not just My Drive. Default `false` |
+| **Drive ID** | String | No | Limit the lookup to one specific Shared Drive |
+
+## Parameters: Create (Drive)
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Name** | String | Yes | Name for the new Shared Drive |
+| **Color** | Color | No | RGB color for the Shared Drive |
+| **Hidden** | Boolean | No | Whether the Shared Drive is hidden from the default view. Default `false` |
+| **Restrictions** | Collection | No | `Admin Managed Restrictions`, `Copy Requires Writer Permission`, `Domain Users Only`, `Drive Members Only` — see the field descriptions in the node for what each one controls |
+
+## Parameters: Get / Update / Delete (Drive)
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Drive ID** | String | Yes | The Shared Drive to act on |
+| **Use Domain Admin Access** | Boolean | No | Get/List only. Issue the request as a domain administrator — grants access if the credential belongs to an admin of the domain the Shared Drive belongs to, even without being a member. Default `false` |
+| **New Name** | String | No | Update only. Leave empty to keep the current name |
+| **Color** | Color | No | Update only. Leave empty to keep the current color |
+| **Restrictions** | Collection | No | Update only. Only the fields you set are changed |
+
+<Warning>
+  Delete requires the Shared Drive to already be empty (all items permanently deleted first) — there's no "force" option. A non-empty drive is rejected with Google's own error. This action cannot be undone.
+</Warning>
+
+## Parameters: List (Drive)
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| **Query** | String | No | Shared Drive search syntax to filter results — e.g. `name contains 'Marketing'` |
+| **Return All** | Boolean | No | Whether to return all results or only up to a given limit |
+| **Limit** | Number | No | Max number of results to return, between 1 and 100. Default `100` |
+| **Use Domain Admin Access** | Boolean | No | List every Shared Drive in the domain as a domain administrator, not just ones the credential is a member of. Default `false` |
+
+---
+
+## Output Data
+
+A `List Files` result:
+
+```json
+{
+  "files": [
+    {
+      "id": "1a2B3cD4eFgHiJkLmNoPqRsTuVwXyZ0",
+      "name": "Q3 Report.pdf",
+      "mimeType": "application/pdf",
+      "parents": ["0AbCdEfGhIjKlMnOpQrStUvWxYz"],
+      "size": "245678",
+      "createdTime": "2026-09-10T08:15:00.000Z",
+      "modifiedTime": "2026-09-15T14:02:00.000Z",
+      "webViewLink": "https://drive.google.com/file/d/1a2B3cD4eFgHiJkLmNoPqRsTuVwXyZ0/view"
+    }
+  ],
+  "nextPageToken": "EAIaGgA..."
+}
+```
+
+Reference a file in downstream nodes:
+
+```
+{{ googleDrive.files[0].name }}
+{{ googleDrive.files[0].webViewLink }}
+```
+
+A `Get File`, `Upload File`, `Create From Text`, `Create Folder`, `Update File`/`Update Folder`, `Copy File`/`Copy Folder`, or `Move File`/`Move Folder` result — a single file object:
+
+```json
+{
+  "id": "1a2B3cD4eFgHiJkLmNoPqRsTuVwXyZ0",
+  "name": "Q3 Report.pdf",
+  "mimeType": "application/pdf",
+  "parents": ["0AbCdEfGhIjKlMnOpQrStUvWxYz"],
+  "size": "245678",
+  "createdTime": "2026-09-10T08:15:00.000Z",
+  "modifiedTime": "2026-09-15T14:02:00.000Z",
+  "webViewLink": "https://drive.google.com/file/d/1a2B3cD4eFgHiJkLmNoPqRsTuVwXyZ0/view"
+}
+```
+
+A `Download File` result:
+
+```json
+{
+  "fileId": "1a2B3cD4eFgHiJkLmNoPqRsTuVwXyZ0",
+  "fileName": "Q3 Report.pdf",
+  "mimeType": "application/pdf",
+  "content": "JVBERi0xLjQKJc...(base64)",
+  "size": 245678
+}
+```
+
+A `Delete File` or `Delete Folder` result:
+
+```json
+{
+  "id": "1a2B3cD4eFgHiJkLmNoPqRsTuVwXyZ0",
+  "deleted": true,
+  "permanentlyDeleted": false
+}
+```
+
+A `Share File` or `Share Folder` result:
+
+```json
+{
+  "fileId": "1a2B3cD4eFgHiJkLmNoPqRsTuVwXyZ0",
+  "permissionId": "13875549519921258123",
+  "role": "reader",
+  "type": "user"
+}
+```
+
+A `Create`, `Get`, `List`, or `Update` (Drive) result — a Shared Drive object (`List` wraps these in a `drives` array):
+
+```json
+{
+  "id": "0AbCdEfGhIjKlMnOpQrStUvWxYz",
+  "name": "Marketing Team",
+  "colorRgb": "#ac725e",
+  "createdTime": "2026-09-18T10:00:00.000Z"
+}
+```
+
+Reference a Shared Drive in downstream nodes:
+
+```
+{{ googleDrive.id }}
+{{ googleDrive.drives[0].name }}
+```
+
+A `Delete` (Drive) result:
+
+```json
+{
+  "id": "0AbCdEfGhIjKlMnOpQrStUvWxYz",
+  "deleted": true
+}
+```
+
+---
+
+## Related Nodes
+
+- [Google Sheets](./google-sheets) — Read and write spreadsheet data
+- [For Loop](./for-loop.md) — Iterate over files returned by List Files
+- [Conditions](./conditions.md) — Branch based on a file's properties
+- [HTTP Request](./http-request.md) — Send a downloaded file's contents to an external API

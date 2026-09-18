@@ -92,6 +92,7 @@
               "agentverse/nodes/slack",
               "agentverse/nodes/airtable",
               "agentverse/nodes/google-sheets",
+              "agentverse/nodes/google-drive",
               "agentverse/nodes/shopify",
               "agentverse/nodes/whatsapp",
               "agentverse/nodes/freshdesk",
@@ -178,7 +179,9 @@
               "credentials/types/http-custom-auth",
               "credentials/types/google-sheets-api-key",
               "credentials/types/google-sheets-oauth2-api",
-              "credentials/types/google-sheets-service-account"
+              "credentials/types/google-sheets-service-account",
+              "credentials/types/google-drive-oauth2-api",
+              "credentials/types/google-drive-service-account"
             ]
           }
         ]

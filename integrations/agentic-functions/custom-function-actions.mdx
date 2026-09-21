@@ -624,7 +624,7 @@ The Google Drive actions let your custom function work with files and folders st
 **Compatible credentials:** [Google Drive Service Account](/credentials/types/google-drive-service-account), [Google Drive OAuth2 API](/credentials/types/google-drive-oauth2-api)
 
 <Info title="My Drive vs. Shared Drives">
-  By default, every action below only looks at "My Drive" — the personal Drive space belonging to whoever the credential connects to. If a file instead lives in a **Shared Drive** (a Drive space owned jointly by a team, common in Google Workspace organisations), add `includeSharedDrives: true` to `options`, and optionally `driveId` to point at one specific Shared Drive. Every action accepts these two options even though they're not repeated in every table below.
+  A file can live in **My Drive** (the personal Drive space belonging to whoever the credential connects to) or in a **Shared Drive** (a Drive space owned jointly by a team, common in Google Workspace organisations). Actions that act on a single, already-identified file or folder by ID work the same way regardless of which one it lives in — no extra options needed. `listFiles` and `listDrives` are the exception: by default they only search **My Drive**. Add `includeSharedDrives: true` to `options` to also search Shared Drive content, and optionally `driveId` to limit the search to one specific Shared Drive — `driveId` alone is enough to scope to that drive, `includeSharedDrives` doesn't also need to be true. Every action's schema still accepts both options even though they're only meaningful for `listFiles`/`listDrives`.
 </Info>
 
 <Info title="Files vs. folders">
@@ -670,8 +670,6 @@ Look up the details of a single file or folder — its name, type, size, and whe
 |---|---|---|
 | `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
 | `options.fileId` | Yes | The file (or folder) to look up — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
-| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
-| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
 
 ```javascript
 const file = await subverseActions.googleDrive.getFile({
@@ -693,8 +691,6 @@ Download a file's contents. If the file is a Google Docs, Sheets, Slides, or Dra
 | `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
 | `options.fileId` | Yes | The file to download — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
 | `options.exportMimeType` | No | Only used for Google Docs/Sheets/Slides/Drawings files — the format to convert to, e.g. `text/plain`, `application/pdf`, or `text/csv`. Omit to use the per-type default |
-| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
-| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
 
 ```javascript
 const file = await subverseActions.googleDrive.downloadFile({
@@ -720,8 +716,6 @@ Create a new file in Google Drive from content your function already has — for
 | `options.contentEncoding` | No | `base64` (default, for binary files like PDFs or images) or `text` (for plain text content) |
 | `options.mimeType` | No | The file's type, e.g. `application/pdf` or `text/plain`. Default `application/octet-stream` (generic binary file) |
 | `options.folderId` | No | Folder to upload into — the `id` from a `listFiles`, `getFile`, or `createFolder` result. Omitted uploads to the top level of "My Drive" |
-| `options.includeSharedDrives` | No | Upload into a Shared Drive instead of "My Drive". Default `false` |
-| `options.driveId` | No | The specific Shared Drive to upload into |
 
 ```javascript
 const uploaded = await subverseActions.googleDrive.uploadFile({
@@ -739,17 +733,15 @@ const uploaded = await subverseActions.googleDrive.uploadFile({
 
 ### Google Drive Create From Text
 
-Create a native Google Doc, Sheet, or Slides file directly from plain text — Google Drive converts the text into a real, editable file of that type, not a `.txt` file sitting in Drive. Use this instead of Upload File when you want the result to open as an actual Google Doc/Sheet/Slides file rather than a plain-text file.
+Create a file directly from text — a plain `.txt` file by default, or a native Google Doc when `convertToGoogleDocument` is set. Converting produces a real, editable Google Doc, not a `.txt` file sitting in Drive.
 
 | Parameter | Required | Description |
 |---|---|---|
 | `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
 | `options.name` | Yes | Name for the new file |
-| `options.text` | Yes | Plain text content — Google Drive auto-converts it into the native format you pick below |
-| `options.targetType` | Yes | Which native Google app format to create: `document`, `spreadsheet`, or `presentation` |
-| `options.folderId` | No | Folder to create the file into — the `id` from a `listFiles`, `getFile`, or `createFolder` result. Omitted creates it at the top level of "My Drive" |
-| `options.includeSharedDrives` | No | Create inside a Shared Drive instead of "My Drive". Default `false` |
-| `options.driveId` | No | The specific Shared Drive to create it in |
+| `options.text` | Yes | Plain text content for the new file |
+| `options.convertToGoogleDocument` | No | `false` (default) creates a plain `.txt` file. `true` creates a native Google Doc instead — Drive doesn't support converting plain text directly into a Sheet or Slides file, so only the Doc format is offered |
+| `options.folderId` | No | Folder to create the file into — the `id` from a `listFiles`, `getFile`, or `createFolder` result. This is what determines the destination, including a folder inside a Shared Drive. Omitted creates it at the top level of "My Drive" |
 
 ```javascript
 const doc = await subverseActions.googleDrive.createFromText({
@@ -757,7 +749,7 @@ const doc = await subverseActions.googleDrive.createFromText({
   options: {
     name: `Call Summary - ${body.params.customer_name}`,
     text: body.params.call_summary,
-    targetType: 'document'
+    convertToGoogleDocument: true
   }
 });
 
@@ -774,8 +766,6 @@ Create a new folder in Google Drive, optionally inside another folder.
 | `options.name` | Yes | Name for the new folder |
 | `options.folderId` | No | Parent folder to create it inside — the `id` from a `listFiles`, `getFile`, or `createFolder` result. Omitted creates it at the top level of "My Drive" |
 | `options.folderColorRgb` | No | RGB hex color for the folder (e.g. `#ac725e`). An unsupported color falls back to the closest one in Drive's palette |
-| `options.includeSharedDrives` | No | Create the folder inside a Shared Drive instead of "My Drive". Default `false` |
-| `options.driveId` | No | The specific Shared Drive to create it in |
 
 ```javascript
 const folder = await subverseActions.googleDrive.createFolder({
@@ -804,8 +794,6 @@ Rename a file, change its description, and/or replace its contents entirely. Lea
 | `options.mimeType` | No | The type of the replacement content — only relevant when `content` is provided |
 | `options.trashed` | No | When `true`, trashes the file as part of this same call (an alternative to Delete File when you're already updating other fields). When `false`, untrashes it. Omit to leave trash state unchanged |
 | `options.fields` | No | Array of field names to return instead of the full default set — e.g. `['id', 'name']` for a smaller response |
-| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
-| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
 
 ```javascript
 const updated = await subverseActions.googleDrive.updateFile({
@@ -831,8 +819,6 @@ Make a duplicate of an existing file, optionally giving the copy a new name or p
 | `options.folderId` | No | Folder to place the copy into — the `id` from a `listFiles`, `getFile`, or `createFolder` result. Omitted places it next to the original |
 | `options.description` | No | A short description to set on the new copy |
 | `options.copyRequiresWriterPermission` | No | When `true`, disables the options to copy, print, or download the new copy for readers and commenters. Default `false` |
-| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
-| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
 
 ```javascript
 const copy = await subverseActions.googleDrive.copyFile({
@@ -856,8 +842,6 @@ Move a file from one folder into another.
 | `options.fileId` | Yes | The file to move — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
 | `options.targetFolderId` | Yes | The folder to move it into — the `id` from a `listFiles`, `getFile`, or `createFolder` result |
 | `options.removeFromAllParents` | No | When `true` (default), the file is removed from every folder it's currently in, so it only lives in the new folder. Set `false` to instead add the new folder as an extra location, leaving the file visible in both places |
-| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
-| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
 
 ```javascript
 const moved = await subverseActions.googleDrive.moveFile({
@@ -880,8 +864,6 @@ Move a file to the trash (recoverable from Google Drive's trash, like deleting a
 | `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
 | `options.fileId` | Yes | The file to delete — the `id` from a `listFiles`, `getFile`, or `uploadFile` result |
 | `options.permanent` | No | When `true`, permanently deletes the file — this **cannot be undone**. Default `false` just moves it to trash |
-| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
-| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
 
 ```javascript
 const result = await subverseActions.googleDrive.deleteFile({
@@ -904,8 +886,6 @@ Move a folder to the trash or permanently delete it. This is the same action as 
 | `credentialId` | Yes | Google Drive credential ID (service account or OAuth2) |
 | `options.fileId` | Yes | The folder to delete (field is named `fileId` because folders are Drive files) — the `id` from a `listFiles`, `getFile`, or `createFolder` result |
 | `options.permanent` | No | When `true`, permanently deletes the folder and everything in it — this **cannot be undone**. Default `false` just moves it to trash |
-| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
-| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
 
 ```javascript
 const result = await subverseActions.googleDrive.deleteFolder({
@@ -932,8 +912,6 @@ Give someone access to a file — as a specific person by email, everyone at a c
 | `options.domain` | Required when `type` is `domain` | The company domain to share with, e.g. `example.com` |
 | `options.sendNotificationEmail` | No | Whether Google emails `emailAddress` to let them know they now have access. Default `false` |
 | `options.transferOwnership` | Required when `role` is `owner` | Confirms you actually want to transfer ownership to this person (the current owner becomes a writer). This is irreversible via this action. Default `false` |
-| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
-| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
 
 ```javascript
 const result = await subverseActions.googleDrive.shareFile({
@@ -964,8 +942,6 @@ Give someone access to a folder — everything inside it becomes visible to them
 | `options.domain` | Required when `type` is `domain` | The company domain to share with, e.g. `example.com` |
 | `options.sendNotificationEmail` | No | Whether Google emails `emailAddress` to let them know they now have access. Default `false` |
 | `options.transferOwnership` | Required when `role` is `owner` | Confirms you actually want to transfer ownership to this person (the current owner becomes a writer). This is irreversible via this action. Default `false` |
-| `options.includeSharedDrives` | No | Also look in Shared Drives, not just "My Drive". Default `false` |
-| `options.driveId` | No | Limit the lookup to one specific Shared Drive |
 
 ```javascript
 const result = await subverseActions.googleDrive.shareFolder({
@@ -981,7 +957,7 @@ const result = await subverseActions.googleDrive.shareFolder({
 ```
 
 <Info title="Shared Drives vs. files/folders inside one">
-  Everything above works *inside* a Shared Drive (a Drive space owned jointly by a team, not any one person) the same way it works in "My Drive" — just add `includeSharedDrives: true`. The five actions below are different: they manage the **Shared Drive itself** — creating, renaming, or deleting the container — not files inside it. Most day-to-day automations never need these; they're for the rare case where your function needs to provision or retire a Shared Drive, not just work with files in one an admin already created.
+  Everything above already works *inside* a Shared Drive (a Drive space owned jointly by a team, not any one person) the same way it works in "My Drive" — no extra options needed, except `listFiles`, which needs `includeSharedDrives: true` (and optionally `driveId`) to search Shared Drive content. The five actions below are different: they manage the **Shared Drive itself** — creating, renaming, or deleting the container — not files inside it. Most day-to-day automations never need these; they're for the rare case where your function needs to provision or retire a Shared Drive, not just work with files in one an admin already created.
 </Info>
 
 ### Google Drive Create Drive

@@ -399,14 +399,14 @@ The `sessionId` path parameter is missing or empty.
 
 ```bash
 curl -s -H "x-api-key: YOUR_API_KEY" \
-  https://api.subverseai.com/api/session/fetch/SESSION_ID
+  https://api-v2.subverseai.com/api/session/fetch/SESSION_ID
 ```
 
 ### JavaScript
 
 ```javascript
 const response = await fetch(
-  "https://api.subverseai.com/api/session/fetch/SESSION_ID",
+  "https://api-v2.subverseai.com/api/session/fetch/SESSION_ID",
   {
     headers: {
       "x-api-key": "YOUR_API_KEY",
@@ -424,7 +424,7 @@ console.log(result.data);
 import requests
 
 response = requests.get(
-    "https://api.subverseai.com/api/session/fetch/SESSION_ID",
+    "https://api-v2.subverseai.com/api/session/fetch/SESSION_ID",
     headers={"x-api-key": "YOUR_API_KEY"},
 )
 
@@ -438,7 +438,7 @@ print(data["data"])
 const axios = require("axios");
 
 const { data } = await axios.get(
-  "https://api.subverseai.com/api/session/fetch/SESSION_ID",
+  "https://api-v2.subverseai.com/api/session/fetch/SESSION_ID",
   { headers: { "x-api-key": "YOUR_API_KEY" } }
 );
 

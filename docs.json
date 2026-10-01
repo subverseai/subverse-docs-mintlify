@@ -232,6 +232,13 @@
             ]
           },
           {
+            "group": "Chat",
+            "pages": [
+              "api-reference/chat/trigger",
+              "api-reference/chat/cancel"
+            ]
+          },
+          {
             "group": "Storage",
             "pages": [
               "api-reference/direct-call/signed-url"

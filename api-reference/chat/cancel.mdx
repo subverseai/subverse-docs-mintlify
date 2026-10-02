@@ -1,0 +1,151 @@
+---
+title: 'Cancel Scheduled Messages'
+openapi: 'DELETE /chat-agent/cancel/{sessionId}'
+---
+
+Stop messages you scheduled with [Trigger Chat](/api-reference/chat/trigger) before they are sent. This works for WhatsApp, Web Chat and Email messages.
+
+## Endpoint
+
+```
+DELETE https://api-v2.subverseai.com/api/chat-agent/cancel/{sessionId}
+```
+
+## Authentication
+
+Every request needs your workspace API key in the `x-api-key` header.
+
+```
+x-api-key: your_workspace_api_key
+```
+
+You can create an API key from your dashboard. See [API Keys](/integrations/api-keys) for details.
+
+## Path Parameters
+
+| Parameter | Required | Description |
+|---|---|---|
+| `sessionId` | Yes | The `sessionId` you got back from Trigger Chat when you scheduled the message. |
+
+---
+
+## Response
+
+This API always returns `200`. Check `isCancelled` in the response to see whether anything was cancelled.
+
+### Cancelled
+
+The scheduled messages were stopped and won't be sent.
+
+```json
+{
+  "responseCode": 200,
+  "message": "Scheduled messages cancelled successfully",
+  "data": {
+    "sessionId": "a3f1c9e2-7b4d-4e8a-9c21-5d6e7f8a9b0c",
+    "isCancelled": true
+  }
+}
+```
+
+### Nothing to cancel
+
+There are no pending messages for this conversation. The message may have already been sent, already been cancelled, or the `sessionId` may be incorrect.
+
+```json
+{
+  "responseCode": 200,
+  "message": "No scheduled jobs found",
+  "data": {
+    "sessionId": "a3f1c9e2-7b4d-4e8a-9c21-5d6e7f8a9b0c",
+    "isCancelled": false,
+    "reason": "No scheduled jobs found for this session"
+  }
+}
+```
+
+### Could not cancel
+
+The message couldn't be cancelled, usually because it is already being sent. `reason` gives more detail.
+
+```json
+{
+  "responseCode": 200,
+  "message": "Jobs not cancelled",
+  "data": {
+    "sessionId": "a3f1c9e2-7b4d-4e8a-9c21-5d6e7f8a9b0c",
+    "isCancelled": false,
+    "reason": "..."
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `sessionId` | string | The conversation you asked to cancel. |
+| `isCancelled` | boolean | `true` if scheduled messages were stopped, otherwise `false`. |
+| `reason` | string | Only when `isCancelled` is `false`. Explains why nothing was cancelled. |
+
+---
+
+## Errors
+
+| Status | `errorCode` | What it means |
+|---|---|---|
+| 401 | `apiKeyMissing` | The `x-api-key` header is missing. |
+| 401 | `apiKeyInvalid` | The API key is not valid. |
+
+---
+
+## Code Examples
+
+### cURL
+
+```bash
+curl -X DELETE \
+  -H "x-api-key: YOUR_API_KEY" \
+  https://api-v2.subverseai.com/api/chat-agent/cancel/SESSION_ID
+```
+
+### JavaScript
+
+```javascript
+const response = await fetch(
+  "https://api-v2.subverseai.com/api/chat-agent/cancel/SESSION_ID",
+  {
+    method: "DELETE",
+    headers: { "x-api-key": "YOUR_API_KEY" },
+  }
+);
+
+const result = await response.json();
+console.log(result.data.isCancelled);
+```
+
+### Python
+
+```python
+import requests
+
+response = requests.delete(
+    "https://api-v2.subverseai.com/api/chat-agent/cancel/SESSION_ID",
+    headers={"x-api-key": "YOUR_API_KEY"},
+)
+
+print(response.json()["data"]["isCancelled"])
+```
+
+### Node.js (axios)
+
+```javascript
+const axios = require("axios");
+
+const { data } = await axios.delete(
+  "https://api-v2.subverseai.com/api/chat-agent/cancel/SESSION_ID",
+  { headers: { "x-api-key": "YOUR_API_KEY" } }
+);
+
+console.log(data.data.isCancelled);
+```

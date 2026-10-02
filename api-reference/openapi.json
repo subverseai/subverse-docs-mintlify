@@ -500,6 +500,377 @@
           }
         }
       }
+    },
+    "/chat-agent/trigger": {
+      "post": {
+        "summary": "Trigger chat",
+        "description": "Start a conversation with a customer over WhatsApp, Web Chat or Email using your chosen agent — or get the agent's reply straight back in the response.",
+        "operationId": "triggerChat",
+        "tags": [
+          "Chat"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TriggerChat"
+              },
+              "examples": {
+                "WhatsAppPrompt": {
+                  "summary": "WhatsApp — agent writes the message",
+                  "value": {
+                    "communicationChannel": "Support WhatsApp",
+                    "customerNumber": "+919876543210",
+                    "agentName": "payment_reminder",
+                    "metadata": {
+                      "name": "John Doe",
+                      "amountDue": "₹1,200"
+                    },
+                    "whatsappOptions": {
+                      "messageType": "prompt",
+                      "additionalContext": "Remind the customer that their payment is due tomorrow."
+                    }
+                  }
+                },
+                "WhatsAppTemplate": {
+                  "summary": "WhatsApp — send an approved template",
+                  "value": {
+                    "communicationChannel": "Support WhatsApp",
+                    "customerNumber": "+919876543210",
+                    "whatsappOptions": {
+                      "messageType": "template",
+                      "templateId": "order_update",
+                      "templateLanguage": "en",
+                      "templateVariables": {
+                        "1": "John",
+                        "2": "ORD-1042"
+                      }
+                    }
+                  }
+                },
+                "EmailSay": {
+                  "summary": "Email — send your own text",
+                  "value": {
+                    "communicationChannel": "Support Email",
+                    "customerEmail": "john@example.com",
+                    "emailOptions": {
+                      "messageType": "say",
+                      "subject": "Your order has shipped",
+                      "body": "Hi John, your order ORD-1042 is on its way!"
+                    }
+                  }
+                },
+                "Scheduled": {
+                  "summary": "Scheduled within working hours",
+                  "value": {
+                    "communicationChannel": "Support WhatsApp",
+                    "customerNumber": "+919876543210",
+                    "whatsappOptions": {
+                      "messageType": "say",
+                      "message": "Hi John, just checking in on your recent order."
+                    },
+                    "scheduleTime": "2026-10-05T04:00:00Z",
+                    "startWorkingHour": "09:00",
+                    "endWorkingHour": "20:00",
+                    "timezone": "Asia/Kolkata"
+                  }
+                },
+                "InstantReply": {
+                  "summary": "Get the agent's reply in the response",
+                  "value": {
+                    "agentName": "support_bot",
+                    "doReturnResponse": true,
+                    "message": "Where is my order?",
+                    "customerEmail": "john@example.com",
+                    "metadata": {
+                      "orderId": "ORD-1042"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chat triggered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "200 sent": {
+                    "summary": "200 - Message sent or scheduled",
+                    "value": {
+                      "responseCode": 200,
+                      "message": "Trigger dispatched",
+                      "data": {
+                        "sessionId": "a3f1c9e2-7b4d-4e8a-9c21-5d6e7f8a9b0c"
+                      }
+                    }
+                  },
+                  "200 instant-reply": {
+                    "summary": "200 - Agent reply returned (doReturnResponse)",
+                    "value": {
+                      "responseCode": 200,
+                      "message": "Trigger dispatched",
+                      "data": {
+                        "sessionId": "b7e2d4f1-1c3a-4b5d-8e6f-0a9b8c7d6e5f",
+                        "transcript": [
+                          {
+                            "type": "message",
+                            "role": "user",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "Where is my order?"
+                              }
+                            ],
+                            "senderId": "john@example.com",
+                            "timestamp": "2026-10-01T10:00:00.000Z"
+                          },
+                          {
+                            "type": "message",
+                            "role": "assistant",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "Hi! Your order ORD-1042 has shipped and should arrive by Friday."
+                              }
+                            ],
+                            "agentName": "support_bot",
+                            "timestamp": "2026-10-01T10:00:02.000Z"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something in the request is missing or not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "customerNumberRequired": {
+                    "summary": "400 - Customer number missing",
+                    "value": {
+                      "responseCode": 400,
+                      "errorCode": "customerNumberRequired",
+                      "message": "customerNumber is required for chat channels",
+                      "data": null
+                    }
+                  },
+                  "customerEmailRequired": {
+                    "summary": "400 - Customer email missing",
+                    "value": {
+                      "responseCode": 400,
+                      "errorCode": "customerEmailRequired",
+                      "message": "customerEmail is required for Email channels",
+                      "data": null
+                    }
+                  },
+                  "templateIdRequired": {
+                    "summary": "400 - Template name missing",
+                    "value": {
+                      "responseCode": 400,
+                      "errorCode": "templateIdRequired",
+                      "message": "whatsappOptions.templateId is required for template message type",
+                      "data": null
+                    }
+                  },
+                  "incompatibleOptions": {
+                    "summary": "400 - Instant reply used with scheduling",
+                    "value": {
+                      "responseCode": 400,
+                      "errorCode": "incompatibleOptions",
+                      "message": "doReturnResponse cannot be used with scheduleTime, startWorkingHour, or endWorkingHour",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "API key missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "apiKeyMissing": {
+                    "summary": "401 - API key missing",
+                    "value": {
+                      "responseCode": 401,
+                      "errorCode": "apiKeyMissing",
+                      "message": "API key missing",
+                      "data": null
+                    }
+                  },
+                  "apiKeyInvalid": {
+                    "summary": "401 - Invalid API key",
+                    "value": {
+                      "responseCode": 401,
+                      "errorCode": "apiKeyInvalid",
+                      "message": "Invalid API key",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Channel or conversation not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "channelNotFound": {
+                    "summary": "404 - Channel not found",
+                    "value": {
+                      "responseCode": 404,
+                      "errorCode": "channelNotFound",
+                      "message": "Channel 'Support WhatsApp' not found or disabled",
+                      "data": null
+                    }
+                  },
+                  "sessionNotFound": {
+                    "summary": "404 - Conversation not found",
+                    "value": {
+                      "responseCode": 404,
+                      "errorCode": "sessionNotFound",
+                      "message": "Session not found",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Something went wrong on our side",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "internalError": {
+                    "summary": "500 - Internal server error",
+                    "value": {
+                      "responseCode": 500,
+                      "errorCode": "internalError",
+                      "message": "Internal server error",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat-agent/cancel/{sessionId}": {
+      "delete": {
+        "summary": "Cancel scheduled messages",
+        "description": "Cancel messages scheduled with Trigger Chat that have not been sent yet.",
+        "operationId": "cancelScheduledChat",
+        "tags": [
+          "Chat"
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "description": "The `sessionId` returned by Trigger Chat when the message was scheduled.",
+            "schema": {
+              "type": "string",
+              "example": "a3f1c9e2-7b4d-4e8a-9c21-5d6e7f8a9b0c"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cancellation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "cancelled": {
+                    "summary": "200 - Scheduled messages cancelled",
+                    "value": {
+                      "responseCode": 200,
+                      "message": "Scheduled messages cancelled successfully",
+                      "data": {
+                        "sessionId": "a3f1c9e2-7b4d-4e8a-9c21-5d6e7f8a9b0c",
+                        "isCancelled": true
+                      }
+                    }
+                  },
+                  "nothing": {
+                    "summary": "200 - Nothing scheduled",
+                    "value": {
+                      "responseCode": 200,
+                      "message": "No scheduled jobs found",
+                      "data": {
+                        "sessionId": "a3f1c9e2-7b4d-4e8a-9c21-5d6e7f8a9b0c",
+                        "isCancelled": false,
+                        "reason": "No scheduled jobs found for this session"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "API key missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "apiKeyMissing": {
+                    "summary": "401 - API key missing",
+                    "value": {
+                      "responseCode": 401,
+                      "errorCode": "apiKeyMissing",
+                      "message": "API key missing",
+                      "data": null
+                    }
+                  },
+                  "apiKeyInvalid": {
+                    "summary": "401 - Invalid API key",
+                    "value": {
+                      "responseCode": 401,
+                      "errorCode": "apiKeyInvalid",
+                      "message": "Invalid API key",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1296,7 +1667,10 @@
                     "items": {
                       "type": "string"
                     },
-                    "example": ["end_call", "transfer_call"]
+                    "example": [
+                      "end_call",
+                      "transfer_call"
+                    ]
                   },
                   "postCall": {
                     "type": "array",
@@ -1618,6 +1992,183 @@
             "nullable": true,
             "description": "User email address.",
             "example": "jane@example.com"
+          }
+        }
+      },
+      "TriggerChat": {
+        "type": "object",
+        "properties": {
+          "communicationChannel": {
+            "type": "string",
+            "description": "Name of the WhatsApp, Web Chat or Email channel to send from, exactly as it appears under Integrations in your dashboard. Leave it out when using `doReturnResponse`.",
+            "example": "Support WhatsApp"
+          },
+          "customerNumber": {
+            "type": "string",
+            "description": "Who to message. For WhatsApp, the customer's phone number with country code (e.g. `+919876543210`). For Web Chat, the user's ID on your website or app. Required for WhatsApp and Web Chat channels."
+          },
+          "customerEmail": {
+            "type": "string",
+            "format": "email",
+            "description": "The customer's email address. Required for Email channels."
+          },
+          "agentName": {
+            "type": "string",
+            "description": "The agent that should handle the conversation. If left out, the agent assigned to the channel is used. Required when `doReturnResponse` is `true`."
+          },
+          "agentVersion": {
+            "type": "string",
+            "description": "Which version of the agent to use: `default` (the published version), `draft` (latest saved draft) or a version number such as `2`. If left out, the channel's version (or the published version) is used."
+          },
+          "agentNumber": {
+            "type": "string",
+            "description": "WhatsApp only. The business number to send from. It must be one of the numbers on the selected channel. If left out, one of the channel's numbers is picked for you."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Details about the customer to personalise the conversation. Use them in your agent's prompts as `${variable_name}` and they will be replaced with the real values.",
+            "example": {
+              "name": "John Doe",
+              "orderId": "ORD-1042"
+            }
+          },
+          "whatsappOptions": {
+            "$ref": "#/components/schemas/WhatsAppOptions"
+          },
+          "emailOptions": {
+            "$ref": "#/components/schemas/EmailOptions"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Links to files (images, PDFs, documents, etc.) to send along with the message. Links must be publicly accessible."
+          },
+          "scheduleTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Send the message at a future date and time (ISO format, e.g. `2026-10-05T09:30:00Z`). If the time has already passed, the message is sent right away."
+          },
+          "startWorkingHour": {
+            "type": "string",
+            "description": "Earliest time of day to send, in 24-hour `HH:MM` format. Messages due before this time wait until it is reached.",
+            "example": "09:00"
+          },
+          "endWorkingHour": {
+            "type": "string",
+            "description": "Latest time of day to send, in 24-hour `HH:MM` format. Messages due later are sent the next day at `startWorkingHour` (or at midnight if `startWorkingHour` isn't set).",
+            "example": "20:00"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone used for `startWorkingHour` and `endWorkingHour`, e.g. `Asia/Kolkata` or `America/New_York`. Defaults to `UTC`."
+          },
+          "doReturnResponse": {
+            "type": "boolean",
+            "default": false,
+            "description": "Set to `true` to get the agent's reply straight back in the API response instead of sending it to a customer. Useful for testing an agent or building your own chat experience. Cannot be combined with scheduling options."
+          },
+          "message": {
+            "type": "string",
+            "description": "Used with `doReturnResponse`. The customer's message for the agent to reply to."
+          },
+          "sessionId": {
+            "type": "string",
+            "description": "Used with `doReturnResponse`. The `sessionId` from an earlier response, to continue the same conversation. Leave it out to start a new one."
+          },
+          "chatOptions": {
+            "type": "object",
+            "description": "Used with `doReturnResponse`.",
+            "properties": {
+              "additionalContext": {
+                "type": "string",
+                "description": "Extra instructions or background for the agent for this reply only."
+              }
+            }
+          }
+        }
+      },
+      "WhatsAppOptions": {
+        "type": "object",
+        "description": "Options for WhatsApp channels. For Web Chat channels, only `additionalContext` applies.",
+        "properties": {
+          "messageType": {
+            "type": "string",
+            "enum": [
+              "prompt",
+              "say",
+              "template"
+            ],
+            "default": "prompt",
+            "description": "How the first message is created. `prompt`: the agent writes the message. `say`: send your exact text from `message`. `template`: send an approved WhatsApp template."
+          },
+          "additionalContext": {
+            "type": "string",
+            "description": "With `prompt`: extra instructions or background the agent should use when writing the message, e.g. \"Remind the customer their payment is due tomorrow.\""
+          },
+          "message": {
+            "type": "string",
+            "description": "With `say`: the exact text to send. Required for `say`."
+          },
+          "templateId": {
+            "type": "string",
+            "description": "With `template`: the name of your approved WhatsApp template. Required for `template`."
+          },
+          "templateLanguage": {
+            "type": "string",
+            "default": "en",
+            "description": "With `template`: the template's language code, e.g. `en` or `hi`."
+          },
+          "templateVariables": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "With `template`: values to fill into the template's placeholders.",
+            "example": {
+              "1": "John",
+              "2": "ORD-1042"
+            }
+          }
+        }
+      },
+      "EmailOptions": {
+        "type": "object",
+        "description": "Options for Email channels.",
+        "properties": {
+          "messageType": {
+            "type": "string",
+            "enum": [
+              "prompt",
+              "say"
+            ],
+            "default": "prompt",
+            "description": "`prompt`: the agent writes the email. `say`: send your exact text from `body`."
+          },
+          "additionalContext": {
+            "type": "string",
+            "description": "With `prompt`: extra instructions or background the agent should use when writing the email."
+          },
+          "body": {
+            "type": "string",
+            "description": "With `say`: the exact email content to send. Required for `say`."
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line."
+          },
+          "cc": {
+            "type": "string",
+            "description": "Email addresses to CC, separated by commas."
+          },
+          "bcc": {
+            "type": "string",
+            "description": "Email addresses to BCC, separated by commas."
+          },
+          "replyTo": {
+            "type": "string",
+            "description": "The `sessionId` of an earlier email conversation. The email is sent as a reply in that same thread, keeping anyone previously in CC/BCC. Leave it out to start a new email thread."
           }
         }
       }

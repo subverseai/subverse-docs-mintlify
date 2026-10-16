@@ -67,61 +67,61 @@
           {
             "group": "Getting Started",
             "pages": [
-              "agentverse/introduction",
-              "agentverse/quickstart",
-              "agentverse/node-types",
-              "agentverse/dynamic-inputs"
+              "orchestration/introduction",
+              "orchestration/quickstart",
+              "orchestration/node-types",
+              "orchestration/dynamic-inputs"
             ]
           },
           {
             "group": "Trigger Nodes",
             "pages": [
-              "agentverse/nodes/webhook",
-              "agentverse/nodes/schedule-trigger",
-              "agentverse/nodes/manual-trigger",
-              "agentverse/nodes/airtable-trigger",
-              "agentverse/nodes/slack-trigger",
-              "agentverse/nodes/whatsapp-trigger",
-              "agentverse/nodes/shopify-trigger",
-              "agentverse/nodes/subverse-ai-trigger"
+              "orchestration/nodes/webhook",
+              "orchestration/nodes/schedule-trigger",
+              "orchestration/nodes/manual-trigger",
+              "orchestration/nodes/airtable-trigger",
+              "orchestration/nodes/slack-trigger",
+              "orchestration/nodes/whatsapp-trigger",
+              "orchestration/nodes/shopify-trigger",
+              "orchestration/nodes/subverse-ai-trigger"
             ]
           },
           {
             "group": "Action Nodes",
             "pages": [
-              "agentverse/nodes/slack",
-              "agentverse/nodes/airtable",
-              "agentverse/nodes/google-sheets",
-              "agentverse/nodes/shopify",
-              "agentverse/nodes/whatsapp",
-              "agentverse/nodes/freshdesk",
-              "agentverse/nodes/http-request",
-              "agentverse/nodes/email",
-              "agentverse/nodes/file-upload",
-              "agentverse/nodes/respond-to-webhook"
+              "orchestration/nodes/slack",
+              "orchestration/nodes/airtable",
+              "orchestration/nodes/google-sheets",
+              "orchestration/nodes/shopify",
+              "orchestration/nodes/whatsapp",
+              "orchestration/nodes/freshdesk",
+              "orchestration/nodes/http-request",
+              "orchestration/nodes/email",
+              "orchestration/nodes/file-upload",
+              "orchestration/nodes/respond-to-webhook"
             ]
           },
           {
             "group": "Logic Nodes",
             "pages": [
-              "agentverse/nodes/conditions",
-              "agentverse/nodes/for-loop",
-              "agentverse/nodes/wait",
-              "agentverse/nodes/human-in-the-loop"
+              "orchestration/nodes/conditions",
+              "orchestration/nodes/for-loop",
+              "orchestration/nodes/wait",
+              "orchestration/nodes/human-in-the-loop"
             ]
           },
           {
             "group": "AI Nodes",
             "pages": [
-              "agentverse/nodes/ai-agent",
-              "agentverse/nodes/subverse-agents"
+              "orchestration/nodes/ai-agent",
+              "orchestration/nodes/subverse-agents"
             ]
           },
           {
             "group": "Operations",
             "pages": [
-              "agentverse/monitoring",
-              "agentverse/troubleshooting"
+              "orchestration/monitoring",
+              "orchestration/troubleshooting"
             ]
           }
         ]
@@ -278,5 +278,11 @@
       "website": "https://subverseai.com/",
       "podcast": "https://subverseai.substack.com/"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/orchestration/:slug*",
+      "destination": "/orchestration/:slug*"
+    }
+  ]
 }

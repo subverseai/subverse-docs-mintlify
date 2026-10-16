@@ -36,4 +36,4 @@ Orchestration AI nodes support any LLM provider. Customers can bring their own A
 - Google (Gemini 1.5, Gemini 2, etc.)
 - Any other provider supported via API key
 
-Provider credentials are managed in **Settings → Credentials**.
+Provider credentials are managed in **Integrations**.

@@ -24,6 +24,6 @@ Action nodes receive data from upstream nodes, perform their operation, and pass
 
 ## Credentials
 
-Most action nodes require credentials to authenticate with the external service. Credentials are managed in **Settings → Credentials** and referenced by nodes in an orchestration.
+Most action nodes require credentials to authenticate with the external service. Credentials are managed in **Integrations** and referenced by nodes in an orchestration.
 
 Each node page lists the credential type(s) it supports.

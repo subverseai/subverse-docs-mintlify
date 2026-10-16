@@ -1,0 +1,37 @@
+---
+title: 'Freshdesk'
+description: 'Connect your Freshdesk helpdesk so agents and workflows can read, create, and update tickets.'
+---
+
+**Connection type:** Credential
+
+Connect your Freshdesk helpdesk to SubVerse. Agents can look up a customer's tickets and answer questions about them, and your Functions and Orchestrations can create tickets, add notes and replies, and change status. A Freshdesk event can also start an orchestration.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Look up tickets** | Let an agent find a customer's tickets and answer questions about them, such as status or what was last said. |
+| **Create and update tickets** | Raise a ticket from a conversation, and update its fields, status, and priority. |
+| **Add notes and replies** | Add an internal note for your team, or send a reply to the customer. |
+| **Delete tickets** | Remove tickets created in error. |
+| **React to ticket events** | Start an orchestration when something happens in Freshdesk, such as a new ticket. |
+
+## How it works
+
+**Agent or workflow** → **SubVerse** → **Freshdesk API** → **Your helpdesk**
+
+SubVerse connects with a Freshdesk API key, which carries the permissions of the agent account it belongs to.
+
+## What you'll need
+
+- A Freshdesk account, and your helpdesk domain
+- A Freshdesk API key, ideally from an agent account set aside for SubVerse
+
+<Info>
+  This integration is for **Freshdesk**. Other Freshworks products, such as Freshservice and Freshsales, use different APIs and aren't supported here.
+</Info>
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → Freshdesk** and open the **Documentation** tab.
+</Note>

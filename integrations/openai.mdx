@@ -1,0 +1,37 @@
+---
+title: 'OpenAI'
+description: 'Bring your own OpenAI account: agents and orchestrations use your API key and subscription whenever an OpenAI model is selected.'
+---
+
+**Connection type:** Credential
+
+Connect your own OpenAI account to SubVerse. When an agent or orchestration uses an OpenAI model, SubVerse sends the request with your API key, so usage is billed to your OpenAI account under your own limits and policies.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Use your own OpenAI subscription** | Run OpenAI models in agents and orchestrations on your OpenAI account instead of SubVerse's. |
+| **Cover every OpenAI model** | Applies to all OpenAI models SubVerse supports, including chat, reasoning, embeddings, speech, and realtime voice models. |
+| **Route through your own endpoint** | Use a custom base URL for a proxy, a gateway, Azure OpenAI, or another OpenAI-compatible service. |
+| **Add a custom header** | Send an extra HTTP header with every request, for example for gateway authentication or tracking. |
+
+## How it works
+
+**Agent or orchestration** → **OpenAI model selected** → **SubVerse** → **Your OpenAI account**
+
+Without a connection, SubVerse uses its own OpenAI subscription and bills that usage to you through SubVerse.
+
+## What you'll need
+
+- An OpenAI Platform account with billing set up
+- An OpenAI API key, ideally from a dedicated project
+- Your organization ID, if your account belongs to more than one organization
+
+<Tip>
+  See [Models](/models/overview) for the OpenAI models available in SubVerse.
+</Tip>
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → OpenAI** and open the **Documentation** tab.
+</Note>

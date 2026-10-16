@@ -13,10 +13,10 @@ The **Send Email** node sends emails through an SMTP server. Use it for transact
 
 ## Credentials
 
-This node requires an **[Email (SMTP / IMAP)](/credentials/types/email-smtp)** credential.
+This node requires an **[Email (SMTP / IMAP)](/integrations/email)** credential.
 
 To create a credential:
-1. Go to **Settings → Credentials → New Credential**
+1. Go to **Integrations → Email** and select **New connection**
 2. Select **Email (SMTP / IMAP)**
 3. Enter your SMTP username, password, host, port, and encryption
 
@@ -36,7 +36,7 @@ To create a credential:
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| **Credential** | Credential | Yes | Select an [Email (SMTP / IMAP)](/credentials/types/email-smtp) credential |
+| **Credential** | Credential | Yes | Select an [Email (SMTP / IMAP)](/integrations/email) credential |
 | **From Email** | String | No | Sender address in `sender@example.com` or `Name <sender@example.com>` format. Defaults to the credential username when omitted |
 | **To Email** | String | Yes | Recipient email address |
 | **CC Email** | String | No | CC recipient address |

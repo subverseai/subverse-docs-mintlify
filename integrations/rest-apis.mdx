@@ -1,0 +1,40 @@
+---
+title: 'REST APIs'
+description: 'Connect any system with a REST API, using the authentication it expects.'
+---
+
+**Connection type:** Credential
+
+Connect SubVerse to any system that has a REST API: your own backend, an internal tool, or a third-party service without a dedicated integration. You store the credentials once, then call the API from Functions and Orchestrations.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Call any REST API** | Send requests to any endpoint, with the method, headers, and body you choose. |
+| **Give agents a custom tool** | Let an agent look something up or take an action in your own system, such as checking an order in your internal database. |
+| **Use the right authentication** | Seven credential types cover the common ways APIs authenticate, from a simple API key to OAuth 2.0. |
+| **Keep credentials out of your code** | Secrets are stored encrypted on the connection, not written into a function. |
+| **React to events** | Start an orchestration from an event in the connected system. |
+
+## Credential types
+
+| Type | The API expects |
+|---|---|
+| **HTTP Basic Auth** | A username and password |
+| **HTTP Bearer Auth** | A token in the `Authorization` header |
+| **HTTP Header Auth** | An API key in a header of its own, such as `X-API-Key` |
+| **HTTP Query Auth** | A key in the URL, such as `?api_key=…` |
+| **HTTP Custom Auth** | Something the other types don't cover |
+| **JWT Auth** | A signed JSON Web Token |
+| **OAuth 2.0 API** | An OAuth 2.0 flow |
+
+## What you'll need
+
+- The API's documentation, so you know how it authenticates
+- The credentials themselves, such as a key, token, or client ID and secret
+- The endpoint URLs you'll call
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → Rest APIs** and open the **Documentation** tab.
+</Note>

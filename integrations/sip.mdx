@@ -1,0 +1,59 @@
+---
+title: 'SIP'
+description: 'Receive calls with a voice agent, place outbound calls from your own numbers, and transfer calls to your human team'
+---
+
+**Connection type:** Channel
+
+Use your existing telephony provider, dialer, or PBX with SubVerse voice agents. A SIP trunk connects your phone numbers to SubVerse, so your agents can answer incoming calls and place outgoing calls on those same numbers.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Answer inbound calls** | Route calls from your numbers to SubVerse and pick the voice agent that handles them. |
+| **Place outbound calls** | Let voice agents call customers from your numbers, using your provider's network and rates. |
+| **Escalate to a human** | Transfer a live call to your agent queue or extension, with an optional call summary for context. |
+
+## How it works
+
+### Inbound
+
+**Caller** → **Your SIP provider** → **SubVerse SIP server** → **Voice agent**
+
+### Outbound
+
+**Voice agent** → **SubVerse SIP server** → **Your SIP provider** → **Customer**
+
+### Escalation
+
+**Voice agent** → **SIP REFER** → **Your agent queue** → **Human agent**
+
+Calls are secured with digest authentication (username and password). Your provider stays in control of numbers, routing, and billing.
+
+## What you'll need
+
+- A SIP trunk from any SIP-compliant provider, dialer, or PBX
+- One or more phone numbers on that trunk, in international format
+- A SIP username and password for the trunk
+- Access to your firewall, to allow traffic from SubVerse
+- A voice agent in SubVerse, to answer inbound calls
+- A transfer destination (SIP URI or extension), if you plan to escalate calls
+
+## Provider guides
+
+<CardGroup cols={3}>
+  <Card title="Twilio" icon="phone" href="/integrations/telephony-twilio">
+    Configure a Twilio SIP trunk with SubVerse
+  </Card>
+  <Card title="Telnyx" icon="phone" href="/integrations/telephony-telnyx">
+    Configure a Telnyx SIP trunk with SubVerse
+  </Card>
+  <Card title="Plivo" icon="phone" href="/integrations/telephony-plivo">
+    Configure a Plivo SIP trunk with SubVerse
+  </Card>
+</CardGroup>
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → SIP** and open the **Documentation** tab.
+</Note>

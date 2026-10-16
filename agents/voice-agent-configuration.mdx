@@ -190,14 +190,14 @@ description: 'Full configuration reference for Voice Agents'
 
 <img
   style={{ borderRadius: '0.5rem' }}
-  src="/images/agents/post-call-analysis-new.png"
+  src="/images/agents/post-call-analysis-with-deep-audio-analysis.png"
 />
 
 After each call, the agent can automatically analyze the transcript and extract structured data.
 
 | Field | Type | Description |
 |---|---|---|
-| LLM Model | Dropdown | The AI model used to run the post-call analysis. Can differ from the main agent model. |
+| Analysis Model | Dropdown | The AI model used to run the post-call analysis. Can differ from the main agent model. |
 | Parameters | Form / JSON | Define the data points to extract from each call. Switch between **Form** (add parameters one by one) and **JSON** (paste a raw JSON schema). |
 
 **Parameter fields:**
@@ -208,3 +208,41 @@ After each call, the agent can automatically analyze the transcript and extract 
 | Details | Description of what this parameter represents and how to extract it. |
 | Type | Data type: `string`, `boolean`, `number`, etc. |
 | Required | Whether this parameter must be present in every analysis output. |
+
+---
+
+## Deep Audio Analysis
+
+Deep Audio Analysis reviews the call audio itself, not just the transcript. It can catch problems in how a call sounded that a transcript doesn't capture. Its settings are in the **Post-Call Analysis** panel, shown in the screenshot above.
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| Deep Audio Analysis | Toggle | Off | Turn on to analyze the audio of a random sample of this agent's calls. |
+| Deep Analysis Report Emails | Text | None | Email addresses that receive an alert when an anomaly is detected. Separate multiple addresses with a comma. |
+
+**How it works:**
+
+1. SubVerse selects 10% of the agent's calls at random.
+2. The audio of each selected call is analyzed for anomalies.
+3. If an anomaly is detected, an alert is sent to the email addresses you added.
+4. The analysis results appear in [Session History](/monitor/session-history).
+
+**Anomalies it detects** include:
+
+- False information
+- Hallucinations
+- Incorrect pronunciations
+
+**Compared with Post Call Data Analysis:**
+
+| | Post Call Data Analysis | Deep Audio Analysis |
+|---|---|---|
+| **Analyzes** | The call transcript | The call audio |
+| **Calls covered** | Every call | 10% of calls, chosen at random |
+| **Result** | Structured data you define | Anomaly alerts by email, plus results in Session History |
+
+<Note>
+  The 10% sample rate is fixed. To use a different rate, contact your admin.
+
+  Because calls are sampled at random, not every call is analyzed. A call with no alert may simply not have been selected. Use [Post Call Data Analysis](#post-call-data-analysis) when you need results for every call.
+</Note>

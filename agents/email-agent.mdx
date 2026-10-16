@@ -30,18 +30,18 @@ Email agents are powered by an **Email Channel**, which connects a real inbox (v
 
 ### Step 2: Create an Email Channel
 
-An Email Channel connects the agent to a real email address. You'll need an email credential (SMTP details) set up in **[Credentials](/credentials/overview)** before creating the channel.
+An Email Channel connects the agent to a real email address. You add it from the **[Email](/integrations/email)** integration, using your mail server's IMAP and SMTP details.
 
-1. Navigate to **Channels** in the left sidebar.
-2. Click **Add Channel** and select **Email**.
-3. Enter the channel name, email address, and select an email credential.
-4. Under **Agent Configuration**, select the Email Agent you just created.
-5. Click **Save**.
+1. Go to **Integrations → Email** in the left sidebar.
+2. Select **New connection** and open the **Add Email Channel** form.
+3. Enter the channel name, email address, and your mail server's login, SMTP, and IMAP details. Turn on **Read inbox**.
+4. Under **Select email agent**, select the Email Agent you just created.
+5. Click **Save connection**.
 
 Once the channel is active, any email sent to the configured address will be processed by the linked agent.
 
-<Card title="Email Channel Setup" icon="envelope" href="/communication-channels/email">
-  Full setup guide and configuration reference for Email Channels
+<Card title="Email integration" icon="envelope" href="/integrations/email">
+  What the Email integration does and what you'll need. Step-by-step setup is in the integration's **Documentation** tab in the dashboard.
 </Card>
 
 

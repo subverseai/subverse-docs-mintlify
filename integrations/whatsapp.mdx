@@ -1,0 +1,40 @@
+---
+title: 'WhatsApp'
+description: 'Connect your WhatsApp Business account to call any WhatsApp API from Functions and Orchestrations, and start workflows from incoming WhatsApp events.'
+---
+
+**Connection type:** Credential
+
+Connect your Meta WhatsApp Business account to SubVerse. Send messages and media, manage templates, and call any WhatsApp Business Platform API from your Functions and Orchestrations. You can also start an orchestration when a WhatsApp event happens, such as an incoming message.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Call WhatsApp APIs from Functions** | Use the **WhatsApp** action in custom functions to call any WhatsApp API. |
+| **Send messages in Orchestrations** | Use the [WhatsApp](/orchestration/nodes/whatsapp) node to send text, media, and template messages as part of a workflow. |
+| **React to WhatsApp events** | Use the [WhatsApp Trigger](/orchestration/nodes/whatsapp-trigger) node to start an orchestration when a message arrives or a message status changes. |
+
+## Credential types
+
+This integration has two credential types. Each one is used by different features, so you may need both.
+
+| Credential type | You enter | Used by |
+|---|---|---|
+| **WhatsApp API** | Access token and Business Account ID | The **WhatsApp** action in Functions and the **WhatsApp** node in Orchestrations |
+| **WhatsApp OAuth API** | Client ID and Client Secret of your Meta app | The **WhatsApp Trigger** node |
+
+## What you'll need
+
+- A Meta Business account (Business Portfolio)
+- A Meta app with the WhatsApp product added
+- A WhatsApp Business Account with at least one phone number
+- Admin access in Meta Business Settings, to create a system user and access token
+
+<Info>
+  **Want an agent to chat on WhatsApp?** This integration is for calling WhatsApp APIs from your workflows. To connect a WhatsApp number to an agent, use the [WhatsApp Channel](/integrations/whatsapp-channel) integration.
+</Info>
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → WhatsApp** and open the **Documentation** tab.
+</Note>

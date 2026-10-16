@@ -1,0 +1,557 @@
+---
+title: 'Speech-to-text (STT)'
+description: 'Speech recognition models available for voice agents'
+---
+
+import ModelsDisclaimer from '/snippets/models-disclaimer.mdx';
+
+<ModelsDisclaimer />
+
+Speech-to-text models transcribe the caller's speech so the LLM can respond to it. Select one in the **Transcript Model** field of the [Voice Agent configuration](/agents/voice-agent-configuration#speech-detection-settings).
+
+## At a glance
+
+| Model | Provider | Model ID | Highlights | Official docs |
+|---|---|---|---|---|
+| Nova 3 | Deepgram | `nova-3-general` | General-purpose STT, real-time code-switching across 10 languages | [Deepgram](https://developers.deepgram.com/docs/models-languages-overview) |
+| Flux (English) | Deepgram | `flux-general-en` | Built for voice agents, with built-in end-of-turn detection | [Deepgram](https://developers.deepgram.com/docs/flux/quickstart) |
+| Flux (Multilingual) | Deepgram | `flux-general-multi` | Flux for 10 languages, with optional language hints | [Deepgram](https://developers.deepgram.com/docs/flux/quickstart) |
+| GPT Live Transcribe | OpenAI | `gpt-live-transcribe` | Low-latency streaming transcription with keyword and language hints | [OpenAI](https://developers.openai.com/api/docs/models/gpt-live-transcribe) |
+| GPT Realtime Whisper | OpenAI | `gpt-realtime-whisper` | Streaming transcription (legacy) | [OpenAI](https://developers.openai.com/api/docs/models/gpt-realtime-whisper) |
+| Telephony | Google | `telephony` | Tuned for 8 kHz phone-call audio | [Google Cloud](https://docs.cloud.google.com/speech-to-text/docs/transcription-model) |
+| Chirp 3 | Google | `chirp_3` | Multilingual, with diarization and automatic language detection | [Google Cloud](https://docs.cloud.google.com/speech-to-text/docs/models/chirp-3) |
+| Scribe v2 Realtime | ElevenLabs | `scribe_v2_realtime` | ~150 ms live transcription, 90+ languages | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Saaras v3 | Sarvam | `saaras:v3` | Indian languages, 22 Indian languages plus English | [Sarvam](https://docs.sarvam.ai/api-reference-docs/models/saaras) |
+| Saarika v2.5 | Sarvam | `saarika:v2.5` | Indian languages (being deprecated) | [Sarvam](https://docs.sarvam.ai/api-reference-docs/models/saarika) |
+
+---
+
+## Deepgram
+
+### Nova 3
+
+`nova-3-general` · [Official docs](https://developers.deepgram.com/docs/models-languages-overview)
+
+Deepgram describes Nova 3 as its "highest-performing general-purpose ASR". It is recommended for meetings, multi-speaker, multilingual, noisy or far-field audio, in batch or streaming. Nova 3 does not include turn detection.
+
+| Metric | Value | Source |
+|---|---|---|
+| Median word error rate (streaming) | 6.84%, vs 14.92% for the next-best competitor | [Deepgram](https://deepgram.com/learn/introducing-nova-3-speech-to-text-api) |
+| Median word error rate (batch) | 5.26% | [Deepgram](https://deepgram.com/learn/introducing-nova-3-speech-to-text-api) |
+| Test set | 2,703 audio files (81.69 hours) across multiple domains, including phone calls, drive-thru, conversational AI and voicemail | [Deepgram](https://deepgram.com/learn/introducing-nova-3-speech-to-text-api) |
+| Code-switching | Real time across 10 languages (English, Spanish, French, German, Hindi, Russian, Portuguese, Japanese, Italian, Dutch) | [Deepgram](https://developers.deepgram.com/docs/models-languages-overview) |
+| Keyterm prompting | Up to 100 key terms | [Deepgram](https://deepgram.com/learn/introducing-nova-3-speech-to-text-api) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (47)">
+
+- Multilingual (auto-detect) (`multi`)
+- Arabic (`ar`)
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bengali (`bn-IN`)
+- Bulgarian (`bg-BG`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- German (Switzerland) (`de-CH`)
+- Greek (`el-GR`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+### Flux (English)
+
+`flux-general-en` · [Official docs](https://developers.deepgram.com/docs/flux/quickstart)
+
+Deepgram calls Flux "the first conversational speech recognition model built specifically for voice agents". It has end-of-turn detection built into the model, configurable turn-taking, and "Nova-3 level accuracy".
+
+| Metric | Value | Source |
+|---|---|---|
+| End-of-turn detection latency | ~260 ms | [Deepgram](https://developers.deepgram.com/docs/flux/quickstart) |
+| Agent response latency | 200–600 ms lower than pipeline approaches | [Deepgram](https://deepgram.com/flux) |
+| False interruptions | ~30% fewer | [Deepgram](https://deepgram.com/flux) |
+| End-of-turn timing | Fires within 1.5 s, 95% of the time | [Deepgram](https://deepgram.com/flux) |
+| Accuracy | Word error rate comparable to Nova 3 Streaming | [Deepgram](https://deepgram.com/learn/fluxing-conversational-state-and-speech-to-text) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (7)">
+
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (Philippines) (`en-PH`)
+- English (Singapore) (`en-SG`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+
+</Accordion>
+</AccordionGroup>
+
+### Flux (Multilingual)
+
+`flux-general-multi` · [Official docs](https://developers.deepgram.com/docs/flux/quickstart)
+
+Deepgram says this model "extends Flux to 10 languages with optional `language_hint` biasing": English, Spanish, French, German, Hindi, Russian, Portuguese, Japanese, Italian and Dutch. It has the same end-of-turn detection and barge-in handling as Flux (English).
+
+Deepgram's Flux launch benchmarks (see [Flux (English)](#flux-english)) were published before the multilingual variant. No separate figures were found for this variant from Deepgram or from an independent source.
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (19)">
+
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (Philippines) (`en-PH`)
+- English (Singapore) (`en-SG`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Hindi (`hi-IN`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Russian (`ru-RU`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## OpenAI
+
+### GPT Live Transcribe
+
+`gpt-live-transcribe` · [Official docs](https://developers.openai.com/api/docs/models/gpt-live-transcribe)
+
+OpenAI describes it as "a streaming speech-to-text model for applications that need low-latency transcript deltas from live audio". It supports tunable latency, free-form context, keyword hints and multiple language hints. OpenAI's realtime transcription guide recommends starting with this model.
+
+| Detail | Value | Source |
+|---|---|---|
+| Latency setting | `delay` of `minimal`, `low`, `medium`, `high` or `xhigh`. Higher delay "can improve word error rate". | [OpenAI](https://developers.openai.com/api/docs/guides/realtime-transcription) |
+| Not supported | Word-level timestamps, speaker labels, confidence scores, detected-language output | [OpenAI](https://developers.openai.com/api/docs/guides/realtime-transcription) |
+| Benchmarks | Not published. No independent figures found. | — |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (44)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+### GPT Realtime Whisper
+
+`gpt-realtime-whisper` · [Official docs](https://developers.openai.com/api/docs/models/gpt-realtime-whisper)
+
+A streaming speech-to-text model for low-latency transcripts from live audio.
+
+<Note>
+  OpenAI's migration guide treats GPT Realtime Whisper as a legacy model and recommends migrating live transcription to [GPT Live Transcribe](#gpt-live-transcribe). See [OpenAI's migration guide](https://developers.openai.com/cookbook/examples/migrating_from_whisper_to_gpt_transcribe).
+</Note>
+
+| Detail | Value | Source |
+|---|---|---|
+| Context window | 16,000 tokens | [OpenAI](https://developers.openai.com/api/docs/models/gpt-realtime-whisper) |
+| Max output | 2,000 tokens | [OpenAI](https://developers.openai.com/api/docs/models/gpt-realtime-whisper) |
+| Benchmarks | Not published. No independent figures found. | — |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (44)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Google
+
+### Telephony
+
+`telephony` · [Official docs](https://docs.cloud.google.com/speech-to-text/docs/transcription-model)
+
+Google Cloud's `telephony` model is built for "audio that originates from an audio phone call, typically recorded at an 8 kHz sampling rate". Google describes it as ideal for customer service, teleconferencing and automated kiosk applications.
+
+| Detail | Value | Source |
+|---|---|---|
+| Intended audio | Phone calls, typically 8 kHz | [Google Cloud](https://docs.cloud.google.com/speech-to-text/docs/transcription-model) |
+| Benchmarks | Not published. No independent figures found. | — |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (17)">
+
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Hindi (`hi-IN`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Korean (`ko-KR`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+
+</Accordion>
+</AccordionGroup>
+
+### Chirp 3
+
+`chirp_3` · [Official docs](https://docs.cloud.google.com/speech-to-text/docs/models/chirp-3)
+
+Chirp 3 is the latest generation of Google's multilingual speech recognition models. Google says it improves accuracy and speed over earlier Chirp models, and adds speaker diarization and automatic language detection.
+
+| Metric | Value | Source |
+|---|---|---|
+| Recognition modes | Streaming, synchronous and batch | [Google Cloud](https://docs.cloud.google.com/speech-to-text/docs/models/chirp-3) |
+| Speech adaptation | Up to 1,000 phrases | [Google Cloud](https://docs.cloud.google.com/speech-to-text/docs/models/chirp-3) |
+| Not supported | Word-level timestamps and word-level confidence | [Google Cloud](https://docs.cloud.google.com/speech-to-text/docs/models/chirp-3) |
+| AA-WER (non-streaming) · **Third-party** | 4.3% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-text) |
+
+<Note>
+  Google does not publish word error rates for Chirp 3. The **Third-party** figure is published by [Artificial Analysis](https://artificialanalysis.ai/speech-to-text), an independent benchmarking company, not by Google. Accessed October 16, 2026.
+</Note>
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (49)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bengali (`bn-IN`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Odia (`od-IN`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Punjabi (`pa-IN`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## ElevenLabs
+
+### Scribe v2 Realtime
+
+`scribe_v2_realtime` · [Official docs](https://elevenlabs.io/docs/overview/models)
+
+ElevenLabs calls Scribe v2 Realtime "our fastest and most accurate live speech recognition model".
+
+| Metric | Value | Source |
+|---|---|---|
+| Latency | ~150 ms, excluding application and network latency | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Languages (provider) | 90+, with automatic language recognition | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Features | Voice activity detection, manual commit control, word-level timestamps, entity detection (65 entity types) | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (50)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bengali (`bn-IN`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Odia (`od-IN`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Punjabi (`pa-IN`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Sarvam
+
+### Saaras v3
+
+`saaras:v3` · [Official docs](https://docs.sarvam.ai/api-reference-docs/models/saaras)
+
+Saaras v3 is Sarvam's speech recognition model for Indian languages. It supports the 22 official Indian languages plus English, and was trained on more than 1 million hours of audio.
+
+| Metric | Value | Source |
+|---|---|---|
+| Word error rate, IndicVoices | ~19%, down from ~22% for Saaras v2.5 | [Sarvam](https://www.sarvam.ai/blogs/asr) |
+| Word error rate, IndicVoices (10 most popular languages) | 19.31% | [Sarvam](https://www.sarvam.ai/blogs/asr) |
+| Features | Automatic language detection, speaker diarization, 8 kHz telephony optimization | [Sarvam](https://docs.sarvam.ai/api-reference-docs/models/saaras) |
+
+<Note>
+  Sarvam now lists `saaras:v4` as its default, recommended model. Saaras v3 "remains available".
+</Note>
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (11)">
+
+- Bengali (`bn-IN`)
+- English (India) (`en-IN`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Kannada (`kn-IN`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Odia (`od-IN`)
+- Punjabi (`pa-IN`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+
+</Accordion>
+</AccordionGroup>
+
+### Saarika v2.5
+
+`saarika:v2.5` · [Official docs](https://docs.sarvam.ai/api-reference-docs/models/saarika)
+
+Saarika v2.5 transcribes speech in the language spoken. It handles telephony (8 kHz), multi-speaker and code-mixed audio.
+
+<Warning>
+  Sarvam says "Saarika v2.5 will be deprecated soon" and recommends Saaras instead.
+</Warning>
+
+| Metric (VISTAAR benchmark) | Value | Source |
+|---|---|---|
+| Word error rate, all 11 languages | 18.32% | [Sarvam](https://docs.sarvam.ai/api-reference-docs/models/saarika) |
+| Word error rate, English | 8.26% | [Sarvam](https://docs.sarvam.ai/api-reference-docs/models/saarika) |
+| Word error rate, Hindi | 11.81% | [Sarvam](https://docs.sarvam.ai/api-reference-docs/models/saarika) |
+| Character error rate, all 11 languages | 4.96% | [Sarvam](https://docs.sarvam.ai/api-reference-docs/models/saarika) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (11)">
+
+- Bengali (`bn-IN`)
+- English (India) (`en-IN`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Kannada (`kn-IN`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Odia (`od-IN`)
+- Punjabi (`pa-IN`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+<Note>
+  Providers measure accuracy on different datasets and under different conditions, so word error rates from different providers are not directly comparable. Test candidate models with audio from your own use case.
+</Note>

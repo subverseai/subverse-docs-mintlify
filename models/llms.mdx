@@ -1,0 +1,425 @@
+---
+title: 'LLMs'
+description: 'Large language models available for all agent types'
+---
+
+import ModelsDisclaimer from '/snippets/models-disclaimer.mdx';
+
+<ModelsDisclaimer />
+
+The LLM understands the conversation, follows your prompt, calls functions and writes the agent's replies. Select one in the **LLM Model** field of any agent's configuration, for example the [Voice Agent](/agents/voice-agent-configuration) or [Chat Agent](/agents/chat-agent-configuration).
+
+## At a glance
+
+| Model | Provider | Model ID | Highlights | Official docs |
+|---|---|---|---|---|
+| GPT 5.6 Sol | OpenAI | `gpt-5.6-sol` | GPT-5.6 flagship for complex professional work | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5.6-sol) |
+| GPT 5.6 Terra | OpenAI | `gpt-5.6-terra` | Balances intelligence and cost | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5.6-terra) |
+| GPT 5.6 Luna | OpenAI | `gpt-5.6-luna` | Cost-sensitive, high-volume workloads | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5.6-luna) |
+| GPT 5.4 | OpenAI | `gpt-5.4` | Coding and professional work | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5.4) |
+| GPT 5.4 mini | OpenAI | `gpt-5.4-mini` | Coding, computer use and subagents | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5.4-mini) |
+| GPT 5.4 nano | OpenAI | `gpt-5.4-nano` | Simple, high-volume tasks | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5.4-nano) |
+| GPT 5 | OpenAI | `gpt-5` | Previous reasoning model for coding and agentic tasks | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5) |
+| GPT 5 mini | OpenAI | `gpt-5-mini` | Faster, lower-cost GPT-5 | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5-mini) |
+| GPT 5 nano | OpenAI | `gpt-5-nano` | Fastest, lowest-cost GPT-5 | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5-nano) |
+| GPT 5.1 | OpenAI | `gpt-5.1` | Coding and agentic tasks, reasoning or non-reasoning | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5.1) |
+| GPT 5.2 | OpenAI | `gpt-5.2` | Previous flagship for professional work | [OpenAI](https://developers.openai.com/api/docs/models/gpt-5.2) |
+| GPT 4.1 mini | OpenAI | `gpt-4.1-mini` | Low latency, no reasoning step | [OpenAI](https://developers.openai.com/api/docs/models/gpt-4.1-mini) |
+| Gemini 3.8 Flash | Google | `gemini-3.8-flash` | Google's most intelligent Flash model | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash) |
+| Gemini 3.7 Flash | Google | `gemini-3.7-flash` | Previous-generation Flash (deprecated) | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.7-flash) |
+| Gemini 3.6 Flash | Google | `gemini-3.6-flash` | Frontier-level intelligence at higher speed and lower cost | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.6-flash) |
+| Gemini 3.5 Flash | Google | `gemini-3.5-flash` | Earlier-generation Flash (deprecated) | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash) |
+| Gemini 3.5 Flash Lite | Google | `gemini-3.5-flash-lite` | Low-latency, high-throughput subagent tasks | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite) |
+| Gemini 3.1 Flash Lite | Google | `gemini-3.1-flash-lite` | Low-latency, lightweight high-frequency tasks | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite) |
+| Gemini 3 Flash | Google | `gemini-3-flash-preview` | Multimodal understanding and agentic tasks (preview) | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3-flash-preview) |
+| Gemini 3.1 Pro | Google | `gemini-3.1-pro-preview` | Improved thinking and factual grounding (preview) | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview) |
+| Gemini 2.5 Flash | Google | `gemini-2.5-flash` | Well-rounded price-performance | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash) |
+| Gemma 4 | Google | `google/gemma-4-31b-it` | Open model, 31B parameters | [Hugging Face](https://huggingface.co/google/gemma-4-31B-it) |
+| Claude Opus 5.5 | Anthropic | `claude-opus-5-5` | Long-running agentic coding and knowledge work | [Anthropic](https://platform.claude.com/docs/en/models/opus-5-5/overview) |
+| Claude Sonnet 5.5 | Anthropic | `claude-sonnet-5-5` | Best combination of speed and intelligence | [Anthropic](https://platform.claude.com/docs/en/models/sonnet-5-5/overview) |
+| Claude Haiku 5.5 | Anthropic | `claude-haiku-5-5` | High-volume, latency-sensitive tasks | [Anthropic](https://platform.claude.com/docs/en/models/haiku-5-5/overview) |
+| Claude Opus 5 | Anthropic | `claude-opus-5` | Previous Opus model (legacy) | [Anthropic](https://platform.claude.com/docs/en/models/opus-5/overview) |
+| Claude Sonnet 5 | Anthropic | `claude-sonnet-5` | Previous Sonnet model (legacy) | [Anthropic](https://platform.claude.com/docs/en/models/sonnet-5/overview) |
+
+---
+
+## OpenAI
+
+### Specifications
+
+| Model | Context window | Max output | Knowledge cutoff | Reasoning effort |
+|---|---|---|---|---|
+| GPT 5.6 Sol | 1,050,000 | 128,000 | Feb 16, 2026 | none, low, medium (default), high, xhigh, max |
+| GPT 5.6 Terra | 1,050,000 | 128,000 | Feb 16, 2026 | none, low, medium (default), high, xhigh, max |
+| GPT 5.6 Luna | 1,050,000 | 128,000 | Feb 16, 2026 | none, low, medium (default), high, xhigh, max |
+| GPT 5.4 | 1,050,000 | 128,000 | Aug 31, 2025 | none (default), low, medium, high, xhigh |
+| GPT 5.4 mini | 400,000 | 128,000 | Aug 31, 2025 | none (default), low, medium, high, xhigh |
+| GPT 5.4 nano | 400,000 | 128,000 | Aug 31, 2025 | none (default), low, medium, high, xhigh |
+| GPT 5 | 400,000 | 128,000 | Sep 30, 2024 | minimal, low, medium, high |
+| GPT 5 mini | 400,000 | 128,000 | May 31, 2024 | Supported |
+| GPT 5 nano | 400,000 | 128,000 | May 31, 2024 | Supported |
+| GPT 5.1 | 400,000 | 128,000 | Sep 30, 2024 | none (default), low, medium, high |
+| GPT 5.2 | 400,000 | 128,000 | Aug 31, 2025 | none (default), low, medium, high, xhigh |
+| GPT 4.1 mini | 1,047,576 | 32,768 | Jun 1, 2024 | Not a reasoning model |
+
+All values are in tokens and come from each model's page on [developers.openai.com](https://developers.openai.com/api/docs/models). All of these models take text and image input and produce text output.
+
+### GPT 5.6 Sol
+
+`gpt-5.6-sol` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5.6-sol) · [Launch announcement](https://openai.com/index/gpt-5-6/)
+
+OpenAI's "GPT-5.6 flagship model for complex professional work". OpenAI positions Sol for "frontier reasoning and long-horizon agentic work".
+
+| Metric | Value | Source |
+|---|---|---|
+| Prompt-injection robustness, search and function-calling | 0.910 | [OpenAI system card](https://deploymentsafety.openai.com/gpt-5-6) |
+| Intelligence Index v4.3 (max effort) · **Third-party** | 47 | [Artificial Analysis](https://artificialanalysis.ai/models/gpt-5-6-sol) |
+| Output speed (max effort) · **Third-party** | 95 tokens/s | [Artificial Analysis](https://artificialanalysis.ai/models/gpt-5-6-sol) |
+
+### GPT 5.6 Terra
+
+`gpt-5.6-terra` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5.6-terra) · [Launch announcement](https://openai.com/index/gpt-5-6/)
+
+A "GPT-5.6 model that balances intelligence and cost". OpenAI says it has "GPT-5.5-competitive performance at 2x lower cost".
+
+| Metric | Value | Source |
+|---|---|---|
+| Prompt-injection robustness, search and function-calling | 0.946 | [OpenAI system card](https://deploymentsafety.openai.com/gpt-5-6) |
+| Intelligence Index v4.3 (max effort) · **Third-party** | 42 | [Artificial Analysis](https://artificialanalysis.ai/models/gpt-5-6-terra) |
+| Output speed (max effort) · **Third-party** | 134 tokens/s | [Artificial Analysis](https://artificialanalysis.ai/models/gpt-5-6-terra) |
+
+### GPT 5.6 Luna
+
+`gpt-5.6-luna` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5.6-luna) · [Launch announcement](https://openai.com/index/gpt-5-6/)
+
+A "GPT-5.6 model optimized for cost-sensitive workloads", designed for high-volume use. OpenAI calls it "the fastest, most affordable member of the family".
+
+| Metric | Value | Source |
+|---|---|---|
+| Prompt-injection robustness, search and function-calling | 0.897 | [OpenAI system card](https://deploymentsafety.openai.com/gpt-5-6) |
+| Intelligence Index v4.3 (max effort) · **Third-party** | 37 | [Artificial Analysis](https://artificialanalysis.ai/models/gpt-5-6-luna) |
+| Output speed (max effort) · **Third-party** | 127 tokens/s | [Artificial Analysis](https://artificialanalysis.ai/models/gpt-5-6-luna) |
+
+<Note>
+  OpenAI publishes its GPT-5.6 capability benchmarks (such as Terminal-Bench 2.1) as charts in the [launch announcement](https://openai.com/index/gpt-5-6/). The **Third-party** figures above are published by [Artificial Analysis](https://artificialanalysis.ai), an independent benchmarking company, not by OpenAI. Accessed October 16, 2026.
+</Note>
+
+### GPT 5.4
+
+`gpt-5.4` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5.4) · [Launch announcement with benchmarks](https://openai.com/index/introducing-gpt-5-4/)
+
+OpenAI describes GPT-5.4 as "a flagship model for complex professional work" and "a more affordable model for coding and professional work".
+
+### GPT 5.4 mini
+
+`gpt-5.4-mini` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5.4-mini) · [Launch announcement with benchmarks](https://openai.com/index/introducing-gpt-5-4-mini-and-nano/)
+
+"Our strongest mini model yet for coding, computer use, and subagents". OpenAI says it brings GPT-5.4's strengths to a faster, more efficient model for high-volume workloads.
+
+### GPT 5.4 nano
+
+`gpt-5.4-nano` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5.4-nano) · [Launch announcement with benchmarks](https://openai.com/index/introducing-gpt-5-4-mini-and-nano/)
+
+"Our cheapest GPT-5.4-class model for simple high-volume tasks", such as classification, data extraction, ranking and sub-agents.
+
+### GPT 5
+
+`gpt-5` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5) · [Launch announcement with benchmarks](https://openai.com/index/introducing-gpt-5-for-developers/)
+
+OpenAI's "previous intelligent reasoning model for coding and agentic tasks with configurable reasoning effort". OpenAI now recommends newer models for new projects.
+
+### GPT 5 mini
+
+`gpt-5-mini` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5-mini) · [Launch announcement with benchmarks](https://openai.com/index/introducing-gpt-5-for-developers/)
+
+"A faster, more cost-efficient version of GPT-5", suited to well-defined tasks and precise prompts. For new low-latency, high-volume workloads, OpenAI recommends GPT 5.6 Terra.
+
+### GPT 5 nano
+
+`gpt-5-nano` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5-nano) · [Launch announcement with benchmarks](https://openai.com/index/introducing-gpt-5-for-developers/)
+
+The "fastest, most cost-efficient version of GPT-5", suited to summarization and classification. For new speed- and cost-sensitive workloads, OpenAI recommends GPT 5.6 Luna.
+
+### GPT 5.1
+
+`gpt-5.1` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5.1)
+
+A "flagship model for coding and agentic tasks with configurable reasoning and non-reasoning effort".
+
+### GPT 5.2
+
+`gpt-5.2` · [Official docs](https://developers.openai.com/api/docs/models/gpt-5.2) · [Launch announcement with benchmarks](https://openai.com/index/introducing-gpt-5-2/)
+
+OpenAI's "previous flagship model for professional work with configurable reasoning effort".
+
+### GPT 4.1 mini
+
+`gpt-4.1-mini` · [Official docs](https://developers.openai.com/api/docs/models/gpt-4.1-mini) · [Launch announcement with benchmarks](https://openai.com/index/gpt-4-1/)
+
+A "smaller, faster version of GPT-4.1" that "excels at instruction following and tool calling". It has "low latency without a reasoning step".
+
+<Note>
+  OpenAI's model pages don't list benchmark scores. For GPT 5.4 and earlier, the benchmark results are in the launch announcements linked above. No independent benchmark figures for these versions were available from Artificial Analysis.
+</Note>
+
+---
+
+## Google
+
+### Specifications
+
+| Model | Input tokens | Output tokens | Knowledge cutoff | Status (Gemini API) |
+|---|---|---|---|---|
+| Gemini 3.8 Flash | 1,048,576 | 65,536 | March 2026 | Stable |
+| Gemini 3.7 Flash | 1,048,576 | 65,536 | March 2026 | Deprecated, routed to Gemini 3.8 Flash |
+| Gemini 3.6 Flash | 1,048,576 | 65,536 | March 2026 | Stable |
+| Gemini 3.5 Flash | 1,048,576 | 65,536 | Not stated | Deprecated, routed to Gemini 3.6 Flash |
+| Gemini 3.5 Flash Lite | 1,048,576 | 65,536 | March 2026 | Stable |
+| Gemini 3.1 Flash Lite | 1,048,576 | 65,536 | Not stated | Stable |
+| Gemini 3 Flash | 1,048,576 | 65,536 | Not stated | Preview |
+| Gemini 3.1 Pro | 1,048,576 | 65,536 | Not stated | Preview |
+| Gemini 2.5 Flash | 1,048,576 | 65,536 | January 2025 | Stable |
+
+Token limits and status come from each model's page on [ai.google.dev](https://ai.google.dev/gemini-api/docs/models). Knowledge cutoffs come from the model page or the model card. For Gemini 3.6 Flash and later, Google notes that knowledge in some domains may only go up to January 2025. All Gemini models listed here accept text, image, video and audio input and produce text output.
+
+### Gemini 3.8 Flash
+
+`gemini-3.8-flash` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash) · [Model card](https://deepmind.google/models/model-cards/gemini-3-8-flash/)
+
+"Our most intelligent Flash model, engineered for long-horizon software engineering, autonomous agents" and complex enterprise workflows, at Flash speed and cost. Thinking levels: low, medium and high.
+
+| Metric | Value | Source |
+|---|---|---|
+| Terminal-bench 2.1 (agentic terminal coding) | 89.4% | [Model card](https://deepmind.google/models/model-cards/gemini-3-8-flash/) |
+| DeepSWE v1.1 (long-horizon software engineering) | 73.7% | [Model card](https://deepmind.google/models/model-cards/gemini-3-8-flash/) |
+| HLE-Verified (expert reasoning) | 54.9% | [Model card](https://deepmind.google/models/model-cards/gemini-3-8-flash/) |
+| OSWorld-2.0 (computer use, partial score) | 59.0% | [Model card](https://deepmind.google/models/model-cards/gemini-3-8-flash/) |
+| GDPVal-AA v2 (knowledge work) | 1545 Elo | [Model card](https://deepmind.google/models/model-cards/gemini-3-8-flash/) |
+
+### Gemini 3.7 Flash
+
+`gemini-3.7-flash` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.7-flash) · [Model card](https://deepmind.google/models/model-cards/gemini-3-7-flash/)
+
+A previous-generation model in the Gemini 3 series.
+
+<Warning>
+  The Gemini API docs list `gemini-3.7-flash` as deprecated and say requests are automatically routed to `gemini-3.8-flash`.
+</Warning>
+
+| Metric | Value | Source |
+|---|---|---|
+| Terminal-bench 2.1 | 85.8% | [Model card](https://deepmind.google/models/model-cards/gemini-3-7-flash/) |
+| DeepSWE v1.1 | 65.3% | [Model card](https://deepmind.google/models/model-cards/gemini-3-7-flash/) |
+| HLE-Verified | 53.6% | [Model card](https://deepmind.google/models/model-cards/gemini-3-7-flash/) |
+| AutomationBench (private set) | 30.4% | [Model card](https://deepmind.google/models/model-cards/gemini-3-7-flash/) |
+| GDM-MRCR v2, 8-needle, 128k (long context) | 97.0% | [Model card](https://deepmind.google/models/model-cards/gemini-3-7-flash/) |
+
+### Gemini 3.6 Flash
+
+`gemini-3.6-flash` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.6-flash) · [Model card](https://deepmind.google/models/model-cards/gemini-3-6-flash/)
+
+Provides "sustained frontier-level intelligence optimized for real-world tasks at a higher speed and lower cost".
+
+| Metric | Value | Source |
+|---|---|---|
+| SWE-Bench Pro (public) | 58.7% | [Model card](https://deepmind.google/models/model-cards/gemini-3-6-flash/) |
+| Terminal-bench 2.1 (Terminus-2 harness) | 78.0% | [Model card](https://deepmind.google/models/model-cards/gemini-3-6-flash/) |
+| OSWorld-Verified | 83.0% | [Model card](https://deepmind.google/models/model-cards/gemini-3-6-flash/) |
+| GDM-MRCR v2, 8-needle, 128k / 1M | 91.8% / 54.0% | [Model card](https://deepmind.google/models/model-cards/gemini-3-6-flash/) |
+| GDPVal-AA v2 | 1421 Elo | [Model card](https://deepmind.google/models/model-cards/gemini-3-6-flash/) |
+
+### Gemini 3.5 Flash
+
+`gemini-3.5-flash` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash) · [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/)
+
+An earlier-generation Flash model that provided frontier-level intelligence at higher speed and lower cost.
+
+<Warning>
+  The Gemini API docs list `gemini-3.5-flash` as deprecated and say requests are automatically routed to `gemini-3.6-flash`.
+</Warning>
+
+| Metric | Value | Source |
+|---|---|---|
+| MCP Atlas (multi-step workflows using MCP) | 83.6% | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) |
+| Toolathlon (real-world tool use) | 56.5% | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) |
+| Terminal-bench 2.1 (Terminus-2 harness) | 76.2% | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) |
+| SWE-Bench Pro (public, single attempt) | 55.1% | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) |
+| Humanity's Last Exam | 40.2% | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) |
+
+### Gemini 3.5 Flash Lite
+
+`gemini-3.5-flash-lite` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite) · [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash-lite/)
+
+"A low-latency, cost-effective multimodal model optimized for high-throughput, low-cost execution for subagent tasks" and document parsing.
+
+| Metric | Value | Source |
+|---|---|---|
+| SWE-Bench Pro (public) | 54.2% | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash-lite/) |
+| Terminal-bench 2.1 (Terminus-2 harness) | 54.0% | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash-lite/) |
+| OSWorld-Verified | 74.0% | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash-lite/) |
+| GDM-MRCR v2, 8-needle, 128k | 72.2% | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash-lite/) |
+| GDPVal-AA v2 | 1140 Elo | [Model card](https://deepmind.google/models/model-cards/gemini-3-5-flash-lite/) |
+
+### Gemini 3.1 Flash Lite
+
+`gemini-3.1-flash-lite` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite) · [Model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/)
+
+"A low-latency, cost-effective multimodal model optimized for high-frequency, lightweight tasks." Scores are for the high thinking level.
+
+| Metric | Value | Source |
+|---|---|---|
+| GPQA Diamond (no tools) | 86.9% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/) |
+| MMMLU (multilingual Q&A) | 88.9% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/) |
+| LiveCodeBench | 72.0% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/) |
+| Humanity's Last Exam (no tools) | 16.0% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/) |
+| Output speed | 363 tokens/s | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/) |
+
+### Gemini 3 Flash
+
+`gemini-3-flash-preview` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3-flash-preview)
+
+Google describes it as "the best model in the world for multimodal understanding, and our most powerful agentic and vibe-coding model yet" (at its December 2025 launch). This model is in preview.
+
+| Metric | Value | Source |
+|---|---|---|
+| Terminal-bench 2.1 (Terminus-2 harness) | 58.0% | [Gemini 3.5 Flash model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) (comparison column) |
+| SWE-Bench Pro (public, single attempt) | 49.6% | [Gemini 3.5 Flash model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) (comparison column) |
+| MCP Atlas | 62.0% | [Gemini 3.5 Flash model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) (comparison column) |
+| Toolathlon | 49.4% | [Gemini 3.5 Flash model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) (comparison column) |
+| Humanity's Last Exam | 33.7% | [Gemini 3.5 Flash model card](https://deepmind.google/models/model-cards/gemini-3-5-flash/) (comparison column) |
+
+### Gemini 3.1 Pro
+
+`gemini-3.1-pro-preview` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview) · [Model card](https://deepmind.google/models/model-cards/gemini-3-1-pro/)
+
+Refines the Gemini 3 Pro series and "provides better thinking, improved token efficiency, and a more grounded, factually consistent experience". This model is in preview. Scores are for the high thinking level.
+
+| Metric | Value | Source |
+|---|---|---|
+| τ2-bench (agentic tool use), Retail / Telecom | 90.8% / 99.3% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-pro/) |
+| GPQA Diamond (no tools) | 94.3% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-pro/) |
+| MMMLU (multilingual Q&A) | 92.6% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-pro/) |
+| SWE-Bench Verified (single attempt) | 80.6% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-pro/) |
+| Terminal-Bench 2.0 (Terminus-2 harness) | 68.5% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-pro/) |
+| Humanity's Last Exam (no tools) | 44.4% | [Model card](https://deepmind.google/models/model-cards/gemini-3-1-pro/) |
+
+### Gemini 2.5 Flash
+
+`gemini-2.5-flash` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash)
+
+"Our best model in terms of price-performance, offering well-rounded capabilities." The Gemini API docs say the 2.5 models are not deprecated, and recommend Gemini 3.5 Flash Lite or Gemini 3.8 Flash for new projects.
+
+| Metric | Value | Source |
+|---|---|---|
+| GPQA Diamond | 82.8% | [Gemini 3.1 Flash Lite model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/) (comparison column) |
+| MMMLU (multilingual Q&A) | 86.6% | [Gemini 3.1 Flash Lite model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/) (comparison column) |
+| LiveCodeBench | 62.6% | [Gemini 3.1 Flash Lite model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/) (comparison column) |
+| Humanity's Last Exam | 11.0% | [Gemini 3.1 Flash Lite model card](https://deepmind.google/models/model-cards/gemini-3-1-flash-lite/) (comparison column) |
+
+### Gemma 4
+
+`google/gemma-4-31b-it` · [Model card](https://huggingface.co/google/gemma-4-31B-it) · [Google DeepMind](https://deepmind.google/models/gemma/gemma-4/)
+
+Gemma 4 is Google DeepMind's open model family, built from Gemini 3 research and released under the Apache 2.0 license. This is the 31B-parameter instruction-tuned model. It has a 256K-token context window, takes text and image input, and supports function calling and configurable thinking. Google says it supports 35+ languages out of the box and was pre-trained on 140+.
+
+| Metric | Value | Source |
+|---|---|---|
+| MMLU Pro | 85.2% | [Model card](https://huggingface.co/google/gemma-4-31B-it) |
+| GPQA Diamond | 84.3% | [Model card](https://huggingface.co/google/gemma-4-31B-it) |
+| MMMLU (multilingual Q&A) | 88.4% | [Model card](https://huggingface.co/google/gemma-4-31B-it) |
+| τ2-bench (average over 3) | 76.9% | [Model card](https://huggingface.co/google/gemma-4-31B-it) |
+| LiveCodeBench v6 | 80.0% | [Model card](https://huggingface.co/google/gemma-4-31B-it) |
+| Arena AI text score (as of Apr 2, 2026, thinking) | 1452 | [Google DeepMind](https://deepmind.google/models/gemma/gemma-4/) |
+
+---
+
+## Anthropic
+
+### Specifications
+
+| Model | Context window | Max output | Knowledge cutoff | Thinking | Released |
+|---|---|---|---|---|---|
+| Claude Opus 5.5 | 1M | 128K | Jun 2026 | Adaptive, always on (default effort `medium`) | Sep 22, 2026 |
+| Claude Sonnet 5.5 | 1M | 128K | Jun 2026 | Adaptive (default effort `high`) | Sep 28, 2026 |
+| Claude Haiku 5.5 | 1M | 128K | Jun 2026 | Adaptive (default effort `medium`) | Oct 7, 2026 |
+| Claude Opus 5 | 1M | 128K | May 2026 | Adaptive (default effort `high`) | Jul 24, 2026 |
+| Claude Sonnet 5 | 1M | 128K | Jan 2026 | Adaptive (default effort `high`) | Jun 30, 2026 |
+
+All values are in tokens and come from each model's page in the [Claude Platform docs](https://platform.claude.com/docs/en/about-claude/models/overview). All of these models take text and image input and produce text output. For language support, see Anthropic's [multilingual support guide](https://platform.claude.com/docs/en/build-with-claude/multilingual-support).
+
+### Claude Opus 5.5
+
+`claude-opus-5-5` · [Official docs](https://platform.claude.com/docs/en/models/opus-5-5/overview) · [Announcement](https://www.anthropic.com/claude-opus-5-5)
+
+Built "for long-running agentic coding and knowledge work". Anthropic recommends starting with Claude Opus 5.5 for most workloads. Scores use max effort unless noted.
+
+| Metric | Value | Source |
+|---|---|---|
+| Terminal-Bench 4.0 (xhigh effort) | 66.4% | [Anthropic](https://www.anthropic.com/claude-opus-5-5) |
+| OSWorld 2.1 (partial) | 81.8% | [Anthropic](https://www.anthropic.com/claude-opus-5-5) |
+| Humanity's Last Exam (with tools) | 67.7% | [Anthropic](https://www.anthropic.com/claude-opus-5-5) |
+| GDPval-AA v2.1 | 1846 Elo | [Anthropic](https://www.anthropic.com/claude-opus-5-5) |
+| CursorBench 4.0 | 57.8% | [Anthropic](https://www.anthropic.com/claude-opus-5-5) |
+| FrontierCode v1.1 (Main) | 54.4% | [Anthropic](https://www.anthropic.com/claude-opus-5-5) |
+
+### Claude Sonnet 5.5
+
+`claude-sonnet-5-5` · [Official docs](https://platform.claude.com/docs/en/models/sonnet-5-5/overview) · [Announcement](https://www.anthropic.com/claude-sonnet-5-5)
+
+"The best combination of speed and intelligence." Anthropic says it runs 30%+ faster and costs up to 30% less for most work than Claude Sonnet 5.
+
+| Metric | Value | Source |
+|---|---|---|
+| Terminal-Bench 4.0 | 70.6% | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) |
+| OSWorld 2.1 (partial) | 80.1% | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) |
+| Humanity's Last Exam (with tools) | 64.5% | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) |
+| GDPval-AA v2.1 | 1844 Elo | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) |
+| CursorBench 4.0 | 55.5% | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) |
+| FrontierCode 1.1 (Main, xhigh effort) | 52.1% | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) |
+
+### Claude Haiku 5.5
+
+`claude-haiku-5-5` · [Official docs](https://platform.claude.com/docs/en/models/haiku-5-5/overview) · [Announcement](https://www.anthropic.com/claude-haiku-5-5)
+
+Built "for high-volume, latency-sensitive tasks such as classification, extraction, and routing". Anthropic calls it "the cheapest, fastest, and most capable small model we've ever released".
+
+| Metric | Value | Source |
+|---|---|---|
+| Terminal-Bench 4.0 | 39.2% | [Anthropic](https://www.anthropic.com/claude-haiku-5-5) |
+| OSWorld 2.1 (offline subset) | 72.4% | [Anthropic](https://www.anthropic.com/claude-haiku-5-5) |
+| Humanity's Last Exam (no tools / with tools) | 45.9% / 57.4% | [Anthropic](https://www.anthropic.com/claude-haiku-5-5) |
+| GDPval-AA v2.1 | 1620 Elo | [Anthropic](https://www.anthropic.com/claude-haiku-5-5) |
+| FrontierCode 1.1 (Main) | 46.4% | [Anthropic](https://www.anthropic.com/claude-haiku-5-5) |
+
+### Claude Opus 5
+
+`claude-opus-5` · [Official docs](https://platform.claude.com/docs/en/models/opus-5/overview) · [Announcement](https://www.anthropic.com/news/claude-opus-5)
+
+Anthropic describes Claude Opus 5 as "a thoughtful and proactive model". Anthropic now lists it as a legacy model and suggests migrating to Claude Opus 5.5.
+
+| Metric | Value | Source |
+|---|---|---|
+| Terminal-Bench 4.0 | 52.3% | [Anthropic](https://www.anthropic.com/claude-opus-5-5) (comparison column) |
+| OSWorld 2.1 (partial) | 74.0% | [Anthropic](https://www.anthropic.com/claude-opus-5-5) (comparison column) |
+| Humanity's Last Exam (with tools) | 63.6% | [Anthropic](https://www.anthropic.com/claude-opus-5-5) (comparison column) |
+| GDPval-AA v2.1 | 1708 Elo | [Anthropic](https://www.anthropic.com/claude-opus-5-5) (comparison column) |
+| CursorBench 4.0 (max effort) | 46.6% | [Anthropic](https://www.anthropic.com/claude-opus-5-5) (comparison column) |
+
+### Claude Sonnet 5
+
+`claude-sonnet-5` · [Official docs](https://platform.claude.com/docs/en/models/sonnet-5/overview) · [Announcement](https://www.anthropic.com/news/claude-sonnet-5)
+
+Anthropic describes it as "built to be the most agentic Sonnet model yet". Anthropic now lists it as a legacy model.
+
+| Metric | Value | Source |
+|---|---|---|
+| OSWorld 2.1 (partial) | 57.0% | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) (comparison column) |
+| Humanity's Last Exam (with tools) | 54.9% | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) (comparison column) |
+| GDPval-AA v2.1 | 1449 Elo | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) (comparison column) |
+| CursorBench 4.0 | 34.1% | [Anthropic](https://www.anthropic.com/claude-sonnet-5-5) (comparison column) |
+
+---
+
+<Note>
+  Each provider chooses its own benchmarks, settings (such as reasoning effort) and test conditions, so scores from different providers are not directly comparable. Test candidate models with prompts and conversations from your own use case.
+</Note>

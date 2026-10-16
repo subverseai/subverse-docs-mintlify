@@ -1,57 +1,129 @@
 ---
-title: 'Introduction'
-description: 'Connect your AI agents with external systems and services'
+title: 'Integrations'
+description: 'Connect third-party telephony, CRM, and chat platforms to your agents'
 ---
 
-SubVerse AI provides powerful integration capabilities to connect your AI agents with various external systems, services, and data sources. These integrations enable your agents to access real-time information, perform actions, and communicate through multiple channels.
+Integrations connect SubVerse to the platforms you already use: phone systems, inboxes, chat apps, AI model providers, stores, CRMs, storage, and any REST API. You manage them all from **Integrations** in the SubVerse dashboard.
 
-## Available Integrations
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="/images/integrations/integrations.png"
+  alt="Integrations page in the SubVerse dashboard"
+/>
+
+## Connection types
+
+Each integration card shows how it connects to SubVerse:
+
+| Type | What it does | Examples |
+|---|---|---|
+| **Channel** | Connects a phone number, inbox, or chat endpoint to an agent, so the agent can talk to customers on it. | SIP, Web Chat, WhatsApp Channel |
+| **Credential** | Stores access to another system, used by Functions, Orchestrations, and agents. For AI providers, it lets SubVerse use your own account and API key. | Slack, OpenAI, Shopify, REST APIs |
+
+Some integrations, such as [Email](/integrations/email), support both.
+
+## Connect an integration
+
+1. Go to **Integrations** in the SubVerse dashboard.
+2. Find the integration by browsing the groups or searching by name, group, or description.
+3. Select **Connect** to add a new connection, or **Manage** to view or change existing ones.
+4. Open the integration's **Documentation** tab for step-by-step setup.
+
+<Tip>
+  Don't see the platform you need? Select **Request New Integration** on the Integrations page, or connect it yourself with [REST APIs](/integrations/rest-apis).
+</Tip>
+
+## Communication
 
 <CardGroup cols={2}>
-  <Card
-    title="Agentic Functions"
-    icon="bolt"
-    href="/integrations/agentic-functions"
-  >
-    Hook into pre-session, during-session, and post-session phases with custom functions, background agents, and handoffs
+  <Card title="SIP" icon="phone" href="/integrations/sip">
+    Receive calls with a voice agent, place outbound calls from your own numbers, and transfer calls to your human team
   </Card>
-  <Card
-    title="Knowledge Base"
-    icon="book"
-    href="/integrations/knowledge-base"
-  >
-    Store and manage documents that your AI agents can reference during interactions
+  <Card title="Email" icon="envelope" href="/integrations/email">
+    Connect any inbox to send and receive emails
   </Card>
-  <Card
-    title="Telephony"
-    icon="phone"
-    href="/integrations/telephony"
-  >
-    Integrate with your telephony system using SIP trunking for inbound and outbound calls
+  <Card title="Web Chat" icon="message" href="/integrations/web-chat">
+    Add chat agents to your own website or app through the Trigger chat API and your webhook
   </Card>
-  <Card
-    title="Webhooks"
-    icon="webhook"
-    href="/integrations/webhooks-integration"
-  >
-    Receive real-time event notifications when calls complete or workflows execute
+  <Card title="WhatsApp" icon="whatsapp" href="/integrations/whatsapp">
+    Call any WhatsApp API from Functions and Orchestrations, and start workflows from WhatsApp events
   </Card>
-  <Card
-    title="API Keys"
-    icon="key"
-    href="/integrations/api-keys"
-  >
-    Manage secure API keys for integrating your AI agents with external applications
+  <Card title="WhatsApp Channel" icon="whatsapp" href="/integrations/whatsapp-channel">
+    Connect a WhatsApp Business number to a chat agent so it can reply to customers
+  </Card>
+  <Card title="Dovesoft" icon="comments" href="/integrations/dovesoft">
+    Connect a WhatsApp Business number on Dovesoft to a chat agent
+  </Card>
+  <Card title="Slack" icon="slack" href="/integrations/slack">
+    Let agents and workflows read and send messages in your Slack workspace
   </Card>
 </CardGroup>
 
-## Getting Started
+## AI / LLM
 
-1. **Choose Your Integration** - Select the integration type that fits your use case
-2. **Configure Settings** - Follow the setup guide for your chosen integration
-3. **Connect to Agents** - Link the integration to your voice agents or workflows
-4. **Test & Deploy** - Verify the integration works as expected before going live
+<CardGroup cols={3}>
+  <Card title="OpenAI" icon="robot" href="/integrations/openai">
+    Use your own OpenAI account and API key
+  </Card>
+  <Card title="Google AI (Gemini)" icon="robot" href="/integrations/google-ai-gemini">
+    Use your own Gemini API key
+  </Card>
+  <Card title="Claude (Anthropic)" icon="robot" href="/integrations/claude-anthropic">
+    Use your own Anthropic account and API key
+  </Card>
+</CardGroup>
 
-<Tip>
-  Most integrations can be used with both voice agents and workflows, giving you flexibility in how you deploy your AI solutions.
-</Tip>
+## E-commerce
+
+<CardGroup cols={2}>
+  <Card title="Shopify" icon="shopify" href="/integrations/shopify">
+    Let agents and workflows read and manage orders and products
+  </Card>
+</CardGroup>
+
+## CRMs
+
+<CardGroup cols={3}>
+  <Card title="Airtable" icon="table" href="/integrations/airtable">
+    Read, create, and update records in your bases
+  </Card>
+  <Card title="Google Sheets" icon="table-cells" href="/integrations/google-sheets">
+    Read, add, and update rows in your sheets
+  </Card>
+  <Card title="Freshdesk" icon="headset" href="/integrations/freshdesk">
+    Read, create, and update helpdesk tickets
+  </Card>
+</CardGroup>
+
+## Database & Storage
+
+<CardGroup cols={2}>
+  <Card title="AWS S3" icon="bucket" href="/integrations/aws-s3">
+    Upload, read, and manage files in your own S3 bucket
+  </Card>
+</CardGroup>
+
+## API & Authentication
+
+<CardGroup cols={2}>
+  <Card title="REST APIs" icon="code" href="/integrations/rest-apis">
+    Connect any system with a REST API, using the authentication it expects
+  </Card>
+</CardGroup>
+
+## Platform
+
+<CardGroup cols={2}>
+  <Card title="Agentic Functions" icon="bolt" href="/integrations/agentic-functions">
+    Hook into pre-session, during-session, and post-session phases with custom functions, background agents, and handoffs
+  </Card>
+  <Card title="Knowledge Base" icon="book" href="/integrations/knowledge-base">
+    Store and manage documents that your AI agents can reference during interactions
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/integrations/webhooks-integration">
+    Receive real-time event notifications when calls complete or workflows execute
+  </Card>
+  <Card title="API Keys" icon="key" href="/integrations/api-keys">
+    Manage secure API keys for integrating your AI agents with external applications
+  </Card>
+</CardGroup>

@@ -62,123 +62,88 @@
         ]
       },
       {
-        "tab": "AgentVerse",
+        "tab": "Models",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["models/overview"]
+          },
+          {
+            "group": "Model Types",
+            "pages": [
+              "models/speech-to-text",
+              "models/llms",
+              "models/text-to-speech",
+              "models/realtime"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": ["models/supported-file-formats"]
+          }
+        ]
+      },
+      {
+        "tab": "Orchestration",
         "groups": [
           {
             "group": "Getting Started",
             "pages": [
-              "agentverse/introduction",
-              "agentverse/quickstart",
-              "agentverse/node-types",
-              "agentverse/dynamic-inputs"
+              "orchestration/introduction",
+              "orchestration/quickstart",
+              "orchestration/node-types",
+              "orchestration/dynamic-inputs"
             ]
           },
           {
             "group": "Trigger Nodes",
             "pages": [
-              "agentverse/nodes/webhook",
-              "agentverse/nodes/schedule-trigger",
-              "agentverse/nodes/manual-trigger",
-              "agentverse/nodes/airtable-trigger",
-              "agentverse/nodes/slack-trigger",
-              "agentverse/nodes/whatsapp-trigger",
-              "agentverse/nodes/shopify-trigger",
-              "agentverse/nodes/subverse-ai-trigger"
+              "orchestration/nodes/webhook",
+              "orchestration/nodes/schedule-trigger",
+              "orchestration/nodes/manual-trigger",
+              "orchestration/nodes/airtable-trigger",
+              "orchestration/nodes/slack-trigger",
+              "orchestration/nodes/whatsapp-trigger",
+              "orchestration/nodes/shopify-trigger",
+              "orchestration/nodes/subverse-ai-trigger"
             ]
           },
           {
             "group": "Action Nodes",
             "pages": [
-              "agentverse/nodes/slack",
-              "agentverse/nodes/airtable",
-              "agentverse/nodes/google-sheets",
-              "agentverse/nodes/shopify",
-              "agentverse/nodes/whatsapp",
-              "agentverse/nodes/freshdesk",
-              "agentverse/nodes/http-request",
-              "agentverse/nodes/email",
-              "agentverse/nodes/file-upload",
-              "agentverse/nodes/respond-to-webhook"
+              "orchestration/nodes/slack",
+              "orchestration/nodes/airtable",
+              "orchestration/nodes/google-sheets",
+              "orchestration/nodes/shopify",
+              "orchestration/nodes/whatsapp",
+              "orchestration/nodes/freshdesk",
+              "orchestration/nodes/http-request",
+              "orchestration/nodes/email",
+              "orchestration/nodes/file-upload",
+              "orchestration/nodes/respond-to-webhook"
             ]
           },
           {
             "group": "Logic Nodes",
             "pages": [
-              "agentverse/nodes/conditions",
-              "agentverse/nodes/for-loop",
-              "agentverse/nodes/wait",
-              "agentverse/nodes/human-in-the-loop"
+              "orchestration/nodes/conditions",
+              "orchestration/nodes/for-loop",
+              "orchestration/nodes/wait",
+              "orchestration/nodes/human-in-the-loop"
             ]
           },
           {
             "group": "AI Nodes",
             "pages": [
-              "agentverse/nodes/ai-agent",
-              "agentverse/nodes/subverse-agents"
+              "orchestration/nodes/ai-agent",
+              "orchestration/nodes/subverse-agents"
             ]
           },
           {
             "group": "Operations",
             "pages": [
-              "agentverse/monitoring",
-              "agentverse/troubleshooting"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Communication Channels",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": ["communication-channels/overview"]
-          },
-          {
-            "group": "Channel Types",
-            "pages": [
-              "communication-channels/voice",
-              "communication-channels/whatsapp",
-              "communication-channels/email",
-              "communication-channels/webchat"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Credentials",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": [
-             "credentials/overview"
-            ]
-          },
-          {
-            "group": "Types",
-            "pages": [
-              "credentials/types/openai-api",
-              "credentials/types/google-ai-api",
-              "credentials/types/shopify-api",
-              "credentials/types/shopify-oauth2-api",
-              "credentials/types/shopify-access-token-api",
-              "credentials/types/airtable-api",
-              "credentials/types/airtable-oauth2-api",
-              "credentials/types/airtable-token-api",
-              "credentials/types/s3-storage",
-              "credentials/types/whatsapp-api",
-              "credentials/types/whatsapp-trigger-api",
-              "credentials/types/freshdesk-api",
-              "credentials/types/email-smtp",
-              "credentials/types/sip-credentials",
-              "credentials/types/jwt-auth",
-              "credentials/types/http-basic-auth",
-              "credentials/types/http-bearer-auth",
-              "credentials/types/http-header-auth",
-              "credentials/types/http-query-auth",
-              "credentials/types/http-custom-auth",
-              "credentials/types/google-sheets-api-key",
-              "credentials/types/google-sheets-oauth2-api",
-              "credentials/types/google-sheets-service-account"
+              "orchestration/monitoring",
+              "orchestration/troubleshooting"
             ]
           }
         ]
@@ -188,10 +153,72 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": ["integrations/introduction"]
+            "pages": [
+              "integrations/introduction"
+            ]
           },
           {
-            "group": "Integration Types",
+            "group": "Communication",
+            "pages": [
+              {
+                "group": "SIP",
+                "pages": [
+                  "integrations/sip",
+                  "integrations/telephony-twilio",
+                  "integrations/telephony-telnyx",
+                  "integrations/telephony-plivo"
+                ]
+              },
+              "integrations/email",
+              "integrations/web-chat",
+              "integrations/whatsapp",
+              "integrations/whatsapp-channel",
+              "integrations/dovesoft",
+              "integrations/slack"
+            ]
+          },
+          {
+            "group": "AI / LLM",
+            "pages": [
+              "integrations/openai",
+              "integrations/google-ai-gemini",
+              "integrations/claude-anthropic"
+            ]
+          },
+          {
+            "group": "E-commerce",
+            "pages": [
+              {
+                "group": "Shopify",
+                "pages": [
+                  "integrations/shopify",
+                  "integrations/shopify-setup"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "CRMs",
+            "pages": [
+              "integrations/airtable",
+              "integrations/google-sheets",
+              "integrations/freshdesk"
+            ]
+          },
+          {
+            "group": "Database & Storage",
+            "pages": [
+              "integrations/aws-s3"
+            ]
+          },
+          {
+            "group": "API & Authentication",
+            "pages": [
+              "integrations/rest-apis"
+            ]
+          },
+          {
+            "group": "Platform",
             "pages": [
               {
                 "group": "Agentic Functions",
@@ -205,18 +232,8 @@
                 ]
               },
               "integrations/knowledge-base",
-              {
-                "group": "Telephony",
-                "pages": [
-                  "integrations/telephony",
-                  "integrations/telephony-twilio",
-                  "integrations/telephony-telnyx",
-                  "integrations/telephony-plivo"
-                ]
-              },
               "integrations/webhooks-integration",
-              "integrations/api-keys",
-              "integrations/shopify-setup"
+              "integrations/api-keys"
             ]
           }
         ]
@@ -278,5 +295,135 @@
       "website": "https://subverseai.com/",
       "podcast": "https://subverseai.substack.com/"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/agentverse/:slug*",
+      "destination": "/orchestration/:slug*"
+    },
+    {
+      "source": "/communication-channels/overview",
+      "destination": "/integrations/introduction"
+    },
+    {
+      "source": "/credentials/overview",
+      "destination": "/integrations/introduction"
+    },
+    {
+      "source": "/communication-channels/voice",
+      "destination": "/integrations/sip"
+    },
+    {
+      "source": "/credentials/types/sip-credentials",
+      "destination": "/integrations/sip"
+    },
+    {
+      "source": "/integrations/telephony",
+      "destination": "/integrations/sip"
+    },
+    {
+      "source": "/communication-channels/email",
+      "destination": "/integrations/email"
+    },
+    {
+      "source": "/credentials/types/email-smtp",
+      "destination": "/integrations/email"
+    },
+    {
+      "source": "/communication-channels/webchat",
+      "destination": "/integrations/web-chat"
+    },
+    {
+      "source": "/communication-channels/whatsapp",
+      "destination": "/integrations/whatsapp-channel"
+    },
+    {
+      "source": "/credentials/types/whatsapp-api",
+      "destination": "/integrations/whatsapp"
+    },
+    {
+      "source": "/credentials/types/whatsapp-trigger-api",
+      "destination": "/integrations/whatsapp"
+    },
+    {
+      "source": "/credentials/types/openai-api",
+      "destination": "/integrations/openai"
+    },
+    {
+      "source": "/credentials/types/google-ai-api",
+      "destination": "/integrations/google-ai-gemini"
+    },
+    {
+      "source": "/credentials/types/shopify-api",
+      "destination": "/integrations/shopify"
+    },
+    {
+      "source": "/credentials/types/shopify-oauth2-api",
+      "destination": "/integrations/shopify"
+    },
+    {
+      "source": "/credentials/types/shopify-access-token-api",
+      "destination": "/integrations/shopify"
+    },
+    {
+      "source": "/credentials/types/airtable-api",
+      "destination": "/integrations/airtable"
+    },
+    {
+      "source": "/credentials/types/airtable-oauth2-api",
+      "destination": "/integrations/airtable"
+    },
+    {
+      "source": "/credentials/types/airtable-token-api",
+      "destination": "/integrations/airtable"
+    },
+    {
+      "source": "/credentials/types/google-sheets-api-key",
+      "destination": "/integrations/google-sheets"
+    },
+    {
+      "source": "/credentials/types/google-sheets-oauth2-api",
+      "destination": "/integrations/google-sheets"
+    },
+    {
+      "source": "/credentials/types/google-sheets-service-account",
+      "destination": "/integrations/google-sheets"
+    },
+    {
+      "source": "/credentials/types/freshdesk-api",
+      "destination": "/integrations/freshdesk"
+    },
+    {
+      "source": "/credentials/types/s3-storage",
+      "destination": "/integrations/aws-s3"
+    },
+    {
+      "source": "/credentials/types/jwt-auth",
+      "destination": "/integrations/rest-apis"
+    },
+    {
+      "source": "/credentials/types/http-basic-auth",
+      "destination": "/integrations/rest-apis"
+    },
+    {
+      "source": "/credentials/types/http-bearer-auth",
+      "destination": "/integrations/rest-apis"
+    },
+    {
+      "source": "/credentials/types/http-header-auth",
+      "destination": "/integrations/rest-apis"
+    },
+    {
+      "source": "/credentials/types/http-query-auth",
+      "destination": "/integrations/rest-apis"
+    },
+    {
+      "source": "/credentials/types/http-custom-auth",
+      "destination": "/integrations/rest-apis"
+    },
+    {
+      "source": "/credentials/types/oauth2-api",
+      "destination": "/integrations/rest-apis"
+    }
+  ]
 }

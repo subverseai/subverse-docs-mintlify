@@ -1,0 +1,991 @@
+---
+title: 'Text-to-speech (TTS)'
+description: 'Voice synthesis models available for voice agents'
+---
+
+import ModelsDisclaimer from '/snippets/models-disclaimer.mdx';
+
+<ModelsDisclaimer />
+
+Text-to-speech models turn the agent's reply into spoken audio. Select one in the **TTS Model** field of the [Voice Agent configuration](/agents/voice-agent-configuration#voice-settings).
+
+## At a glance
+
+| Model | Provider | Model ID | Highlights | Official docs |
+|---|---|---|---|---|
+| Flash v2.5 | ElevenLabs | `eleven_flash_v2_5` | ElevenLabs' fastest model, ~75 ms | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Turbo v2.5 | ElevenLabs | `eleven_turbo_v2_5` | Low latency (deprecated by ElevenLabs) | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| v3 Conversational | ElevenLabs | `eleven_v3_conversational` | Expressive real-time speech with audio tags | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| v4 Turbo | ElevenLabs | `eleven_v4_turbo` | ElevenLabs' most emotive real-time model, ~100 ms | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Sonic 3 | Cartesia | `sonic-3` | Previous-generation Sonic model | [Cartesia](https://docs.cartesia.ai/build-with-cartesia/tts-models/sonic-3) |
+| Sonic 3.5 | Cartesia | `sonic-3.5` | Sub-90 ms, accurate alphanumerics | [Cartesia](https://docs.cartesia.ai/build-with-cartesia/tts-models/sonic-3-5) |
+| Gemini 3.8 Flash Lite TTS | Google | `gemini-3.8-flash-lite-tts` | Fast, cost-efficient Gemini TTS | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash-lite-tts) |
+| Gemini 3.1 Flash TTS | Google | `gemini-3.1-flash-tts-preview` | Steerable prompts and audio tags (legacy preview) | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-tts-preview) |
+| Gemini 2.5 Flash TTS | Google | `gemini-2.5-flash-tts` | Controllable single- and multi-speaker speech | [Google Cloud](https://docs.cloud.google.com/text-to-speech/docs/gemini-tts) |
+| Default | Google | `default` | Google Cloud Text-to-Speech voices | [Google Cloud](https://docs.cloud.google.com/text-to-speech/docs/list-voices-and-types) |
+| GPT 4o mini TTS | OpenAI | `gpt-4o-mini-tts` | Steer tone and style with instructions | [OpenAI](https://developers.openai.com/api/docs/models/gpt-4o-mini-tts) |
+| Default | Azure | `default` | Azure neural voices, under 300 ms | [Microsoft](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/text-to-speech) |
+| TTS 1.5 max | Inworld | `inworld-tts-1.5-max` | Balanced quality and speed (deprecated by Inworld) | [Inworld](https://docs.inworld.ai/tts/tts-models) |
+| TTS 1.5 mini | Inworld | `inworld-tts-1.5-mini` | Lowest latency (deprecated by Inworld) | [Inworld](https://docs.inworld.ai/tts/tts-models) |
+| Falcon 2 | Murf | `falcon-2` | Under 100 ms time to first audio | [Murf](https://murf.ai/api/docs/text-to-speech-models/falcon-2) |
+| Bulbul v3 | Sarvam | `bulbul:v3` | Indian languages, strong on 8 kHz telephony | [Sarvam](https://docs.sarvam.ai/api-reference-docs/models/bulbul) |
+
+---
+
+## ElevenLabs
+
+### Flash v2.5
+
+`eleven_flash_v2_5` · [Official docs](https://elevenlabs.io/docs/overview/models)
+
+"Our fast, affordable speech synthesis model". ElevenLabs says it is its fastest model, built for real-time use and the ElevenLabs Agents Platform.
+
+| Metric | Value | Source |
+|---|---|---|
+| Latency | ~75 ms, excluding application and network latency | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Languages (provider) | 32 | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Character limit per request | 40,000 (~40 minutes of audio) | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (42)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+### Turbo v2.5
+
+`eleven_turbo_v2_5` · [Official docs](https://elevenlabs.io/docs/overview/models)
+
+<Warning>
+  ElevenLabs lists Turbo v2.5 under **Deprecated models** as a "first generation low-latency model (outclassed by Flash models)". It says Turbo v2.5 is functionally equivalent to Flash v2.5, Flash has lower latency on average, and it recommends Flash models "in all use cases".
+</Warning>
+
+| Metric | Value | Source |
+|---|---|---|
+| Languages (provider) | 32 | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (42)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+### v3 Conversational
+
+`eleven_v3_conversational` · [Official docs](https://elevenlabs.io/docs/overview/models)
+
+"Our expressive, realtime speech synthesis model", the real-time version of Eleven v3. It supports audio tags for fine-grained control of delivery. ElevenLabs now describes it as its previous generation real-time model.
+
+| Metric | Value | Source |
+|---|---|---|
+| Latency | ~280 ms, excluding application and network latency | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Languages (provider) | 70+ | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Expressiveness | Audio tags such as `[excited]`, `[whispers]` and `[sighs]` | [ElevenLabs](https://elevenlabs.io/blog/eleven-v3) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (53)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Assamese (`as-IN`)
+- Bengali (`bn-IN`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- Georgian (`ka-GE`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Gujarati (`gu-IN`)
+- Hebrew (`he-IL`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Punjabi (`pa-IN`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Thai (`th-TH`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+### v4 Turbo
+
+`eleven_v4_turbo` · [Official docs](https://elevenlabs.io/docs/overview/models)
+
+"Our most emotive, real-time speech synthesis model". ElevenLabs recommends it for low-latency use and for "the most expressive delivery" on its Agents Platform, for example support agents, AI assistants and interactive characters.
+
+| Metric | Value | Source |
+|---|---|---|
+| Median inference latency | ~100 ms, excluding application and network latency | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Languages (provider) | 90+, including Hindi, Bengali, Tamil, Telugu, Gujarati, Kannada, Malayalam, Marathi, Odia, Punjabi and Urdu | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+| Features | Audio tags, voice cloning | [ElevenLabs](https://elevenlabs.io/docs/overview/models) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (53)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Assamese (`as-IN`)
+- Bengali (`bn-IN`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- Georgian (`ka-GE`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Gujarati (`gu-IN`)
+- Hebrew (`he-IL`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Punjabi (`pa-IN`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Thai (`th-TH`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Cartesia
+
+### Sonic 3
+
+`sonic-3` · [Official docs](https://docs.cartesia.ai/build-with-cartesia/tts-models/sonic-3)
+
+Cartesia now lists Sonic 3 under **Older Models**, which it continues to serve for compatibility. Cartesia describes Sonic 3.5 as "a drop-in replacement for Sonic 3 for most customers".
+
+| Metric | Value | Source |
+|---|---|---|
+| Speech Arena quality · **Third-party** | 1058 Elo (±12) | [Artificial Analysis](https://artificialanalysis.ai/text-to-speech/leaderboard) |
+| Speed and volume controls | Speed 0.6–1.5, volume 0.5–2.0 (beta) | [Cartesia](https://docs.cartesia.ai/build-with-cartesia/capability-guides/ssml-tags) |
+
+<Note>
+  Cartesia no longer publishes performance figures for Sonic 3. The **Third-party** figure is published by [Artificial Analysis](https://artificialanalysis.ai/text-to-speech/leaderboard), an independent benchmarking company, not by Cartesia. It comes from blind listener preference votes. Accessed October 16, 2026.
+</Note>
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (49)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bengali (`bn-IN`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Punjabi (`pa-IN`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+### Sonic 3.5
+
+`sonic-3.5` · [Official docs](https://docs.cartesia.ai/build-with-cartesia/tts-models/sonic-3-5)
+
+Cartesia says Sonic 3.5 "follows your transcript faithfully, voices confirmation codes and heteronyms correctly without preprocessing". Compared with Sonic 3, Cartesia highlights more natural pacing and emotion, cleaner audio, better alphanumeric read-out and stronger multilingual performance.
+
+| Metric | Value | Source |
+|---|---|---|
+| Latency | Sub-90 ms | [Cartesia](https://docs.cartesia.ai/build-with-cartesia/tts-models/sonic-3-5) |
+| Languages (provider) | 42 | [Cartesia](https://docs.cartesia.ai/build-with-cartesia/tts-models/sonic-3-5) |
+| Speed and volume controls | Speed 0.6–1.5, volume 0.5–2.0 (beta) | [Cartesia](https://docs.cartesia.ai/build-with-cartesia/capability-guides/ssml-tags) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (52)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bengali (`bn-IN`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- Georgian (`ka-GE`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Gujarati (`gu-IN`)
+- Hebrew (`he-IL`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Punjabi (`pa-IN`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Thai (`th-TH`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Google
+
+### Gemini 3.8 Flash Lite TTS
+
+`gemini-3.8-flash-lite-tts` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash-lite-tts)
+
+Google's "fast, cost-efficient workhorse text-to-speech model", built to replace Gemini 3.1 Flash TTS for high-volume production, voice agents and read-aloud features. Generally available since September 22, 2026.
+
+| Metric | Value | Source |
+|---|---|---|
+| Languages (provider) | 101 | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash-lite-tts) |
+| Voices | 30 prebuilt voices | [Google](https://ai.google.dev/gemini-api/docs/speech-generation) |
+| Expressiveness | Style instructions and inline tags such as `<laugh>`, `<sigh>` and `<short pause>` | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash-lite-tts) |
+| Speech Arena quality · **Third-party** | 1248 Elo (±14) | [Artificial Analysis](https://artificialanalysis.ai/text-to-speech/leaderboard) |
+
+<Note>
+  Google does not publish quality or latency figures for this model on its model page. The **Third-party** figure is published by [Artificial Analysis](https://artificialanalysis.ai/text-to-speech/leaderboard), an independent benchmarking company, not by Google. It comes from blind listener preference votes. Accessed October 16, 2026.
+</Note>
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (22)">
+
+- Dutch (`nl-NL`)
+- English (India) (`en-IN`)
+- English (US) (`en-US`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Korean (`ko-KR`)
+- Marathi (`mr-IN`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Spanish (Spain) (`es-ES`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+### Gemini 3.1 Flash TTS
+
+`gemini-3.1-flash-tts-preview` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-tts-preview)
+
+"Low-latency speech generation with natural outputs, steerable prompts, and expressive audio tags."
+
+<Warning>
+  Google lists this model as a legacy preview, with a shutdown date of **November 17, 2026** on the Gemini API. Google recommends migrating to Gemini 3.8 Flash TTS or Gemini 3.8 Flash Lite TTS. See [Gemini deprecations](https://ai.google.dev/gemini-api/docs/deprecations).
+</Warning>
+
+| Metric | Value | Source |
+|---|---|---|
+| Speech Arena quality, as reported by Google | 1,211 Elo on the Artificial Analysis TTS leaderboard | [Google](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-tts/) |
+| Languages (provider) | 70+ | [Google](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-tts/) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (22)">
+
+- Dutch (`nl-NL`)
+- English (India) (`en-IN`)
+- English (US) (`en-US`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Korean (`ko-KR`)
+- Marathi (`mr-IN`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Spanish (Spain) (`es-ES`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+### Gemini 2.5 Flash TTS
+
+`gemini-2.5-flash-tts` · [Official docs](https://docs.cloud.google.com/text-to-speech/docs/gemini-tts)
+
+Optimized for low-latency, controllable, single- and multi-speaker speech generation for "cost-efficient everyday applications".
+
+| Metric | Value | Source |
+|---|---|---|
+| Voices | 30 | [Google Cloud](https://docs.cloud.google.com/text-to-speech/docs/gemini-tts) |
+| Speech Arena quality · **Third-party** | 1059 Elo (±12) | [Artificial Analysis](https://artificialanalysis.ai/text-to-speech/leaderboard) |
+
+<Note>
+  Google does not publish quality or latency figures for this model. The **Third-party** figure is published by [Artificial Analysis](https://artificialanalysis.ai/text-to-speech/leaderboard), an independent benchmarking company, not by Google. It comes from blind listener preference votes. Accessed October 16, 2026.
+</Note>
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (22)">
+
+- Dutch (`nl-NL`)
+- English (India) (`en-IN`)
+- English (US) (`en-US`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Korean (`ko-KR`)
+- Marathi (`mr-IN`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Spanish (Spain) (`es-ES`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+### Default (Google)
+
+`default` · [Official docs](https://docs.cloud.google.com/text-to-speech/docs/list-voices-and-types)
+
+The Google **Default** option uses Google Cloud Text-to-Speech voices. Google offers several voice types, and quality and features depend on the voice you choose:
+
+| Voice type | Google's description |
+|---|---|
+| Chirp 3: HD | Intended for conversational agents. Supports low-latency real-time streaming. |
+| Studio | Narration, news reading and broadcast |
+| Neural2 | General purpose |
+| WaveNet | General purpose, premium voices trained on raw human speech |
+| Standard | Cost-efficient |
+
+Source: [Google Cloud](https://docs.cloud.google.com/text-to-speech/docs/list-voices-and-types). Google does not publish quality or latency figures for these voice types.
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (42)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bengali (`bn-IN`)
+- Bulgarian (`bg-BG`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Punjabi (`pa-IN`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## OpenAI
+
+### GPT 4o mini TTS
+
+`gpt-4o-mini-tts` · [Official docs](https://developers.openai.com/api/docs/models/gpt-4o-mini-tts)
+
+A text-to-speech model built on GPT-4o mini. You can prompt it to control accent, emotional range, intonation, impressions, speed of speech, tone and whispering.
+
+| Detail | Value | Source |
+|---|---|---|
+| Voices | 13 built-in voices. OpenAI recommends `marin` or `cedar` for best quality. Voices are optimized for English. | [OpenAI](https://developers.openai.com/api/docs/guides/text-to-speech) |
+| Language support | Generally follows the Whisper model's language support | [OpenAI](https://developers.openai.com/api/docs/guides/text-to-speech) |
+| Max input | 2,000 tokens | [OpenAI](https://developers.openai.com/api/docs/models/gpt-4o-mini-tts) |
+| Benchmarks | Not published. No independent figures found. | — |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (44)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Azure
+
+### Default (Azure)
+
+`default` · [Official docs](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/text-to-speech)
+
+The Azure **Default** option uses Azure AI Speech standard neural voices. Microsoft describes these as "high-quality neural voices available out of the box in 100+ languages and locales".
+
+| Metric | Value | Source |
+|---|---|---|
+| Latency (standard, non-HD voices) | Less than 300 ms | [Microsoft](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/high-definition-voices) |
+| Number of voices (standard) | More than 500 | [Microsoft](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/high-definition-voices) |
+| Controls | Pitch, pauses, speaking rate and volume via SSML | [Microsoft](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/text-to-speech) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (50)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Bengali (`bn-IN`)
+- Bulgarian (`bg-BG`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Croatian (`hr-HR`)
+- Czech (`cs-CZ`)
+- Danish (`da-DK`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- Filipino (`fil-PH`)
+- Finnish (`fi-FI`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Hungarian (`hu-HU`)
+- Indonesian (`id-ID`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malay (`ms-MY`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Norwegian (`no-NO`)
+- Odia (`od-IN`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Punjabi (`pa-IN`)
+- Romanian (`ro-RO`)
+- Russian (`ru-RU`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+- Swedish (`sv-SE`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+- Ukrainian (`uk-UA`)
+- Vietnamese (`vi-VN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Inworld
+
+<Warning>
+  Inworld lists TTS 1.5 max and TTS 1.5 mini as **deprecated and not recommended for new projects**, and recommends its TTS-2 models instead. See [Inworld TTS models](https://docs.inworld.ai/tts/tts-models).
+</Warning>
+
+### TTS 1.5 max
+
+`inworld-tts-1.5-max` · [Official docs](https://docs.inworld.ai/tts/tts-models)
+
+Inworld describes TTS 1.5 max as its flagship model at launch, with the "best balance of quality and speed".
+
+| Metric | Value | Source |
+|---|---|---|
+| Time to first audio (P90) | Under 250 ms | [Inworld](https://inworld.ai/blog/introducing-inworld-tts-1-5) |
+| Expressiveness | 30% more expressive than prior generations | [Inworld](https://inworld.ai/blog/introducing-inworld-tts-1-5) |
+| Word error rate | 40% lower than prior generations | [Inworld](https://inworld.ai/blog/introducing-inworld-tts-1-5) |
+| Languages (provider) | 15 | [Inworld](https://docs.inworld.ai/release-notes/tts) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (25)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Hebrew (`he-IL`)
+- Hindi (`hi-IN`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Korean (`ko-KR`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Russian (`ru-RU`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+
+</Accordion>
+</AccordionGroup>
+
+### TTS 1.5 mini
+
+`inworld-tts-1.5-mini` · [Official docs](https://docs.inworld.ai/tts/tts-models)
+
+Inworld describes TTS 1.5 mini as "optimized for hyper-latency sensitive applications".
+
+| Metric | Value | Source |
+|---|---|---|
+| Time to first audio (P90) | Under 130 ms | [Inworld](https://inworld.ai/blog/introducing-inworld-tts-1-5) |
+| Languages (provider) | 15 | [Inworld](https://docs.inworld.ai/release-notes/tts) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (25)">
+
+- Arabic (Kuwait) (`ar-KW`)
+- Arabic (Saudi Arabia) (`ar-SA`)
+- Arabic (UAE) (`ar-AE`)
+- Chinese, Mandarin (Traditional, Taiwan) (`cmn-Hant-TW`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (Canada) (`en-CA`)
+- English (India) (`en-IN`)
+- English (UK) (`en-GB`)
+- English (US) (`en-US`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Hebrew (`he-IL`)
+- Hindi (`hi-IN`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Korean (`ko-KR`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Portuguese (Portugal) (`pt-PT`)
+- Russian (`ru-RU`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Spanish (US) (`es-US`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Murf
+
+### Falcon 2
+
+`falcon-2` · [Official docs](https://murf.ai/api/docs/text-to-speech-models/falcon-2)
+
+"An ultra-fast, scalable, and reliable speech synthesis model built for real-time conversational AI." It can switch languages within a single sentence.
+
+| Metric | Value | Source |
+|---|---|---|
+| Time to first audio | Under 100 ms | [Murf](https://murf.ai/api/docs/text-to-speech-models/falcon-2) |
+| Median time to first audio, by region | 61–97 ms (1,500+ streaming requests from 32 global locations) | [Murf benchmarks](https://murf.ai/falcon/benchmarks) |
+| Pronunciation accuracy | 99.37% | [Murf](https://murf.ai/api/docs/text-to-speech-models/falcon-2) |
+| Concurrency | 10,000+ concurrent calls | [Murf](https://murf.ai/api/docs/text-to-speech-models/falcon-2) |
+| Voices | 150+ voices in 20+ expressive styles | [Murf](https://murf.ai/api/docs/text-to-speech-models/falcon-2) |
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (34)">
+
+- Assamese (`as-IN`)
+- Bengali (`bn-IN`)
+- Chinese, Mandarin (Simplified) (`zh-CN`)
+- Croatian (`hr-HR`)
+- Dutch (`nl-NL`)
+- English (Australia) (`en-AU`)
+- English (India) (`en-IN`)
+- English (Scotland) (`en-SCOTT`)
+- English (UK) (`en-UK`)
+- English (US) (`en-US`)
+- Filipino (Tagalog) (`tl-PH`)
+- French (Canada) (`fr-CA`)
+- French (France) (`fr-FR`)
+- German (`de-DE`)
+- Greek (`el-GR`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Hindi (Latin script) (`hi-LATN`)
+- Italian (`it-IT`)
+- Japanese (`ja-JP`)
+- Kannada (`kn-IN`)
+- Korean (`ko-KR`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Odia (`or-IN`)
+- Polish (`pl-PL`)
+- Portuguese (Brazil) (`pt-BR`)
+- Punjabi (`pa-IN`)
+- Slovak (`sk-SK`)
+- Spanish (Mexico) (`es-MX`)
+- Spanish (Spain) (`es-ES`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+- Turkish (`tr-TR`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Sarvam
+
+### Bulbul v3
+
+`bulbul:v3` · [Official docs](https://docs.sarvam.ai/api-reference-docs/models/bulbul)
+
+Sarvam's text-to-speech model for Indian languages, with 30+ voices from professional voice artists.
+
+| Metric | Value | Source |
+|---|---|---|
+| Listening study | Independent blind A/B test by Josh Talks: 11 languages, 20,000+ votes, compared with ElevenLabs v3 alpha, ElevenLabs Flash v2.5 and Cartesia Sonic 3 | [Sarvam](https://www.sarvam.ai/blogs/bulbul-v3) |
+| 8 kHz telephony audio | "The clear top performer" in the study | [Sarvam](https://www.sarvam.ai/blogs/bulbul-v3) |
+| Full-band audio | ElevenLabs v3 alpha led on audio quality; Bulbul v3 ranked ahead of the other models tested | [Sarvam](https://www.sarvam.ai/blogs/bulbul-v3) |
+| Characters per request | 2,500 | [Sarvam](https://docs.sarvam.ai/api-reference-docs/models/bulbul) |
+
+<Note>
+  Sarvam now lists `bulbul:v4-flash` as its latest model for new integrations. Bulbul v3 remains stable.
+</Note>
+
+<AccordionGroup>
+<Accordion title="Languages available in SubVerse AI (11)">
+
+- Bengali (`bn-IN`)
+- English (India) (`en-IN`)
+- Gujarati (`gu-IN`)
+- Hindi (`hi-IN`)
+- Kannada (`kn-IN`)
+- Malayalam (`ml-IN`)
+- Marathi (`mr-IN`)
+- Odia (`od-IN`)
+- Punjabi (`pa-IN`)
+- Tamil (`ta-IN`)
+- Telugu (`te-IN`)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+<Note>
+  Providers measure latency differently. Some exclude network time, some measure end to end, and some report medians while others report P90. Figures from different providers are not directly comparable. Test candidate voices with your own scripts and telephony setup.
+</Note>

@@ -1,0 +1,34 @@
+---
+title: 'Google Sheets'
+description: 'Connect your Google Sheets so agents and workflows can read, add, and update rows.'
+---
+
+**Connection type:** Credential
+
+Connect Google Sheets to SubVerse. Agents can read rows to answer questions, and your Functions and Orchestrations can add and update them. A change in a sheet can also start an orchestration.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Read rows** | Let an agent look up information in a sheet, such as a price list, a schedule, or a stock level. |
+| **Add and update rows** | Write to your sheets from Functions and Orchestrations, for example logging each conversation or updating a status. |
+| **React to changes** | Start an orchestration when a sheet changes, such as a new row. |
+
+## Credential types
+
+| Credential type | Best for |
+|---|---|
+| **Google Sheets OAuth2 API** | Most connections. You sign in with your Google account and approve access. |
+| **Google Sheets Service Account** | Access that doesn't depend on one person's account. You share each sheet with the service account. |
+| **Google Sheets API Key** | Reading public sheets only. It can't read private sheets or write anything. |
+
+## What you'll need
+
+- A Google account with access to the spreadsheets you want to use
+- A Google Cloud project, to create the credentials
+- Permission to enable APIs and create credentials in that project
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → Google Sheet** and open the **Documentation** tab.
+</Note>

@@ -1,0 +1,44 @@
+---
+title: 'Email'
+description: 'Connect any inbox to send and receive emails'
+---
+
+**Connection type:** Channel · Credential
+
+Connect your email server to SubVerse using IMAP and SMTP. Let an agent read your inbox and reply to customers, or use your SMTP credentials to send emails from Functions and Orchestrations.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Reply to emails with an agent** | An agent reads new emails in your inbox and replies in the same thread, including attachments. |
+| **Control who gets replies** | Allow or block specific senders, so the agent only replies to the emails you want. |
+| **Send emails from your workflows** | Send emails with attachments from Functions, Orchestrations, and agents, using your own mail server. |
+
+## How it works
+
+There are two ways to connect.
+
+### Email channel
+
+For an inbox an agent can read and reply to. SubVerse checks the inbox every minute and replies from the same address.
+
+**Customer sends email** → **Your inbox** → **SubVerse reads (IMAP)** → **Agent replies (SMTP)**
+
+### SMTP credentials
+
+For sending only. Use them in a Function or Orchestration to send emails.
+
+**Function or Orchestration** → **Send email step** → **Your SMTP server** → **Recipient**
+
+## What you'll need
+
+- An email account with IMAP and SMTP access turned on
+- The account's username and password, or an app password if your provider requires one
+- Your provider's SMTP host, port, and encryption type
+- Your provider's IMAP host and port, if an agent will read the inbox
+- An email agent in SubVerse, if you want automatic replies
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → Email** and open the **Documentation** tab.
+</Note>

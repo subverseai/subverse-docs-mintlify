@@ -1,0 +1,36 @@
+---
+title: 'Web Chat'
+description: 'Add chat agents to your own website or app: send user messages through the Trigger chat API and receive agent replies on your webhook.'
+---
+
+**Connection type:** Channel
+
+Bring SubVerse chat agents into your own chat interface. Your backend sends each user message to SubVerse through the [Trigger chat API](/api-reference/chat/trigger), and the agent's replies are delivered to your webhook. You keep full control of the UI.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Use your own chat UI** | Connect any website, app, or backend to a SubVerse chat agent. No widget to embed. |
+| **Keep conversations going** | Each conversation has a session ID, so the agent remembers context across messages. |
+| **Send and receive files** | Users can send files or file links, and agents can reply with images, videos, audio, and documents. |
+| **Pass user context** | Send a user's name and custom metadata, such as plan or current page, with each message. |
+| **Follow the agent's work** | Receive the agent's reasoning, tool calls, and tool results as they happen, not just the final reply. |
+| **Secure your webhook** | Protect your endpoint with Basic, Bearer, header, query, or custom authentication. |
+
+## How it works
+
+**Your app** → **Trigger chat API** → **Chat agent** → **Your webhook** → **Your app**
+
+The API replies right away with a session ID. The agent then works on the message and sends each step, including its final reply, to your webhook as a separate request.
+
+## What you'll need
+
+- A backend server that can call the SubVerse API
+- A public HTTPS endpoint to receive webhook events
+- A SubVerse workspace [API key](/integrations/api-keys)
+- A chat agent in SubVerse
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → Web Chat** and open the **Documentation** tab.
+</Note>

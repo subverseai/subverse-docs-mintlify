@@ -76,6 +76,10 @@
               "models/text-to-speech",
               "models/realtime"
             ]
+          },
+          {
+            "group": "Reference",
+            "pages": ["models/supported-file-formats"]
           }
         ]
       },

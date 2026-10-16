@@ -12,7 +12,7 @@ Every orchestration must have exactly one trigger node. Trigger nodes have no in
 |---|---|
 | [Webhook](./nodes/webhook.md) | Incoming HTTP request (POST, GET, etc.) |
 | [Starter — Schedule At](./nodes/schedule-trigger.md) | Time-based schedule (cron or one-time) |
-| [Starter — Manual Trigger](./nodes/manual-trigger.md) | Manual start from the AgentVerse UI |
+| [Starter — Manual Trigger](./nodes/manual-trigger.md) | Manual start from the Orchestration UI |
 | [Airtable Trigger](./nodes/airtable-trigger.md) | Airtable record created/updated/deleted |
 | [Slack Trigger](./nodes/slack-trigger.md) | Slack message, reaction, or event |
 | [WhatsApp Trigger](./nodes/whatsapp-trigger.md) | Incoming WhatsApp message |

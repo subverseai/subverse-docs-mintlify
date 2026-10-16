@@ -5,7 +5,7 @@ description: 'Link upstream node outputs to downstream node parameters using the
 
 # Dynamic Inputs
 
-Every node in AgentVerse produces a structured JSON output when it runs. **Dynamic inputs** let you reference that output in any downstream node's parameters — turning static configuration into data-driven workflows.
+Every node in Orchestration produces a structured JSON output when it runs. **Dynamic inputs** let you reference that output in any downstream node's parameters — turning static configuration into data-driven workflows.
 
 <img
   style={{ borderRadius: '0.5rem' }}
@@ -16,7 +16,7 @@ Every node in AgentVerse produces a structured JSON output when it runs. **Dynam
 
 ## How It Works
 
-When you test a node using the **Test** button, AgentVerse captures the node's real output. A **link icon** ( ⚡ ) then appears next to every parameter in downstream nodes. Clicking it opens a field picker showing all available outputs from upstream nodes — click any field to insert it as an expression.
+When you test a node using the **Test** button, Orchestration captures the node's real output. A **link icon** ( ⚡ ) then appears next to every parameter in downstream nodes. Clicking it opens a field picker showing all available outputs from upstream nodes — click any field to insert it as an expression.
 
 <Steps>
   <Step title="Test the upstream node">
@@ -29,7 +29,7 @@ When you test a node using the **Test** button, AgentVerse captures the node's r
     Click the ⚡ icon next to the parameter. A picker opens showing all available fields from upstream nodes, organised by node name.
   </Step>
   <Step title="Select a field">
-    Browse the tree and click the field you want. AgentVerse inserts the corresponding `{{ }}` expression automatically.
+    Browse the tree and click the field you want. Orchestration inserts the corresponding `{{ }}` expression automatically.
   </Step>
 </Steps>
 

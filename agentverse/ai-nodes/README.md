@@ -29,7 +29,7 @@ When you connect an action node (e.g. Airtable, HTTP Request) to an AI Agent nod
 
 ## LLM Providers
 
-AgentVerse AI nodes support any LLM provider. Customers can bring their own API credentials for:
+Orchestration AI nodes support any LLM provider. Customers can bring their own API credentials for:
 
 - OpenAI (GPT-4, GPT-4o, o1, etc.)
 - Anthropic (Claude 3.5, Claude 4, etc.)

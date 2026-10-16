@@ -7,7 +7,7 @@ description: 'Build an AI agent that runs tasks asynchronously as part of automa
 
 A Background Agent runs tasks asynchronously without a live user on the other end. Unlike Chat, Voice, or Email agents, background agents aren't triggered by a user message — they're invoked programmatically as part of an automated workflow, triggered by an event, or called as a **tool** by another agent.
 
-Background agents are the building block for autonomous, multi-step automation inside Subverse's **Agentverse** workflow system. They process data, make decisions, call APIs, and produce results — all without human interaction.
+Background agents are the building block for autonomous, multi-step automation inside Subverse's **Orchestration** workflow system. They process data, make decisions, call APIs, and produce results — all without human interaction.
 
 **When to use a Background Agent:**
 - You want to run an AI task automatically as part of a larger workflow
@@ -27,7 +27,7 @@ Background agents are the building block for autonomous, multi-step automation i
 6. Optionally configure **Functions**, **Pipeline Settings**, and **Analytics**.
 7. Click **Save**.
 
-To use the agent in a workflow, add it as a node inside an **Agentverse** flow. To call it as a tool from another agent, deploy it as an **LLM Tool** (see [LLM Tool Deployment](#llm-tool-deployment) below).
+To use the agent in a workflow, add it as a node inside an **Orchestration** flow. To call it as a tool from another agent, deploy it as an **LLM Tool** (see [LLM Tool Deployment](#llm-tool-deployment) below).
 
 ---
 
@@ -68,9 +68,9 @@ POST /api/agentverse/manual-upload-trigger
 
 This accepts a `multipart/form-data` payload. Include optional files to process and any dynamic variable values. The endpoint is fire-and-forget — it returns immediately and the agent runs in the background. Check the **Execution History** in the dashboard to see the result.
 
-### Option 2: Trigger via an Agentverse Workflow
+### Option 2: Trigger via an Orchestration Workflow
 
-1. Open **Agentverse** and create or open a workflow.
+1. Open **Orchestration** and create or open a workflow.
 2. Add a **Background Agent** node and link it to your agent.
 3. Connect it to a trigger node (e.g. webhook, file upload, or scheduled trigger).
 4. Click **Run** or send a test event.
@@ -92,7 +92,7 @@ This accepts a `multipart/form-data` payload. Include optional files to process 
 - **Thinking Level for complex tasks:** For tasks like multi-document analysis or data reasoning, set Thinking Level to **High** or **Very High** for better accuracy.
 - **Fire-and-forget:** Background agents don't block the caller. Use the execution history to check whether the task succeeded.
 - **Dynamic Variables:** Pass context at invocation time using dynamic variables. This lets you build a single general-purpose agent and customize its behavior per task (e.g. pass document type, user ID, or priority level).
-- **Chaining agents:** You can chain background agents together in Agentverse workflows — the output of one becomes the input to the next. This is the foundation of complex multi-step AI automations.
+- **Chaining agents:** You can chain background agents together in Orchestration workflows — the output of one becomes the input to the next. This is the foundation of complex multi-step AI automations.
 
 ---
 

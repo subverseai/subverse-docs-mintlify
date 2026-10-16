@@ -18,7 +18,7 @@ Action nodes receive data from upstream nodes, perform their operation, and pass
 | [HTTP Request](../nodes/http-request.mdx) | Any API | Make HTTP requests to any external endpoint |
 | [Send Email](../nodes/email.mdx) | SMTP | Send emails through any SMTP server |
 | [File Upload](../nodes/file-upload.mdx) | Cloud Storage | Upload files to S3 cloud storage |
-| [Respond to Webhook](../nodes/respond-to-webhook.mdx) | AgentVerse | Send a custom HTTP response back to a webhook caller |
+| [Respond to Webhook](../nodes/respond-to-webhook.mdx) | Orchestration | Send a custom HTTP response back to a webhook caller |
 
 ---
 

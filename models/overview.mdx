@@ -1,0 +1,51 @@
+---
+title: 'Models'
+description: 'AI models available on the SubVerse AI platform'
+---
+
+import ModelsDisclaimer from '/snippets/models-disclaimer.mdx';
+
+<ModelsDisclaimer />
+
+## Overview
+
+SubVerse AI lets you choose the AI models that power each agent. You pick models in the agent's configuration. For example, the **LLM Model**, **Transcript Model** and **TTS Model** fields in the [Voice Agent configuration](/agents/voice-agent-configuration).
+
+Models fall into four categories:
+
+<CardGroup cols={2}>
+  <Card title="Speech-to-text (STT)" icon="microphone" href="/models/speech-to-text">
+    Transcribes what the caller says. 10 models from Deepgram, OpenAI, Google, ElevenLabs and Sarvam.
+  </Card>
+  <Card title="LLMs" icon="brain" href="/models/llms">
+    Understands the conversation and decides what to say or do. 27 models from OpenAI, Google and Anthropic.
+  </Card>
+  <Card title="Text-to-speech (TTS)" icon="volume-high" href="/models/text-to-speech">
+    Turns the agent's reply into speech. 16 models from ElevenLabs, Cartesia, Google, OpenAI, Azure, Inworld, Murf and Sarvam.
+  </Card>
+  <Card title="Realtime / Live models" icon="bolt" href="/models/realtime">
+    Single speech-to-speech models that listen and speak directly. 7 models from OpenAI and Google.
+  </Card>
+</CardGroup>
+
+---
+
+## How agents use models
+
+**Chat, email and background agents** use an [LLM](/models/llms) only.
+
+**Voice agents** can work in one of two ways:
+
+| Approach | How it works | Models involved |
+|---|---|---|
+| Pipeline | Speech is transcribed to text, the LLM writes a reply, and the reply is spoken back. Each step can use a different provider. | [STT](/models/speech-to-text) → [LLM](/models/llms) → [TTS](/models/text-to-speech) |
+| Realtime | One model takes audio in and produces audio out, without separate transcription and synthesis steps. | [Realtime / Live model](/models/realtime) |
+
+---
+
+## How to read these pages
+
+- **Official figures** come from the provider's own documentation, model cards or announcements, and each one links to its source.
+- **Third-party figures** are used only when the provider doesn't publish benchmark numbers for a model, or publishes them only as charts. They are marked **Third-party** and name the independent publisher.
+- **Languages available in SubVerse AI** lists (on the STT and TTS pages) show the languages and regional variants you can select for that model on the platform. Counts include regional variants, such as English (US) and English (India), so they can differ from the provider's own language count. The provider may also support languages that are not yet available in SubVerse AI.
+- **Benchmarks are not directly comparable across providers.** Each provider chooses its own benchmarks, settings and test conditions. Use them as a guide, and test models with your own use case.

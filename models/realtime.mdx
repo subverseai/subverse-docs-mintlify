@@ -1,0 +1,160 @@
+---
+title: 'Realtime / Live Models'
+description: 'Speech-to-speech models that listen and respond in a single model'
+---
+
+import ModelsDisclaimer from '/snippets/models-disclaimer.mdx';
+
+<ModelsDisclaimer />
+
+Realtime (speech-to-speech) models take the caller's audio in and produce spoken audio out with a single model. They replace the separate [speech-to-text](/models/speech-to-text), [LLM](/models/llms) and [text-to-speech](/models/text-to-speech) steps of a pipeline voice agent.
+
+## At a glance
+
+| Model | Provider | Model ID | Highlights | Official docs |
+|---|---|---|---|---|
+| GPT Realtime 2.1 Mini | OpenAI | `gpt-realtime-2.1-mini` | Faster, lower-cost realtime reasoning model | [OpenAI](https://developers.openai.com/api/docs/models/gpt-realtime-2.1-mini) |
+| GPT Realtime 2.1 | OpenAI | `gpt-realtime-2.1` | Reasoning with tool use; better alphanumeric and noise handling | [OpenAI](https://developers.openai.com/api/docs/models/gpt-realtime-2.1) |
+| GPT Realtime 2 | OpenAI | `gpt-realtime-2` | Realtime reasoning model with tool use | [OpenAI](https://developers.openai.com/api/docs/models/gpt-realtime-2) |
+| GPT Live 1 | OpenAI | `gpt-live-1` | Full-duplex: listens and speaks at the same time | [OpenAI](https://developers.openai.com/api/docs/models/gpt-live-1) |
+| Gemini Live 2.5 Flash | Google | `gemini-2.5-flash-native-audio-preview-12-2025` | Native-audio Gemini 2.5 Flash (preview, shutting down) | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-native-audio-preview-12-2025) |
+| Gemini Live 3.1 Flash | Google | `gemini-3.1-flash-live-preview` | Configurable thinking (legacy preview, shutting down) | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-live-preview) |
+| Gemini Live 3.8 | Google | `gemini-3.8-live` | Google's default for low-latency voice agents | [Google](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-live) |
+
+---
+
+## OpenAI
+
+### Specifications
+
+| Model | Context window | Max output | Knowledge cutoff | Input | Output |
+|---|---|---|---|---|---|
+| GPT Realtime 2.1 Mini | 128,000 | 32,000 | Sep 30, 2024 | Text, audio, image | Text, audio |
+| GPT Realtime 2.1 | 128,000 | 32,000 | Sep 30, 2024 | Text, audio, image | Text, audio |
+| GPT Realtime 2 | 128,000 | 32,000 | Sep 30, 2024 | Text, audio, image | Text, audio |
+| GPT Live 1 | Not stated | Not stated | Jul 31, 2025 | Audio, text | Audio, text |
+
+Values are in tokens and come from each model's page on [developers.openai.com](https://developers.openai.com/api/docs/models).
+
+### GPT Realtime 2.1 Mini
+
+`gpt-realtime-2.1-mini` · [Official docs](https://developers.openai.com/api/docs/models/gpt-realtime-2.1-mini)
+
+"A distilled reasoning model for faster, lower-cost realtime voice interactions." OpenAI says it improves alphanumeric recognition over GPT Realtime 2. It supports function calling.
+
+| Metric | Value | Source |
+|---|---|---|
+| Big Bench Audio (reasoning), high / minimal effort · **Third-party** | 75% / 63% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+| Time to first audio, high / minimal effort · **Third-party** | 4.28 s / 0.85 s | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+| τ-Voice (agentic tasks), high / minimal effort · **Third-party** | 29.4% / 22.5% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+
+### GPT Realtime 2.1
+
+`gpt-realtime-2.1` · [Official docs](https://developers.openai.com/api/docs/models/gpt-realtime-2.1)
+
+"GPT-Realtime-2.1 updates GPT-Realtime-2 with improved alphanumeric recognition, silence and noise handling, and interruption behavior." It supports speech-to-speech with configurable reasoning effort, instruction following and tool use. OpenAI notes that higher reasoning effort can increase latency.
+
+| Metric | Value | Source |
+|---|---|---|
+| Tau3 (airline, retail and telecom support tasks), first attempt | 45.7% | [OpenAI](https://community.openai.com/t/introducing-gpt-live-1-in-the-api/1396471) |
+| Turn-taking latency | 1.41 s | [OpenAI](https://community.openai.com/t/introducing-gpt-live-1-in-the-api/1396471) |
+| p95 latency change at release | At least 25% lower across Realtime voice models | [OpenAI](https://community.openai.com/t/new-realtime-models-on-the-api-gpt-realtime-2-1-and-gpt-realtime-2-1-mini/1385896) |
+
+### GPT Realtime 2
+
+`gpt-realtime-2` · [Official docs](https://developers.openai.com/api/docs/models/gpt-realtime-2)
+
+A speech-to-speech model with configurable reasoning effort, "stronger instruction following, and more reliable tool use". OpenAI's announcement describes it as bringing "GPT-5-class reasoning" to realtime voice. GPT Realtime 2.1 is an update to this model.
+
+| Metric | Value | Source |
+|---|---|---|
+| Big Bench Audio (reasoning), high / minimal effort · **Third-party** | 97% / 72% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+| Time to first audio, high / minimal effort · **Third-party** | 1.14 s / 1.12 s | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+| τ-Voice (agentic tasks), high / minimal effort · **Third-party** | 39.8% / 30.8% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+
+<Note>
+  OpenAI publishes GPT Realtime 2's benchmarks (Big Bench Audio and Audio MultiChallenge) only as charts in its [announcement](https://community.openai.com/t/new-realtime-voice-models-in-the-api/1380471), and publishes no figures for GPT Realtime 2.1 Mini. The **Third-party** figures above are published by [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech), an independent benchmarking company, not by OpenAI. Accessed October 16, 2026.
+</Note>
+
+### GPT Live 1
+
+`gpt-live-1` · [Official docs](https://developers.openai.com/api/docs/models/gpt-live-1)
+
+"GPT-Live 1 is a full-duplex voice model for real-time conversations." It can listen and speak at the same time. It handles pauses, interruptions and backchannels, and hands off reasoning and tool use to a backend agent. It comes with 12 voices.
+
+| Metric | Value | Source |
+|---|---|---|
+| Tau3 (airline, retail and telecom support tasks), first attempt | 83.6%, vs 45.7% for GPT Realtime 2.1 | [OpenAI](https://community.openai.com/t/introducing-gpt-live-1-in-the-api/1396471) |
+| Turn-taking latency | 0.798 s, vs 1.41 s for GPT Realtime 2.1 | [OpenAI](https://community.openai.com/t/introducing-gpt-live-1-in-the-api/1396471) |
+| Full Duplex Bench v1.5 (interactivity) | 80.1% | [OpenAI](https://community.openai.com/t/introducing-gpt-live-1-in-the-api/1396471) |
+| Conversational Dynamics (Artificial Analysis benchmark), as reported by OpenAI | 97.3% | [OpenAI](https://community.openai.com/t/introducing-gpt-live-1-in-the-api/1396471) |
+
+<Note>
+  OpenAI's Tau3 result pairs GPT Live 1 with GPT-6 Astra (medium reasoning effort) as the backend model. Results with a different backend model will differ.
+</Note>
+
+---
+
+## Google
+
+### Specifications
+
+| Model | Input tokens | Output tokens | Input | Output | Status (Gemini API) |
+|---|---|---|---|---|---|
+| Gemini Live 2.5 Flash | 131,072 | 8,192 | Audio, video, text | Audio, text | Preview, shutdown Nov 17, 2026 |
+| Gemini Live 3.1 Flash | 131,072 | 65,536 | Text, images, audio, video | Text, audio | Legacy preview, shutdown Nov 17, 2026 |
+| Gemini Live 3.8 | 131,072 | 65,536 | Text, images, audio, video | Text, audio | Stable (GA since Sep 15, 2026) |
+
+Values come from each model's page on [ai.google.dev](https://ai.google.dev/gemini-api/docs/models) and from [Gemini deprecations](https://ai.google.dev/gemini-api/docs/deprecations). Google lists `gemini-3.8-live` as the replacement for both shutting-down models.
+
+### Gemini Live 2.5 Flash
+
+`gemini-2.5-flash-native-audio-preview-12-2025` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-native-audio-preview-12-2025)
+
+Provides "low-latency, real-time voice and video interactions with Gemini 2.5 Flash" through the Live API. It supports function calling, search grounding and thinking. Knowledge cutoff: January 2025.
+
+<Warning>
+  Google lists a shutdown date of **November 17, 2026** for this preview model on the Gemini API, with Gemini Live 3.8 as the replacement.
+</Warning>
+
+| Metric | Value | Source |
+|---|---|---|
+| τ-Voice (agentic tasks) · **Third-party** | 22.8% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+
+### Gemini Live 3.1 Flash
+
+`gemini-3.1-flash-live-preview` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-live-preview)
+
+"A legacy preview model for real-time dialogue and voice-first AI applications." It supports thinking levels (`minimal` by default, up to `high`) and synchronous function calling.
+
+<Warning>
+  Google lists a shutdown date of **November 17, 2026** for this preview model on the Gemini API, and recommends updating to Gemini Live 3.8.
+</Warning>
+
+| Metric | Value | Source |
+|---|---|---|
+| Big Bench Audio (reasoning), high / minimal thinking · **Third-party** | 97% / 71% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+| Time to first audio, high / minimal thinking · **Third-party** | 2.99 s / 0.96 s | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+| τ-Voice (agentic tasks), high / minimal thinking · **Third-party** | 37.7% / 26.2% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+
+### Gemini Live 3.8
+
+`gemini-3.8-live` · [Official docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-live)
+
+Google calls it the "default option for most low-latency voice agent experiences". It adds interleaved reasoning and asynchronous (non-blocking) function calling, and proactive audio is always on.
+
+| Metric | Value | Source |
+|---|---|---|
+| Big Bench Audio (reasoning) · **Third-party** | 92% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+| Time to first audio · **Third-party** | 1.18 s | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+| τ-Voice (agentic tasks) · **Third-party** | 30.1% | [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech) |
+
+<Note>
+  Google publishes its Gemini Live evaluations in a [model card](https://deepmind.google/models/model-cards/gemini-3-8-audio/) and an evaluation PDF but does not list benchmark scores on its model pages. The **Third-party** figures in this section are published by [Artificial Analysis](https://artificialanalysis.ai/speech-to-speech), an independent benchmarking company, not by Google. Accessed October 16, 2026.
+</Note>
+
+---
+
+<Note>
+  Realtime model results depend heavily on settings such as reasoning effort or thinking level: higher settings usually improve accuracy but increase time to first audio. Benchmarks from different providers are not directly comparable. Test candidate models with real calls from your own use case.
+</Note>

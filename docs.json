@@ -62,6 +62,24 @@
         ]
       },
       {
+        "tab": "Models",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["models/overview"]
+          },
+          {
+            "group": "Model Types",
+            "pages": [
+              "models/speech-to-text",
+              "models/llms",
+              "models/text-to-speech",
+              "models/realtime"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Orchestration",
         "groups": [
           {

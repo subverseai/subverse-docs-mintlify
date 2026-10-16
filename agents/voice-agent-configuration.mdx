@@ -39,7 +39,7 @@ description: 'Full configuration reference for Voice Agents'
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| LLM Model | Dropdown | — (required) | The AI model powering this agent. Each model shows its speed and reasoning ratings. |
+| LLM Model | Dropdown | — (required) | The AI model powering this agent. Each model shows its speed and reasoning ratings. See [all available LLMs](/models/llms). |
 | Thinking Level | Dropdown | `Default` | Extended reasoning depth before responding. Options: **Default**, **Low**, **Medium**, **High**, **Very High**. Higher = better reasoning but slower and more expensive. |
 | Max Tokens | Number | None | Maximum tokens the LLM can generate per response. Leave blank to use the model's default. |
 | Temperature | Slider | `0.5` | Response creativity. `0.0` = consistent and precise. `1.0+` = more varied and creative. |
@@ -55,7 +55,7 @@ description: 'Full configuration reference for Voice Agents'
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| Transcript Model | Dropdown | — (required) | The speech-to-text model used to transcribe the caller's speech (e.g. Deepgram Nova 3). |
+| Transcript Model | Dropdown | — (required) | The speech-to-text model used to transcribe the caller's speech (e.g. Deepgram Nova 3). See [all available STT models](/models/speech-to-text). |
 | Transcript Language | Dropdown | — (required) | Language for transcription (e.g. English (US), English (India)). |
 | Custom Keywords | Text | None | Words or phrases the STT model should pay extra attention to (e.g. product names, brand terms). Separate multiple entries with commas. |
 | Smart Format | Toggle | Off | Automatically format numbers, currencies, dates, and addresses in transcripts (e.g. "twenty dollars" → "$20"). |
@@ -80,7 +80,7 @@ description: 'Full configuration reference for Voice Agents'
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| TTS Model | Dropdown | — (required) | The text-to-speech model for generating speech (e.g. ElevenLabs Flash V2.5). |
+| TTS Model | Dropdown | — (required) | The text-to-speech model for generating speech (e.g. ElevenLabs Flash V2.5). See [all available TTS models](/models/text-to-speech). |
 | TTS Language | Dropdown | — (required) | Language for speech synthesis (e.g. English (US)). |
 | Gender | Radio | None | Filter voices by **Male** or **Female**. Optional. |
 | Voice | Dropdown | — (required) | The specific voice to use. Click **Browse** to preview available voices from the selected provider. |

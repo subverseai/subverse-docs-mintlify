@@ -1,0 +1,466 @@
+---
+title: 'Trigger Chat'
+openapi: 'POST /chat-agent/trigger'
+---
+
+Start a conversation with a customer on **WhatsApp**, **Web Chat** or **Email** using one of your agents. You can let the agent write the message, send your own text, use an approved WhatsApp template, or schedule the message for later.
+
+You can also use this API to **get the agent's reply straight back** in the response, without messaging any customer. This is handy for testing an agent or building your own chat experience.
+
+## Endpoint
+
+```
+POST https://api-v2.subverseai.com/api/chat-agent/trigger
+```
+
+## Authentication
+
+Every request needs your workspace API key in the `x-api-key` header.
+
+```
+x-api-key: your_workspace_api_key
+```
+
+You can create an API key from your dashboard. See [API Keys](/integrations/api-keys) for details.
+
+---
+
+## Choose how you want to use it
+
+<CardGroup cols={2}>
+  <Card title="Message a customer" icon="paper-plane">
+    Send a message through one of your WhatsApp, Web Chat or Email channels. The customer receives it and can reply, and your agent carries on the conversation.
+  </Card>
+  <Card title="Get the agent's reply" icon="reply">
+    Set `doReturnResponse` to `true`. The agent's reply comes back in the response and nothing is sent to a customer.
+  </Card>
+</CardGroup>
+
+---
+
+## Message a customer
+
+### Before you start
+
+- Set up a WhatsApp, Web Chat or Email channel under **Integrations** in your dashboard, and make sure it is enabled.
+- Assign an agent to the channel, or pass `agentName` in your request.
+
+### Basic fields
+
+| Field | Required | Description |
+|---|---|---|
+| `communicationChannel` | Yes | The name of your channel, exactly as it appears under **Integrations** in your dashboard. |
+| `customerNumber` | WhatsApp & Web Chat | **WhatsApp:** the customer's phone number with country code, e.g. `+919876543210`. **Web Chat:** the user's ID on your website or app. |
+| `customerEmail` | Email | The customer's email address. |
+| `agentName` | No | The agent that should handle the conversation. Defaults to the agent assigned to the channel. |
+| `agentVersion` | No | `default` (published version), `draft` (latest saved draft) or a version number such as `2`. |
+| `metadata` | No | Customer details used to personalise the conversation. See [Personalise with metadata](#personalise-with-metadata). |
+| `attachments` | No | A list of links to files (images, PDFs, documents) to send with the message. Links must be publicly accessible. |
+
+### WhatsApp
+
+Use `whatsappOptions.messageType` to choose how the first message is created.
+
+<Tabs>
+  <Tab title="Agent writes it (prompt)">
+    The agent writes the opening message itself, using its instructions, the customer's `metadata` and any `additionalContext` you provide. This is the default.
+
+    ```json
+    {
+      "communicationChannel": "Support WhatsApp",
+      "customerNumber": "+919876543210",
+      "agentName": "payment_reminder",
+      "metadata": {
+        "name": "John Doe",
+        "amountDue": "₹1,200"
+      },
+      "whatsappOptions": {
+        "messageType": "prompt",
+        "additionalContext": "Remind the customer that their payment is due tomorrow."
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Your exact text (say)">
+    Sends your text exactly as written. If the customer replies, your agent takes over the conversation.
+
+    ```json
+    {
+      "communicationChannel": "Support WhatsApp",
+      "customerNumber": "+919876543210",
+      "whatsappOptions": {
+        "messageType": "say",
+        "message": "Hi John, your order ORD-1042 has been shipped!"
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Approved template (template)">
+    Sends one of your approved WhatsApp templates. Use this when messaging a customer who hasn't chatted with you in the last 24 hours, since WhatsApp only allows templates in that case.
+
+    ```json
+    {
+      "communicationChannel": "Support WhatsApp",
+      "customerNumber": "+919876543210",
+      "whatsappOptions": {
+        "messageType": "template",
+        "templateId": "order_update",
+        "templateLanguage": "en",
+        "templateVariables": {
+          "1": "John",
+          "2": "ORD-1042"
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+| `whatsappOptions` field | Used with | Description |
+|---|---|---|
+| `messageType` | All | `prompt` (default), `say` or `template`. |
+| `additionalContext` | `prompt` | Extra instructions or background for the agent when writing the message. |
+| `message` | `say` | **Required for `say`.** The exact text to send. |
+| `templateId` | `template` | **Required for `template`.** The name of your approved WhatsApp template. |
+| `templateLanguage` | `template` | The template's language code, e.g. `en` or `hi`. Defaults to `en`. |
+| `templateVariables` | `template` | Values for the template's placeholders. |
+
+**Sending from a specific number:** if your WhatsApp channel has more than one number, pass `agentNumber` to choose which one to send from. It must be one of the channel's numbers. If you leave it out, one of them is picked for you.
+
+### Web Chat
+
+The agent writes the opening message and sends it to the user in your web chat. Pass the user's ID as `customerNumber`. To give the agent extra instructions, use `whatsappOptions.additionalContext`.
+
+```json
+{
+  "communicationChannel": "Website Chat",
+  "customerNumber": "user_8812",
+  "metadata": {
+    "name": "John Doe",
+    "plan": "Pro"
+  },
+  "whatsappOptions": {
+    "additionalContext": "Welcome the user and ask if they need help upgrading their plan."
+  }
+}
+```
+
+### Email
+
+Use `emailOptions.messageType` to choose who writes the email.
+
+<Tabs>
+  <Tab title="Agent writes it (prompt)">
+    ```json
+    {
+      "communicationChannel": "Support Email",
+      "customerEmail": "john@example.com",
+      "metadata": { "name": "John Doe" },
+      "emailOptions": {
+        "messageType": "prompt",
+        "subject": "Following up on your request",
+        "additionalContext": "Follow up on the refund request the customer raised last week."
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Your exact text (say)">
+    ```json
+    {
+      "communicationChannel": "Support Email",
+      "customerEmail": "john@example.com",
+      "emailOptions": {
+        "messageType": "say",
+        "subject": "Your order has shipped",
+        "body": "Hi John, your order ORD-1042 is on its way!",
+        "cc": "orders@yourcompany.com"
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+| `emailOptions` field | Used with | Description |
+|---|---|---|
+| `messageType` | All | `prompt` (default) or `say`. |
+| `additionalContext` | `prompt` | Extra instructions or background for the agent when writing the email. |
+| `body` | `say` | **Required for `say`.** The exact email content to send. |
+| `subject` | All | Email subject line. |
+| `cc` | All | Email addresses to CC, separated by commas. |
+| `bcc` | All | Email addresses to BCC, separated by commas. |
+| `replyTo` | All | The `sessionId` of an earlier email conversation. The email is sent as a reply in that same thread, and anyone already in CC/BCC stays included. Leave it out to start a new thread. |
+
+---
+
+## Schedule a message
+
+Instead of sending right away, you can send at a set time, only during working hours, or both. Scheduling works with every channel and message type.
+
+| Field | Description |
+|---|---|
+| `scheduleTime` | Date and time to send, in ISO format, e.g. `2026-10-05T09:30:00Z`. If the time has already passed, the message is sent right away. |
+| `startWorkingHour` | Earliest time of day to send, in 24-hour `HH:MM` format. Messages due earlier wait until this time. |
+| `endWorkingHour` | Latest time of day to send, in 24-hour `HH:MM` format. Messages due later are sent the next day at `startWorkingHour` (or at midnight if `startWorkingHour` isn't set). |
+| `timezone` | Timezone for your working hours, e.g. `Asia/Kolkata`. Defaults to `UTC`. |
+
+```json
+{
+  "communicationChannel": "Support WhatsApp",
+  "customerNumber": "+919876543210",
+  "whatsappOptions": {
+    "messageType": "say",
+    "message": "Hi John, just checking in on your recent order."
+  },
+  "scheduleTime": "2026-10-05T04:00:00Z",
+  "startWorkingHour": "09:00",
+  "endWorkingHour": "20:00",
+  "timezone": "Asia/Kolkata"
+}
+```
+
+<Tip>
+Changed your mind? Use [Cancel Scheduled Messages](/api-reference/chat/cancel) with the `sessionId` you got back to stop a message that hasn't been sent yet.
+</Tip>
+
+---
+
+## Get the agent's reply
+
+Set `doReturnResponse` to `true` to send a message to your agent and receive its reply in the response. No message is sent to a customer, so you don't need a channel.
+
+| Field | Required | Description |
+|---|---|---|
+| `doReturnResponse` | Yes | Set to `true`. |
+| `agentName` | Yes | The agent that should reply. |
+| `agentVersion` | No | `default`, `draft` or a version number. |
+| `message` | No | The customer's message for the agent to reply to. |
+| `sessionId` | No | The `sessionId` from a previous response, to continue the same conversation. Leave it out to start a new one. |
+| `customerNumber` / `customerEmail` | No | Identifies the customer in your session history. |
+| `metadata` | No | Customer details used to personalise the reply. |
+| `attachments` | No | Links to files for the agent to look at, such as an image or a PDF. |
+| `chatOptions.additionalContext` | No | Extra instructions or background for the agent, for this reply only. |
+
+```json
+{
+  "agentName": "support_bot",
+  "doReturnResponse": true,
+  "message": "Where is my order?",
+  "customerEmail": "john@example.com",
+  "metadata": { "orderId": "ORD-1042" }
+}
+```
+
+To keep chatting, send the next message with the same `sessionId`:
+
+```json
+{
+  "agentName": "support_bot",
+  "doReturnResponse": true,
+  "sessionId": "b7e2d4f1-1c3a-4b5d-8e6f-0a9b8c7d6e5f",
+  "message": "Can I change the delivery address?"
+}
+```
+
+<Warning>
+`doReturnResponse` can't be combined with `scheduleTime`, `startWorkingHour` or `endWorkingHour`.
+</Warning>
+
+---
+
+## Personalise with metadata
+
+Anything you put in `metadata` can be used in your agent's prompts as `${variable_name}`. For example, with this metadata:
+
+```json
+"metadata": { "name": "John Doe", "orderId": "ORD-1042" }
+```
+
+an agent prompt containing `Greet ${name} and confirm order ${orderId}` becomes `Greet John Doe and confirm order ORD-1042`.
+
+<Note>
+WhatsApp templates don't use `metadata`. Fill template placeholders with `whatsappOptions.templateVariables` instead.
+</Note>
+
+---
+
+## Response
+
+### Message sent or scheduled
+
+You get back a `sessionId` for the conversation. Keep it so you can [look up the conversation](/api-reference/session/fetch) later or [cancel](/api-reference/chat/cancel) a scheduled message.
+
+```json
+{
+  "responseCode": 200,
+  "message": "Trigger dispatched",
+  "data": {
+    "sessionId": "a3f1c9e2-7b4d-4e8a-9c21-5d6e7f8a9b0c"
+  }
+}
+```
+
+### Agent reply (`doReturnResponse`)
+
+You get back the `sessionId` and a `transcript` with your message and everything the agent did in reply.
+
+```json
+{
+  "responseCode": 200,
+  "message": "Trigger dispatched",
+  "data": {
+    "sessionId": "b7e2d4f1-1c3a-4b5d-8e6f-0a9b8c7d6e5f",
+    "transcript": [
+      {
+        "type": "message",
+        "role": "user",
+        "content": [{ "type": "text", "text": "Where is my order?" }],
+        "senderId": "john@example.com",
+        "timestamp": "2026-10-01T10:00:00.000Z"
+      },
+      {
+        "type": "message",
+        "role": "assistant",
+        "content": [{ "type": "text", "text": "Hi! Your order ORD-1042 has shipped and should arrive by Friday." }],
+        "agentName": "support_bot",
+        "timestamp": "2026-10-01T10:00:02.000Z"
+      }
+    ]
+  }
+}
+```
+
+The transcript may also include tool usage and other entries. See [Transcript Entry Types](/api-reference/session/fetch#transcript-entry-types) for the full list.
+
+<Note>
+Links to images and files in the transcript expire after a limited time. Download or save them promptly.
+</Note>
+
+---
+
+## Errors
+
+Errors use the same format:
+
+```json
+{
+  "responseCode": 400,
+  "errorCode": "customerNumberRequired",
+  "message": "customerNumber is required for chat channels",
+  "data": null
+}
+```
+
+| Status | `errorCode` | What it means |
+|---|---|---|
+| 400 | `customerNumberRequired` | `customerNumber` is missing for a WhatsApp or Web Chat channel. |
+| 400 | `customerEmailRequired` | `customerEmail` is missing for an Email channel. |
+| 400 | `messageRequired` | `whatsappOptions.message` is missing for a WhatsApp `say` message. |
+| 400 | `templateIdRequired` | `whatsappOptions.templateId` is missing for a WhatsApp `template` message. |
+| 400 | `templateNotSupported` | The WhatsApp channel doesn't support templates. |
+| 400 | `emailBodyRequired` | `emailOptions.body` is missing for an Email `say` message. |
+| 400 | `agentNumberNotInChannel` | The `agentNumber` you passed isn't one of the channel's WhatsApp numbers. |
+| 400 | `noAgentPhoneNumbers` | The WhatsApp channel has no phone numbers set up. |
+| 400 | `noAgentEmail` | The Email channel has no email address set up. |
+| 400 | `unsupportedChannelType` | The channel isn't a WhatsApp, Web Chat or Email channel. To place calls, use [Trigger Call](/api-reference/direct-call/trigger). |
+| 400 | `agentNameRequired` | `agentName` is missing when `doReturnResponse` is `true`. |
+| 400 | `incompatibleOptions` | `doReturnResponse` was used together with scheduling options. |
+| 401 | `apiKeyMissing` | The `x-api-key` header is missing. |
+| 401 | `apiKeyInvalid` | The API key is not valid. |
+| 403 | `forbidden` | The `sessionId` belongs to a different workspace. |
+| 404 | `channelNotFound` | No enabled channel with that name was found in your workspace. Check the spelling and that the channel is turned on. |
+| 404 | `sessionNotFound` | The `sessionId` you passed doesn't exist. |
+| 404 | `replyToSessionNotFound` | The `emailOptions.replyTo` conversation doesn't exist. |
+| 422 | `validationError` | A field has the wrong type, e.g. text where `true`/`false` is expected. |
+| 500 | `internalError` | Something went wrong on our side. Please try again or contact support. |
+
+---
+
+## Code Examples
+
+### cURL
+
+```bash
+curl -X POST https://api-v2.subverseai.com/api/chat-agent/trigger \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "communicationChannel": "Support WhatsApp",
+    "customerNumber": "+919876543210",
+    "metadata": { "name": "John Doe" },
+    "whatsappOptions": {
+      "messageType": "prompt",
+      "additionalContext": "Remind the customer that their payment is due tomorrow."
+    }
+  }'
+```
+
+### JavaScript
+
+```javascript
+const response = await fetch(
+  "https://api-v2.subverseai.com/api/chat-agent/trigger",
+  {
+    method: "POST",
+    headers: {
+      "x-api-key": "YOUR_API_KEY",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      communicationChannel: "Support WhatsApp",
+      customerNumber: "+919876543210",
+      metadata: { name: "John Doe" },
+      whatsappOptions: {
+        messageType: "prompt",
+        additionalContext: "Remind the customer that their payment is due tomorrow.",
+      },
+    }),
+  }
+);
+
+const result = await response.json();
+console.log(result.data.sessionId);
+```
+
+### Python
+
+```python
+import requests
+
+response = requests.post(
+    "https://api-v2.subverseai.com/api/chat-agent/trigger",
+    headers={"x-api-key": "YOUR_API_KEY"},
+    json={
+        "communicationChannel": "Support WhatsApp",
+        "customerNumber": "+919876543210",
+        "metadata": {"name": "John Doe"},
+        "whatsappOptions": {
+            "messageType": "prompt",
+            "additionalContext": "Remind the customer that their payment is due tomorrow.",
+        },
+    },
+)
+
+print(response.json()["data"]["sessionId"])
+```
+
+### Node.js (axios)
+
+```javascript
+const axios = require("axios");
+
+const { data } = await axios.post(
+  "https://api-v2.subverseai.com/api/chat-agent/trigger",
+  {
+    communicationChannel: "Support WhatsApp",
+    customerNumber: "+919876543210",
+    metadata: { name: "John Doe" },
+    whatsappOptions: {
+      messageType: "prompt",
+      additionalContext: "Remind the customer that their payment is due tomorrow.",
+    },
+  },
+  { headers: { "x-api-key": "YOUR_API_KEY" } }
+);
+
+console.log(data.data.sessionId);
+```

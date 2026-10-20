@@ -621,7 +621,7 @@ const result = await subverseActions.googleSheets.deleteSpreadsheet({
 
 The Google Drive actions let your custom function work with files and folders stored in Google Drive — list them, read their contents, upload new ones, organize them into folders, and share them with people.
 
-**Compatible credentials:** [Google Drive Service Account](/credentials/types/google-drive-service-account), [Google Drive OAuth2 API](/credentials/types/google-drive-oauth2-api)
+**Compatible credentials:** Google Drive Service Account, Google Drive OAuth2 API
 
 <Info title="My Drive vs. Shared Drives">
   A file can live in **My Drive** (the personal Drive space belonging to whoever the credential connects to) or in a **Shared Drive** (a Drive space owned jointly by a team, common in Google Workspace organisations). Actions that act on a single, already-identified file or folder by ID work the same way regardless of which one it lives in — no extra options needed. `listFiles` and `listDrives` are the exception: by default they only search **My Drive**. Add `includeSharedDrives: true` to `options` to also search Shared Drive content, and optionally `driveId` to limit the search to one specific Shared Drive — `driveId` alone is enough to scope to that drive, `includeSharedDrives` doesn't also need to be true. Every action's schema still accepts both options even though they're only meaningful for `listFiles`/`listDrives`.
@@ -1230,7 +1230,7 @@ const email = await subverseActions.agent.emailTrigger({
 
 Send an email directly through an SMTP server using a saved **Email (SMTP / IMAP)** credential. This action is useful for transactional emails, alerts, and reports from a custom function.
 
-**Compatible credentials:** [Email (SMTP / IMAP)](/credentials/types/email-smtp)
+**Compatible credentials:** [Email (SMTP / IMAP)](/integrations/email)
 
 | Parameter | Required | Description |
 |---|---|---|
@@ -1559,7 +1559,7 @@ const result = await subverseActions.shopify.deleteProduct({
 
 The WhatsApp actions let you send messages directly through the Meta WhatsApp Business Cloud API using a saved **WhatsApp API** credential. All three actions require a `credentialId`, the recipient's phone number, and your sender's **Phone Number ID** (not stored in the credential — supply it explicitly in `options`).
 
-**Compatible credentials:** [WhatsApp API](/credentials/types/whatsapp-api) (`whatsAppApi`, with Access Token and Business Account ID)
+**Compatible credentials:** [WhatsApp API](/integrations/whatsapp) (`whatsAppApi`, with Access Token and Business Account ID)
 
 ### WhatsApp Send Text Message
 
@@ -1660,7 +1660,7 @@ const result = await subverseActions.whatsapp.sendMediaMessage({
 
 The Freshdesk actions connect to your Freshdesk support desk using a saved **Freshdesk API** credential. All actions require a `credentialId` plus an `options` object.
 
-**Compatible credentials:** [Freshdesk API](/credentials/types/freshdesk-api)
+**Compatible credentials:** [Freshdesk API](/integrations/freshdesk)
 
 ### Freshdesk Create Ticket
 
@@ -1844,7 +1844,7 @@ const note = await subverseActions.freshdesk.addTicketNote({
   <Card title="Custom Functions" icon="code" href="/integrations/agentic-functions/custom-functions">
     Write and test custom function code using these actions
   </Card>
-  <Card title="Credentials" icon="key" href="/credentials/overview">
-    Set up and manage the credentials used by your actions
+  <Card title="Integrations" icon="plug" href="/integrations/introduction">
+    Set up and manage the connections used by your actions
   </Card>
 </CardGroup>

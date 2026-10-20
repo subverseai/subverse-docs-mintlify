@@ -1,0 +1,34 @@
+---
+title: 'AWS S3'
+description: 'Connect your S3 bucket so workflows can upload, read, and manage files in your own storage.'
+---
+
+**Connection type:** Credential
+
+Connect an Amazon S3 bucket to SubVerse. Your Functions and Orchestrations can upload files to your own storage, and read, list, and delete them. Files stay in your AWS account, under your own access rules and retention policies.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Upload files** | Save anything your workflows produce or receive: call recordings, files a customer sent, documents an agent generated. |
+| **Read and list files** | Fetch a file back, or list what's in a folder, as part of a workflow. |
+| **Delete files** | Remove files you no longer need. |
+| **Choose where files go** | Set the path for each upload, so files land in the folder structure you want. |
+| **Use S3-compatible storage** | Point the connection at another S3-compatible service instead of AWS. |
+
+## How it works
+
+**Function or orchestration** → **S3 action** → **Your bucket**
+
+SubVerse connects with an AWS access key. Use one that belongs to an IAM user with access to just this bucket.
+
+## What you'll need
+
+- An AWS account and an S3 bucket
+- The bucket's name and region
+- An access key ID and secret access key for an IAM user with access to that bucket
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → AWS S3** and open the **Documentation** tab.
+</Note>

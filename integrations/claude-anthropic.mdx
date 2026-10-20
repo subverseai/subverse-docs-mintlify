@@ -1,0 +1,35 @@
+---
+title: 'Claude (Anthropic)'
+description: 'Bring your own Anthropic account: agents and orchestrations use your Claude API key and subscription whenever a Claude model is selected.'
+---
+
+**Connection type:** Credential
+
+Connect your own Anthropic account to SubVerse. When an agent or orchestration uses a Claude model, SubVerse sends the request with your API key, so usage is billed to your Anthropic organization under your own limits and policies.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Use your own Claude subscription** | Run Claude models in agents and orchestrations on your Anthropic account instead of SubVerse's. |
+| **Cover every Claude model** | Applies to all Claude models SubVerse supports, in both chat and voice agents. |
+| **Route through a proxy** | Use a custom base URL to send requests through your own proxy or AI gateway. |
+
+## How it works
+
+**Agent or orchestration** → **Claude model selected** → **SubVerse** → **Your Anthropic account**
+
+Without a connection, SubVerse uses its own Claude subscription and bills that usage to you through SubVerse.
+
+## What you'll need
+
+- An Anthropic account with access to the Claude Console
+- A Claude API key
+
+<Tip>
+  See [Models](/models/overview) for the Claude models available in SubVerse.
+</Tip>
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → Claude (Anthropic)** and open the **Documentation** tab.
+</Note>

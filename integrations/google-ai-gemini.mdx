@@ -1,0 +1,35 @@
+---
+title: 'Google AI (Gemini)'
+description: 'Bring your own Gemini API key: agents and orchestrations use your Google Cloud project and subscription whenever a Gemini model is selected.'
+---
+
+**Connection type:** Credential
+
+Connect your own Gemini API key to SubVerse. When an agent or orchestration uses a Gemini model, SubVerse sends the request with your key, so usage is billed to your Google Cloud project under your own limits and policies.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Use your own Gemini subscription** | Run Gemini models in agents and orchestrations on your Google Cloud project instead of SubVerse's. |
+| **Cover every Gemini model** | Applies to all Gemini models SubVerse supports, including chat, embeddings, and live voice models. |
+| **Keep control of usage** | Track spend, set limits, and restrict the key in your own Google Cloud project. |
+
+## How it works
+
+**Agent or orchestration** → **Gemini model selected** → **SubVerse** → **Your Google Cloud project**
+
+Without a connection, SubVerse uses its own Gemini subscription and bills that usage to you through SubVerse.
+
+## What you'll need
+
+- A Google Cloud project with the Gemini API enabled
+- A Gemini API key from that project
+
+<Tip>
+  See [Models](/models/overview) for the Gemini models available in SubVerse.
+</Tip>
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → Google AI (Gemini)** and open the **Documentation** tab.
+</Note>

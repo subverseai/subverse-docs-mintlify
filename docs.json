@@ -114,6 +114,7 @@
               "orchestration/nodes/slack",
               "orchestration/nodes/airtable",
               "orchestration/nodes/google-sheets",
+              "orchestration/nodes/google-drive",
               "orchestration/nodes/shopify",
               "orchestration/nodes/whatsapp",
               "orchestration/nodes/freshdesk",
@@ -208,7 +209,8 @@
           {
             "group": "Database & Storage",
             "pages": [
-              "integrations/aws-s3"
+              "integrations/aws-s3",
+              "integrations/google-drive"
             ]
           },
           {
@@ -388,6 +390,14 @@
     {
       "source": "/credentials/types/google-sheets-service-account",
       "destination": "/integrations/google-sheets"
+    },
+    {
+      "source": "/credentials/types/google-drive-oauth2-api",
+      "destination": "/integrations/google-drive"
+    },
+    {
+      "source": "/credentials/types/google-drive-service-account",
+      "destination": "/integrations/google-drive"
     },
     {
       "source": "/credentials/types/freshdesk-api",

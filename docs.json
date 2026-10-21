@@ -166,7 +166,8 @@
                   "integrations/sip",
                   "integrations/telephony-twilio",
                   "integrations/telephony-telnyx",
-                  "integrations/telephony-plivo"
+                  "integrations/telephony-plivo",
+                  "integrations/telephony-ozonetel"
                 ]
               },
               "integrations/email",
@@ -202,7 +203,8 @@
             "pages": [
               "integrations/airtable",
               "integrations/google-sheets",
-              "integrations/freshdesk"
+              "integrations/freshdesk",
+              "integrations/servicenow"
             ]
           },
           {

@@ -1,0 +1,250 @@
+---
+title: 'Configure with Ozonetel'
+description: 'Step-by-step guide to configure Ozonetel SIP trunk with SubVerse'
+---
+
+## Overview
+
+This guide walks you through connecting an Ozonetel SIP trunk to SubVerse AI, so voice agents can answer incoming calls on your Ozonetel numbers and place outgoing calls from them.
+
+Ozonetel doesn't offer SIP trunk setup in their portal, so their team provisions it for you. The work splits in two: you request the trunk and share the connection details, then you add the trunk in SubVerse once Ozonetel confirms it's ready.
+
+<Note>
+  **Ozonetel provisions the trunk for you.** There's no self-service option in the Ozonetel portal. Ask your Ozonetel contact to set up a SIP trunk, then share the connection details from this guide with them.
+</Note>
+
+## Prerequisites
+
+- An **Ozonetel account**, with the numbers you want to use
+- Your **Ozonetel contact** (SPOC) or support team, who will provision the trunk
+- A **voice agent** in SubVerse, if you're setting up inbound calls
+- A decision on **direction**: inbound, outbound, or both. Ozonetel configures each separately.
+
+## Step 1: Request a SIP Trunk from Ozonetel
+
+Contact your Ozonetel SPOC or support team and ask them to provision a SIP trunk for connecting to an external voice platform. Say which directions you need:
+
+| Direction | What to ask Ozonetel to configure |
+|---|---|
+| **Inbound** | Forward calls on your numbers to the SubVerse SIP host |
+| **Outbound** | Accept calls from SubVerse and dial the number in the SIP INVITE |
+| **Both** | Both of the above, on the same trunk |
+
+## Step 2: Share Connection Details with Ozonetel
+
+Send your Ozonetel contact the details below. They cover everything their team needs to configure the trunk.
+
+### SIP Host
+
+Ozonetel should send inbound calls to this host, and will receive outbound calls from it:
+
+```text
+sip:1meh2bmhw0z.india.sip.livekit.cloud
+```
+
+| Host | Use |
+|---|---|
+| `1meh2bmhw0z.india.sip.livekit.cloud` | India. Recommended for Ozonetel, since it keeps calls inside the India region. |
+| `1meh2bmhw0z.sip.livekit.cloud` | Global. Routes each call through the region closest to where it starts. |
+
+### Inbound: Where to Send Calls
+
+Each call should be sent to the SIP host with the dialed number in the Request-URI:
+
+```text
+sip:<phone_number>@1meh2bmhw0z.india.sip.livekit.cloud
+```
+
+For example, a call to `+919898989898` becomes:
+
+```text
+sip:+919898989898@1meh2bmhw0z.india.sip.livekit.cloud
+```
+
+<Warning>
+  The number must be in E.164 format, with the leading `+`, and must match a number on your SubVerse inbound trunk.
+</Warning>
+
+### Outbound: What to Accept
+
+- Accept calls from the SubVerse SIP host, and dial the number in the user part of the Request-URI.
+- Allow the numbers SubVerse sends in the `From` header as caller ID. These are the trunk numbers you add in SubVerse.
+
+### IP Ranges to Whitelist
+
+| Region | Allow these IP ranges | Ports |
+|---|---|---|
+| India | `143.223.88.0/21`<br />`161.115.160.0/19` | `5060` (TCP/UDP)<br />`50000–60000` (UDP) |
+| All other regions | `0.0.0.0/1`<br />`128.0.0.0/1` | `5060` (TCP/UDP)<br />`50000–60000` (UDP) |
+
+<Note>
+  Outside India, SubVerse doesn't send traffic from fixed IP addresses, so those two ranges together allow all addresses. Always pair IP whitelisting with username and password authentication.
+</Note>
+
+### SIP and Media Settings
+
+| Setting | Value |
+|---|---|
+| Signaling transport | TCP (recommended) or UDP |
+| Signaling port | `5060` |
+| Media transport | RTP over UDP. SRTP is supported but optional. |
+| Media ports | `50000–60000` (UDP) |
+| Authentication | SIP digest authentication, with a username and password |
+| Codecs | Opus, G.722, G.711 PCMU (μ-law), G.711 PCMA (A-law) |
+| DTMF | RFC 2833 telephone events (`telephone-event/8000`). In-band tones aren't supported. |
+
+## Step 3: Collect Your Trunk Details
+
+Once the trunk is provisioned, Ozonetel gives you the values for the SubVerse form:
+
+| Value | What it's for |
+|---|---|
+| **SIP address** | Ozonetel's SIP server address, for example `sip.example.com:5060` |
+| **Username** | The SIP username for digest authentication |
+| **Password** | The SIP password |
+| **Your numbers** | The numbers attached to the trunk, in E.164 format |
+
+<Warning>
+  Save these credentials securely - you'll need to enter them in SubVerse dashboard.
+</Warning>
+
+## Step 4: Configure in SubVerse Dashboard
+
+Go to **Integrations** → **Ozonetel** → **Connections** and add an inbound or outbound SIP trunk. Add both if you want calls in both directions.
+
+### For Inbound Calls
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="https://subverse-prod-assets.s3.ap-south-1.amazonaws.com/integrations/sip-inbound.png"
+  alt="Add Inbound SIP Trunk form"
+/>
+
+| Field | What to enter |
+|---|---|
+| **Name** (required) | A name you'll recognize, for example `Ozonetel support line` |
+| **Description** | What this trunk is for |
+| **Trunk numbers** (required) | Each number Ozonetel forwards to this trunk, in E.164 format, for example `+919876543210`. Use **Add number** for more than one. |
+| **Username** | The SIP username from Ozonetel |
+| **Password** | The SIP password from Ozonetel |
+| **SIP address** | Ozonetel's SIP address. SubVerse uses it to match incoming traffic to this trunk. |
+| **Select voice agent** (required) | The agent that answers calls on these numbers |
+
+Click **Save connection**. All credentials are encrypted before they're stored.
+
+### For Outbound Calls
+
+<img
+  style={{ borderRadius: '0.5rem' }}
+  src="https://subverse-prod-assets.s3.ap-south-1.amazonaws.com/integrations/sip-outbound.png"
+  alt="Add Outbound SIP Trunk form"
+/>
+
+| Field | What to enter |
+|---|---|
+| **Name** (required) | A name you'll recognize, for example `Ozonetel outbound` |
+| **Description** | What this trunk is for |
+| **Trunk numbers** (required) | The numbers used as caller ID. Ozonetel must allow each one. |
+| **Username** | The SIP username from Ozonetel |
+| **Password** | The SIP password from Ozonetel |
+| **SIP address** | Ozonetel's SIP address for outbound calls |
+
+Click **Save connection**. You can now use these numbers to place calls from voice agents, workflows, and the call APIs.
+
+## Testing Your Configuration
+
+1. **Call your number:** From any phone, call a number on the inbound trunk and confirm the voice agent answers.
+2. **Check the audio:** Confirm clear two-way audio, without noticeable delay or jitter.
+3. **Check DTMF:** If your agent uses keypad input, press a few keys and confirm they're detected.
+4. **Place an outbound call:** Start a call from a voice agent and confirm the Ozonetel number shows as the caller ID.
+5. **Hang up:** End the call from each side and confirm it disconnects on both.
+
+## Troubleshooting
+
+Ozonetel configures the trunk on their side, so share the details from this page with your SPOC when something doesn't match.
+
+### Inbound Calls Don't Reach the Agent
+
+**Check:**
+- Ozonetel sends calls to `sip:<number>@1meh2bmhw0z.india.sip.livekit.cloud`
+- The number is in E.164 format and added to the SubVerse inbound trunk
+- A voice agent is selected on the inbound trunk
+
+### Inbound Calls Are Rejected with 401, 403 or 407
+
+**Check:**
+- The username and password match on both sides
+- The SIP address on the trunk matches where Ozonetel sends calls from
+
+### Outbound Calls Fail with 401 or 407
+
+**Check:**
+- The username, password, and SIP address on the outbound trunk match what Ozonetel provided
+
+### Outbound Calls Fail with 403
+
+**Check:**
+- Ozonetel has whitelisted the SubVerse IP ranges
+- Ozonetel allows the caller ID in the `From` header
+
+### Outbound Calls Fail with 404 or 484
+
+**Check:**
+- The dialed number is in E.164 format
+- Ozonetel dials the number in the Request-URI
+
+### No Audio or One-Way Audio
+
+**Check:**
+- UDP ports `50000–60000` are open for the whitelisted ranges
+- Both sides share at least one codec
+
+### Calls Drop After About 30 Seconds
+
+**Check:**
+- Signaling replies, such as `ACK`, aren't blocked by a firewall or NAT
+
+**Solution:**
+- Ask Ozonetel to try TCP instead of UDP
+
+### Keypad Presses Aren't Detected
+
+**Check:**
+- DTMF is sent as RFC 2833 telephone events, not as in-band audio
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Configure with Twilio"
+    icon="phone"
+    href="/integrations/telephony-twilio"
+  >
+    Set up Twilio SIP trunk
+  </Card>
+  <Card
+    title="Configure with Plivo"
+    icon="phone"
+    href="/integrations/telephony-plivo"
+  >
+    Set up Plivo SIP trunk
+  </Card>
+  <Card
+    title="Create Voice Agent"
+    icon="robot"
+    href="/agents/create-first-agent"
+  >
+    Build your first AI voice agent
+  </Card>
+  <Card
+    title="Call History"
+    icon="history"
+    href="/agents/call-history"
+  >
+    Monitor your calls
+  </Card>
+</CardGroup>
+
+<Tip>
+  If you change the voice agent's configuration and calls don't reflect it, remove the agent from the trunk and select it again.
+</Tip>

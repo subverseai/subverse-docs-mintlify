@@ -1,0 +1,35 @@
+---
+title: 'Google Drive'
+description: 'Connect Google Drive so agents and workflows can upload, find, and manage files and folders.'
+---
+
+**Connection type:** Credential
+
+Connect Google Drive to SubVerse. Your Functions and Orchestrations can upload and download files, create and move folders, search for documents, and share them. A change in Drive can also start an orchestration.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Upload and download files** | Save a recording, document, or customer upload to Drive, or fetch one back. |
+| **Create and organise** | Create folders, move files between them, and update file details. |
+| **Search** | Find files and folders, so an agent can answer from a document. |
+| **Share files** | Give someone access to a file as part of a workflow. |
+| **React to changes** | Start an orchestration when something changes in Drive, such as a new file in a folder. |
+
+## Credential types
+
+| Credential type | Best for |
+|---|---|
+| **Google Drive Service Account** | Most connections. You share only the files and folders it should reach, so its access is limited to exactly those. |
+| **Google Drive OAuth2 API** | Working with a person's own Drive, where sharing each file isn't practical |
+
+## What you'll need
+
+- A Google account with access to the files you want to use
+- A Google Cloud project, to create the credentials
+- Permission to enable APIs and create credentials in that project
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → Google Drive** and open the **Documentation** tab.
+</Note>

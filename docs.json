@@ -160,21 +160,17 @@
           {
             "group": "Communication",
             "pages": [
-              {
-                "group": "SIP",
-                "pages": [
-                  "integrations/sip",
-                  "integrations/telephony-twilio",
-                  "integrations/telephony-telnyx",
-                  "integrations/telephony-plivo"
-                ]
-              },
+              "integrations/sip",
               "integrations/email",
               "integrations/web-chat",
               "integrations/whatsapp",
               "integrations/whatsapp-channel",
               "integrations/dovesoft",
-              "integrations/slack"
+              "integrations/slack",
+              "integrations/twilio",
+              "integrations/telnyx",
+              "integrations/plivo",
+              "integrations/ozonetel"
             ]
           },
           {
@@ -202,13 +198,15 @@
             "pages": [
               "integrations/airtable",
               "integrations/google-sheets",
-              "integrations/freshdesk"
+              "integrations/freshdesk",
+              "integrations/servicenow"
             ]
           },
           {
             "group": "Database & Storage",
             "pages": [
-              "integrations/aws-s3"
+              "integrations/aws-s3",
+              "integrations/google-drive"
             ]
           },
           {
@@ -320,6 +318,22 @@
     {
       "source": "/integrations/telephony",
       "destination": "/integrations/sip"
+    },
+    {
+      "source": "/integrations/telephony-twilio",
+      "destination": "/integrations/twilio"
+    },
+    {
+      "source": "/integrations/telephony-telnyx",
+      "destination": "/integrations/telnyx"
+    },
+    {
+      "source": "/integrations/telephony-plivo",
+      "destination": "/integrations/plivo"
+    },
+    {
+      "source": "/integrations/telephony-ozonetel",
+      "destination": "/integrations/ozonetel"
     },
     {
       "source": "/communication-channels/email",

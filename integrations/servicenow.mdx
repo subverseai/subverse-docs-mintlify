@@ -1,0 +1,36 @@
+---
+title: 'ServiceNow'
+description: 'Connect your ServiceNow instance so agents and workflows can work with incidents, cases, and knowledge articles.'
+---
+
+**Connection type:** Credential
+
+Connect your ServiceNow instance to SubVerse. Agents can look up incidents and knowledge articles to answer questions, and your Functions and Orchestrations can create and update records, add notes, and resolve cases.
+
+## What you can do
+
+| Capability | What it does |
+|---|---|
+| **Work with incidents and cases** | Create, read, update, and delete records, so a conversation can raise or progress a ticket. |
+| **Add notes and comments** | Add an internal work note for your team, or a comment the customer sees. |
+| **Update status and resolution** | Move a record through its states and record how it was resolved. |
+| **Use your knowledge base** | Let an agent find knowledge articles and answer from them. |
+| **Give agents direct access** | Attach ServiceNow as an MCP tool to an agent, using an OAuth connection. |
+| **React to changes** | Start an orchestration when something happens in ServiceNow, such as a new incident. |
+
+## Credential types
+
+| Credential type | Best for |
+|---|---|
+| **ServiceNow OAuth2 API** | Most connections. You approve access in ServiceNow, and it's the only type that supports MCP. |
+| **ServiceNow Basic Auth API** | A simpler setup with a username and password, where OAuth isn't available |
+
+## What you'll need
+
+- A ServiceNow instance, and its subdomain
+- A ServiceNow user for the integration, with the roles your use case needs
+- Admin access to create an OAuth endpoint, if you're using OAuth
+
+<Note>
+  Step-by-step setup is in the SubVerse dashboard: go to **Integrations → ServiceNow** and open the **Documentation** tab.
+</Note>

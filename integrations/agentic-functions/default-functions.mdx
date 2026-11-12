@@ -20,6 +20,7 @@ These functions are available regardless of which LLM you use.
 |---|---|
 | `end_session` | End the session when the conversation is complete. |
 | `schedule_communication` | Schedule a follow-up call, message, or email for a future time. |
+| `escalate_to_human` | Hand the chat over to a human teammate. Chat agents only. [Read more](#escalate_to_human) |
 | `query_knowledge_base` | Fetch relevant information from the agent's connected knowledge base. |
 | `fetch_memory` | Retrieve previously stored memory for this customer or session. [Read more](#fetch_memory) |
 | `update_memory` | Write new information to memory for use in future sessions. [Read more](#update_memory) |
@@ -65,6 +66,7 @@ Default functions cover the most common actions an agent needs during a session.
 - Search the web when the agent needs real-time or external information.
 - Store customer preferences in memory to personalise future sessions.
 - Query the knowledge base for product details or policy documents.
+- Hand the conversation to a human teammate when the customer asks for one or the agent can't resolve the issue.
 
 <Tip>
   Be explicit in the agent's system prompt about when to call each function. For example: *"When the customer says goodbye or their issue is resolved, call `end_session`."* or *"Use `web_search` only when the knowledge base does not contain a definitive answer."*
@@ -146,12 +148,75 @@ prompt: Store what has been discussed for this claim with dates and issues
 
 ---
 
+## escalate\_to\_human
+
+`escalate_to_human` is a **during-session** function that hands a live chat conversation over to a human on your team. As soon as the agent calls it, the AI stops replying and your teammates take over the conversation from the dashboard.
+
+It is available for chat agents on **WhatsApp** and **Web Chat**.
+
+### When to Use It
+
+Enable `escalate_to_human` when some conversations need a person, for example:
+
+- The customer explicitly asks to speak to a human.
+- The customer is frustrated, upset, or raising a complaint.
+- The request is sensitive or high-value — refunds, account changes, disputes, or cancellations.
+- The agent has tried and still can't find a reliable answer.
+- The action needs human review or approval before it can go ahead.
+
+<Info>
+  If the conversation should move to another **AI agent** with different skills rather than to a person, use [Agent Handoff](/integrations/agentic-functions/agent-handoff) instead.
+</Info>
+
+### Settings
+
+| Setting | Required | Description |
+|---|---|---|
+| Escalate To | No | Teammates to notify when the chat is escalated. If you leave it empty, everyone who is allowed to handle escalations for this agent is notified. |
+| Message | No | Message sent to the customer at the moment of escalation, letting them know a person will reply. |
+| Error Message | No | What the agent is told if the escalation cannot be completed, so it can keep helping the customer. |
+
+### What Happens After Escalation
+
+1. The AI agent stops replying in this conversation.
+2. If you set a **Message**, it is sent to the customer.
+3. The teammates in **Escalate To** receive a notification that opens the conversation. They are notified again whenever the customer sends a new message.
+4. A teammate reads the full conversation in **Session History** and replies to the customer directly, including attachments.
+5. The session ends when a teammate ends it, or automatically after the usual period of inactivity.
+6. Once the session ends, post-session analysis and post-session functions run, so your reports cover the human part of the conversation too.
+
+### Example
+
+```
+// Settings
+Escalate To: support.lead@yourcompany.com, billing@yourcompany.com
+Message: Thanks for your patience — I'm connecting you with a member of our team. They'll reply here shortly.
+
+// System prompt usage
+If the customer asks to speak to a person, or is still unhappy after two attempts to help, call `escalate_to_human`.
+```
+
+<Tip>
+  Tell the agent clearly in its system prompt when to escalate. Without explicit instructions, the agent may escalate too often or not at all.
+</Tip>
+
+<Info>
+  Teammates need the **Handle session escalation** permission in their role to receive escalations and reply to customers. This permission can be limited to specific agents. Teammates listed in **Escalate To** who no longer have this permission are skipped. Teammates with this permission can also take over any active chat manually from the dashboard, without the agent calling the function.
+</Info>
+
+<Warning>
+  Escalation is **one-way**. Once a chat is handed to a human, the AI agent does not resume the conversation. Escalation is not yet available for email or voice agents.
+</Warning>
+
+---
+
 ## Availability
 
 | Function | Pre-Session | During-Session | Post-Session |
 |---|---|---|---|
 | `end_session` | No | Yes | No |
 | `schedule_communication` | No | Yes | No |
+| `escalate_to_human` | No | Yes | No |
 | `query_knowledge_base` | No | Yes | No |
 | `fetch_memory` | Yes | No | No |
 | `update_memory` | No | No | Yes |

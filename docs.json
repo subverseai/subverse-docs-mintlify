@@ -264,6 +264,10 @@
             "pages": ["api-reference/session/fetch"]
           }
         ]
+      },
+      {
+        "tab": "Changelog",
+        "pages": ["changelog"]
       }
     ],
     "global": {

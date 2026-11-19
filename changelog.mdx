@@ -7,7 +7,7 @@ mode: 'center'
 <Update label="Nov 18, 2026">
   ### Static IP for HTTP requests
 
-  Requests can now be sent from SubVerse's fixed IP, **`15.207.21.5`**. Ask your API provider to whitelist it once, and you can reach banks, CRMs, and enterprise APIs that block unknown IPs.
+  Requests can now be sent from SubVerse's fixed IP. Ask your API provider to whitelist it once, and you can reach banks, CRMs, and enterprise APIs that block unknown IPs. The IP is listed in the linked docs below.
 
   - **Custom functions:** set `useStaticIP: true` in the [HTTP Send Request](/integrations/agentic-functions/custom-function-actions#http-send-request) action's `options.options`. Or ask the Code Assistant: *"This API only accepts whitelisted IPs, send the request from the static IP."*
   - **Orchestrations:** turn on **Use Static IP** under **Options** in the [HTTP Request](/orchestration/nodes/http-request) node.

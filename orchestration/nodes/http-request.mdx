@@ -38,6 +38,11 @@ The **HTTP Request** node makes HTTP calls to any external API or web endpoint. 
 | **Options — Response Format** | Select | No | How to parse the response: `autodetect`, `json`, `text`, or `base64` (default: `autodetect`) |
 | **Options — Full Response** | Boolean | No | Return status code, headers, and body instead of just the body (default: disabled) |
 | **Options — Ignore Response Code** | Boolean | No | Don't throw on 4xx/5xx — handle the error response yourself (default: disabled) |
+| **Options — Use Static IP** | Boolean | No | Send the request from SubVerse's static IP `15.207.21.5`. Use this when the target API only accepts requests from whitelisted IPs (default: disabled) |
+
+<Note>
+  **Calling an API that requires IP whitelisting?** Ask the API provider to whitelist `15.207.21.5`, then turn on **Use Static IP** under **Options** on each HTTP Request node that must come from that IP. Requests without it are sent from SubVerse's regular, non-fixed IPs.
+</Note>
 
 ### Body Types
 

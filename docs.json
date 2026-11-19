@@ -237,6 +237,10 @@
         ]
       },
       {
+        "tab": "Changelog",
+        "pages": ["changelog"]
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {
@@ -264,10 +268,6 @@
             "pages": ["api-reference/session/fetch"]
           }
         ]
-      },
-      {
-        "tab": "Changelog",
-        "pages": ["changelog"]
       }
     ],
     "global": {

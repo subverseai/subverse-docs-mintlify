@@ -5,27 +5,12 @@ mode: 'center'
 ---
 
 <Update label="Nov 18, 2026">
-  **TL;DR:** Custom functions can now call partner APIs that only accept requests from whitelisted IP addresses.
-
-  ## What's new
-
   ### Static IP for HTTP requests
 
-  **What it does:** The [HTTP Send Request](/integrations/agentic-functions/custom-function-actions#http-send-request) action has a new `useStaticIP` option. When you turn it on, the request is sent from SubVerse's fixed IP address, **`15.207.21.5`**.
+  Requests can now be sent from SubVerse's fixed IP, **`15.207.21.5`**. Ask your API provider to whitelist it once, and you can reach banks, CRMs, and enterprise APIs that block unknown IPs.
 
-  **Why it matters:** Many banks, CRMs, and internal enterprise APIs block traffic from unknown IPs. Ask your API provider to whitelist `15.207.21.5` once, and your agents can call those APIs directly.
+  - **Custom functions:** set `useStaticIP: true` in the [HTTP Send Request](/integrations/agentic-functions/custom-function-actions#http-send-request) action's `options.options`. The Code Assistant can add it for you.
+  - **Orchestrations:** turn on **Use Static IP** under **Options** in the [HTTP Request](/orchestration/nodes/http-request) node.
 
-  ```javascript
-  const response = await subverseActions.http.sendRequest({
-    options: {
-      method: 'GET',
-      url: 'https://partner-api.example.com/orders',
-      options: {
-        useStaticIP: true
-      }
-    }
-  });
-  ```
-
-  The option is off by default, so existing functions behave as before. The Code Assistant knows about this option. Tell it the API needs a whitelisted IP and it will add the option for you.
+  It's off by default, so existing functions and orchestrations work as before.
 </Update>

@@ -1,0 +1,95 @@
+/* Changelog timeline: date pill on the left, thin line with a dot per entry. */
+
+.update-container {
+  position: relative;
+  padding-left: 1.75rem;
+}
+
+/* Thin vertical line */
+.update-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0.3125rem;
+  width: 1px;
+  background: rgb(229 231 235);
+}
+
+/* Line starts at the first dot */
+.update-container:first-of-type::before {
+  top: 2.875rem;
+}
+
+/* Small gray dot with a soft ring, centered on the date pill */
+.update-container::after {
+  content: "";
+  position: absolute;
+  top: calc(2.875rem - 0.3125rem);
+  left: 0;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  background: rgb(156 163 175);
+  box-shadow: 0 0 0 4px rgb(243 244 246);
+}
+
+/* Neutral gray date pill instead of the brand-colored one */
+.update-container [data-component-part="update-label"] {
+  background: rgb(243 244 246) !important;
+  color: rgb(55 65 81) !important;
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  white-space: nowrap;
+}
+
+.dark .update-container::before {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.dark .update-container::after {
+  background: rgb(255 255 255 / 0.35);
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 0.06);
+}
+
+.dark .update-container [data-component-part="update-label"] {
+  background: rgb(255 255 255 / 0.06) !important;
+  color: rgb(229 231 235) !important;
+}
+
+/* The changelog uses center mode (no left menu, no "On this page"),
+   which caps the page at 768px. Widen it for the timeline layout. */
+#navbar.is-center ~ div:has(.update-container) {
+  max-width: 72rem !important;
+}
+
+/* Desktop: date column | line + dot | content */
+@media (min-width: 1024px) {
+  .update-container {
+    padding-left: 0;
+    column-gap: 3.5rem !important;
+  }
+
+  /* Narrower date column (Mintlify default is 160px). The pill is pushed
+     to the column's right edge so the line sits exactly halfway between
+     the pill and the content: equal space on both sides. */
+  .update-container > div:first-child {
+    width: 8.5rem !important;
+    align-items: flex-end !important;
+  }
+
+  /* Keep the hover link icon at the column's left edge (Mintlify offsets it
+     40px further left) instead of letting flex-end drag it onto the pill. */
+  .update-container > div:first-child > div.absolute {
+    align-self: flex-start !important;
+  }
+
+  .update-container::before {
+    left: calc(8.5rem + 1.75rem);
+  }
+
+  .update-container::after {
+    left: calc(8.5rem + 1.75rem - 0.28125rem);
+  }
+}

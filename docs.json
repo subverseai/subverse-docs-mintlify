@@ -237,6 +237,10 @@
         ]
       },
       {
+        "tab": "Changelog",
+        "pages": ["changelog"]
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {

@@ -31,6 +31,11 @@ Make an outbound HTTP request to any URL. Supports all standard methods, custom 
 | `options.options.responseFormat` | No | Force response format: `autodetect` \| `json` \| `text` \| `base64`. Default `autodetect`. Use `base64` for binary files. |
 | `options.options.fullResponse` | No | Return `statusCode`, `headers`, and `body` instead of just the body. Default `false` |
 | `options.options.ignoreResponseCode` | No | Don't throw on 4xx/5xx — handle the error response yourself. Default `false` |
+| `options.options.useStaticIP` | No | Send the request from SubVerse's static IP `15.207.21.5`. Use this when the target API only accepts requests from whitelisted IPs. Default `false` |
+
+<Note>
+  **Calling an API that requires IP whitelisting?** Ask the API provider to whitelist `15.207.21.5`, then set `useStaticIP: true` in `options.options` on each request that must come from that IP. Requests without it are sent from SubVerse's regular, non-fixed IPs.
+</Note>
 
 ```javascript
 const response = await subverseActions.http.sendRequest({
@@ -47,7 +52,8 @@ const response = await subverseActions.http.sendRequest({
     },
     options: {
       timeout: 10000,
-      ignoreResponseCode: true             // handle 4xx without throwing
+      ignoreResponseCode: true,            // handle 4xx without throwing
+      useStaticIP: true                    // optional: send from static IP 15.207.21.5
     }
   }
 });

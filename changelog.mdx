@@ -1,0 +1,49 @@
+---
+title: 'Product Updates'
+description: 'New features, improvements, and fixes shipped to the SubVerse platform'
+mode: 'center'
+---
+
+<Update label="Nov 24, 2026">
+  ### Processes: organize your agents by business process
+
+  A new **Processes** page groups the agents and orchestrations that work together on one business flow, like *Auto Insurance Claims* or *Loan Collections*, so large workspaces are easier to find your way around.
+
+  - **Create a process** with a name, a description, and a short note on how work moves through it (hand-offs, retries, and so on).
+  - **See everything in one place.** A process's page lists its voice, chat, email, and background agents and its orchestrations, with counts for each.
+  - **New agents and orchestrations are now created inside a process.** Open a process and click **New Component**. You can also create a new process right from the picker.
+  - **Move existing work in.** Open any agent or orchestration and add it to a process. A banner on the Agents and Orchestrations pages tells you how many still need a process.
+  - **Filter by process** on the Dashboard, Session History, and Orchestration Runs.
+  - **Copying** an agent or orchestration lets you pick which process the copy goes into.
+  - **Roles** can be limited to specific processes, so teams only see the processes they work on.
+
+  <Warning>
+    Deleting a process also deletes all of its agents and orchestrations. Past sessions, runs, and logs are kept. You'll be asked to type the process name to confirm.
+  </Warning>
+
+  ### Automatic voicemail detection for outbound calls
+
+  Outbound voice agents now listen for who picks up before greeting. If voicemail, an answering machine, or an IVR menu answers, the agent hangs up without speaking. Your message isn't wasted on a recording, and the call isn't counted as delivered.
+
+  - Calls like this show a new **Voicemail** status in Call History.
+  - They're **retried automatically**, up to your campaign's retry limit.
+  - Post-call analysis, post-call functions, and memory updates are skipped, so the next call won't assume the customer already heard the message.
+  - **Call screening (like iPhone's Call Screening):** when a screener asks who's calling, the agent gives one short reply (who it is, the company, and why it's calling) and waits for the person to pick up. If they join, the conversation carries on as normal. If nobody does, the agent hangs up and the call is retried.
+
+  This is on by default for outbound phone calls. It doesn't apply to inbound calls or WhatsApp calls. Because the agent waits to hear who answered, there may be a short pause before the first greeting. To turn it off for an agent, or to change what the agent says to call screeners, contact the SubVerse team.
+
+  ### Static IP for HTTP requests
+
+  Requests can now be sent from SubVerse's fixed IP. Ask your API provider to whitelist it once, and you can reach banks, CRMs, and enterprise APIs that block unknown IPs. The IP is listed in the linked docs below.
+
+  - **Custom functions:** set `useStaticIP: true` in the [HTTP Send Request](/integrations/agentic-functions/custom-function-actions#http-send-request) action's `options.options`. Or ask the Code Assistant: *"This API only accepts whitelisted IPs, send the request from the static IP."*
+  - **Orchestrations:** turn on **Use Static IP** under **Options** in the [HTTP Request](/orchestration/nodes/http-request) node.
+
+  It's off by default, so existing functions and orchestrations work as before.
+
+  ### Improvements and fixes
+
+  - **Safer model changes:** if an agent uses a custom model setup from our Customer Success team, you'll now be asked to confirm before saving a change that would reset it.
+  - **Clearer model errors:** when a model can't be used, the agent form now tells you why. For example, the model isn't enabled for your organization, is disabled, or isn't available in the agent's region.
+  - **Dashboard filters:** the agent and orchestration filters on the Dashboard load more reliably.
+</Update>
